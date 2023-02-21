@@ -1,0 +1,46 @@
+{
+    "Phone":"01120472668",
+    "Password":"123123",
+    "loginSessionID":"44462w823dssdddd67jg89",
+    "deviceName": "PostMan",
+    "deviceType": "Window",
+    "DeviceUUID": "24A020E6-3F75-49CE-B34F-5B0F4Fs73EFA44",
+    "deviceMobileNum": "",
+    "deviceMobileNum2": "",
+    "OSNameVersion": "IOS",
+    "AppVersion": "22060701",
+    "AppVersionNum": "22060701",
+    "geoLocation": "Q2Fpcm8=",
+    "govLocation": "Cairo",
+    "notificationToken": "FCM Token",
+    "appLanguage": "0",
+"UUID":"24A020E6-3F75-49CE-B34F-5B0F4Fs73EFA44"
+}
+eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQgIjozNzY4NjcsIlBob25lICI6IjAxMTIwNDcyNjY4IiwiVGltZSI6IjAxLzAzLzIwMjMgMDE6NDA6NTYuMzAxIFBNIiwiU2Vzc2lvbklkIjoxNzMyMiwiTG9naW5lZFVzZXJJZCI6Mzc2ODY3LCJSZW1tZW1iZXJNZSI6ZmFsc2V9.sa-KsDadkx3aqBFYzWhqoSRfyGtLkmg8NMXJEPTMTpc
+13e04f51-5a3c-4375-8d83-1bf9cadafccc
+{
+  "languageId": 0,
+  "userId": 0,
+  "loginedUserId": 0,
+  "payerId": 0,
+  "userName": "string",
+  "sessionId": 0,
+  "deviceID": 0,
+  "page": 0,
+  "pageSize": 0,
+  "cardNumber": "28433596240",
+  "nickname": "string",
+  "phone": "string",
+  "yearOfBirth": 0,
+  "oldPassword": "string",
+  "password": "string",
+  "emailPassword": "string",
+  "profileImage": "string",
+  "mrn": "string",
+  "birthdate": "2023-01-03T12:55:16.888Z",
+  "gender": 0,
+  "email": "string",
+  "actionType": 0,
+  "memberId": "string",
+  "remmemberMe": true
+}

@@ -1,0 +1,169 @@
+{
+
+   "statusCode": 200,
+
+        "message": "success",
+
+  
+
+    "station_data":  [
+
+            {
+
+                "id": 1,
+
+                "title": "IQ Tests",
+
+                "desc": "........",
+              "available":true
+
+            },
+
+          {
+
+                "id": 2,
+
+                "title": "Awards in Stem",
+
+                "desc": "........",
+              "available":false
+
+            }
+
+            
+
+        ],
+
+       
+
+       
+  
+
+    
+
+
+
+
+
+
+
+
+
+"roadmap": {
+
+        "statusCode": 200,
+
+        "message": "success",
+
+        "data": {
+  "first":[{
+    "id":1,
+    "group_id":1,
+  "title":"software"
+  }
+  ],
+          "second":[
+            {
+    "id":1,
+    "group_id":2,
+  "title":"English"
+  }
+          ],
+          "third":[
+            {
+    "id":1,
+    "group_id":3,
+  "title":"Hardware"
+  }
+          ]
+
+          
+
+        }},
+
+
+
+
+
+
+
+           "track_details" :{
+
+                "statusCode": 200,
+
+                 "message": "success",
+
+                 "data": [
+                   {
+                     "id":1,
+                     "track_id":1,
+                     "course_title":"Flutter",
+                     "tool":"Android studio",
+                     "date":"22-2-2022"
+        }
+                 ]
+
+    },
+
+
+
+    "course_details":  {
+
+        "statusCode": 200,
+
+        "message": "success",
+
+        "data":{
+
+            "id": 1,
+            "title": "flutter",
+            "desc":"....",
+            "image_url": ""
+
+
+           
+
+
+        }},
+
+
+
+   
+
+    
+
+    "user": {
+
+        "statusCode": 200,
+
+        "message": "success",
+
+        "data": {
+
+            "id": 1,
+
+            "school": "elorman",
+
+            "group_id": 1,
+
+            "group_name": "First",
+
+            "certificates":[
+              { "id":"1",
+                "image_url":""}
+
+            ],
+          "cv":{
+            "id":1,
+            "file":""
+          },
+          "childern":
+          [
+            {
+              "child_id":1
+            }
+          ]
+
+        }
+
+    }}
