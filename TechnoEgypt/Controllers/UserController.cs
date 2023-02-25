@@ -77,7 +77,7 @@ namespace TechnoEgypt.Controllers
             response.Message = "success";
             response.StatusCode = ResponseCode.success;
             var data = _dBContext.station.Include(w => w.childCVDatas).ToList();
-            response.Data = data.Select(w => new StationDataDto() { Id = w.Id, Title = w.Title, Desc = w.Description, available = w.IsAvilable }).ToList();
+            response.Data = data.Select(w => new StationDataDto() { Id = w.Id, Title = w.Title, Desc = w.Description, available = w.IsAvilable,Icon=w.IconURL }).ToList();
             return Ok(response);
         }
         [HttpPost("UpdateChildCVData")]
@@ -95,7 +95,7 @@ namespace TechnoEgypt.Controllers
                 station = new ChildCVData()
                 {
                     stationId = model.StationId,
-                    Date = DateTime.Now,
+                    Date = model.Date,
                     ChildId = model.UserId.Value,
                     Name = model.Name,
                     FileURL = FilePath,
@@ -105,7 +105,7 @@ namespace TechnoEgypt.Controllers
             }
             else
             {
-                station.Date = DateTime.Now;
+                station.Date = model.Date;
                 station.Name = model.Name;
                 station.Note=model.Note;
                 station.FileURL=FilePath;

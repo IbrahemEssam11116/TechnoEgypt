@@ -10,9 +10,8 @@ namespace TechnoEgypt.DTOS
         public int StationId { get; set; }
         [Required]
         public string Name{ get; set; }
-        //[Required]
-        //public DateTime Date{ get; set; }
         [Required]
+        public DateTime Date { get; set; }
         public string Note { get; set; }
     }
 }
