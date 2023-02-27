@@ -70,12 +70,23 @@ namespace TechnoEgypt.Controllers
 
             };
             _dBContext.childCourses.Add(childCourse);
+            try { 
             _dBContext.SaveChanges();
             var response = new Response<string>();
             response.StatusCode = ResponseCode.success;
             response.Message= "success";
             response.Data = "success";
             return Ok(response);
+            }
+            catch
+            {
+                var response = new Response<string>();
+                response.StatusCode = ResponseCode.notFound;
+                response.Message = "User Or Course Not Found";
+                response.Data = "User Or Course Not Found";
+                return Ok(response);
+
+            }
         }
 
         [HttpPost("GetRoadMap")]
