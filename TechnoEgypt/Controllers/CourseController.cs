@@ -60,7 +60,7 @@ namespace TechnoEgypt.Controllers
             }).ToList();
             return Ok(response);
         }
-        [HttpPost("")]
+        [HttpPost("AssignaCourseToUser")]
         public IActionResult AssignaCourseToUser(BaseDto model)
         {
             ChildCourse childCourse = new ChildCourse()
