@@ -6,5 +6,8 @@
         public int Track_Id { get; set; }
         public string Course_Title { get; set; }
         public string Tool { get; set; }
+        public DateTime? ValidTo { get; set; }
+        public DateTime? ValidFrom { get; set; }
+
     }
 }

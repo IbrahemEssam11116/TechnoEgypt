@@ -10,6 +10,8 @@ namespace TechnoEgypt.Models
         public string Name { get; set; }
         public string Descripttion { get; set; }
         public string ImageURL { get; set; }
+        public DateTime? ValidFrom{ get; set; }
+        public DateTime? ValidTo{ get; set; }
         public bool DataCollectionandAnalysis { get; set; }
         public bool CriticalThinking { get; set; }
         public bool Planning { get; set; }

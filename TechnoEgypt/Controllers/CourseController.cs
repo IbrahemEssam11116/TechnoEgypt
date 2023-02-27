@@ -54,12 +54,32 @@ namespace TechnoEgypt.Controllers
                 Course_Title=w.Name,
                 Id=w.Id,
                 Tool=w.courseTool.Name,
-                Track_Id=w.CourseCategoryId
+                Track_Id=w.CourseCategoryId,
+                ValidFrom=w.ValidFrom,
+                ValidTo=w.ValidTo
             }).ToList();
             return Ok(response);
         }
+        [HttpPost("")]
+        public IActionResult AssignaCourseToUser(BaseDto model)
+        {
+            ChildCourse childCourse = new ChildCourse()
+            {
+                CourseId = model.Id.Value,
+                ChildId = model.UserId.Value,
+
+            };
+            _dBContext.childCourses.Add(childCourse);
+            _dBContext.SaveChanges();
+            var response = new Response<string>();
+            response.StatusCode = ResponseCode.success;
+            response.Message= "success";
+            response.Data = "success";
+            return Ok(response);
+        }
+
         [HttpPost("GetRoadMap")]
-        public IActionResult GetRoadMap()
+        public IActionResult GetRoadMap(languageDto model)
         {
             var response = new Response<List<RoadmapDto>>();
             response.StatusCode= ResponseCode.success;
