@@ -12,6 +12,6 @@
         public int Group_Id { get; set; }
         public string Group_Name { get; set; }
         public List<Certificat> Certificates { get; set; }
-        public List<int> childern { get; set; }
+        public List<ChildData> childern { get; set; }
     }
 }
