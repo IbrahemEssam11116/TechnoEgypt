@@ -39,6 +39,7 @@ namespace TechnoEgypt.Controllers
 			}
 			else
 			{
+				//to do retrieve all data from courses
 				 courses = await _dBContext.Courses.Where(w => w.Id == Id)
 					.Include(Courses => Courses.CourseCategory).ThenInclude(CourseCategory => CourseCategory.Stage).
 					Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, StageId = w.CourseCategory.StageId , CourseCategoryId= w.CourseCategoryId })
