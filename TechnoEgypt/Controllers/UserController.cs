@@ -45,7 +45,7 @@ namespace TechnoEgypt.Controllers
                 Group_Name = stage?.Name,
                 Certificates = child.ChildCertificates.Select(w => new Certificat() { Id = w.Id, Image_Url = w.FileURL }).ToList(),
                 school = child.SchoolName,
-                childern = data.FirstOrDefault().Children.Where(w => w.IsActive).Select(w => w.Id).ToList()
+                childern = data.FirstOrDefault().Children.Where(w => w.IsActive).Select(w => new ChildData (){Id= w.Id,Name=w.Name }).ToList()
             };
             response.Message = "success";
             return Ok(response);
@@ -64,7 +64,7 @@ namespace TechnoEgypt.Controllers
                 Group_Name = stage?.Name,
                 Certificates = child.ChildCertificates.Select(w => new Certificat() { Id = w.Id, Image_Url = w.FileURL }).ToList(),
                 school = child.SchoolName,
-                childern = _dBContext.children.Where(w => w.ParentId == child.ParentId && w.IsActive).Select(w => w.Id).ToList()
+                childern = _dBContext.children.Where(w => w.ParentId == child.ParentId && w.IsActive).Select(w => new ChildData() { Id = w.Id, Name = w.Name }).ToList()
 
             };
             response.Message = "success";

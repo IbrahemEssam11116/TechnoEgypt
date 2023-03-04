@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Security.Cryptography.Xml;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
-using TechnoEgypt.ViewModel;
-
-
 
 namespace TechnoEgypt.Controllers
 {
@@ -26,7 +22,7 @@ namespace TechnoEgypt.Controllers
         public IActionResult GetCourseById(BaseDto model)
         {
             var response = new Response<CourseDto>();
-            var course=_dBContext.Courses.Where(w=>w.Id== model.Id).Include(w=>w.ChildCourses).FirstOrDefault();
+            var course = _dBContext.Courses.Where(w => w.Id == model.Id).Include(w => w.ChildCourses).FirstOrDefault();
             if (course == null)
             {
                 response.StatusCode = ResponseCode.notFound;
@@ -41,7 +37,17 @@ namespace TechnoEgypt.Controllers
                 Desc = course.Descripttion,
                 Title = course.Name,
                 Image_URL = course.ImageURL,
-                IsAvailable = !course.ChildCourses.Any(w => w.ChildId == model.UserId)
+                IsAvailable = !course.ChildCourses.Any(w => w.ChildId == model.UserId),
+                CognitiveAbilities = course.CognitiveAbilities,
+                CriticalThinking = course.CriticalThinking,
+                DataCollectionandAnalysis = course.DataCollectionandAnalysis,
+                Innovation = course.Innovation,
+                LogicalThinking = course.LogicalThinking,
+                MathematicalReasoning = course.MathematicalReasoning,
+                Planning = course.Planning,
+                ProblemSolving = course.ProblemSolving,
+                ScientificResearch = course.ScientificResearch,
+                SocialLifeSkills = course.SocialLifeSkills
             };
             return Ok(response);
         }
@@ -50,17 +56,19 @@ namespace TechnoEgypt.Controllers
         public IActionResult GetTrakeDataById(BaseDto model)
         {
             var response = new Response<List<TrackCoursresDto>>();
-            var courses = _dBContext.Courses.Where(w => w.CourseCategoryId == model.Id).Include(w => w.courseTool);
-            response.StatusCode=ResponseCode.success;
+            var courses = _dBContext.Courses.Where(w => w.CourseCategoryId == model.Id).Include(w => w.courseTool).Include(w=>w.ChildCourses);
+            response.StatusCode = ResponseCode.success;
             response.Message = "success";
             response.Data = courses.Select(w => new TrackCoursresDto()
             {
-                Course_Title=w.Name,
-                Id=w.Id,
-                Tool=w.courseTool.Name,
-                Track_Id=w.CourseCategoryId,
-                ValidFrom=w.ValidFrom,
-                ValidTo=w.ValidTo
+                Course_Title = w.Name,
+                Id = w.Id,
+                Tool = w.courseTool.Name,
+                Track_Id = w.CourseCategoryId,
+                ValidFrom = w.ValidFrom,
+                ValidTo = w.ValidTo,
+                IsAvailable = !w.ChildCourses.Any(w => w.ChildId == model.UserId)
+
             }).ToList();
             return Ok(response);
         }
@@ -74,13 +82,14 @@ namespace TechnoEgypt.Controllers
 
             };
             _dBContext.childCourses.Add(childCourse);
-            try { 
-            _dBContext.SaveChanges();
-            var response = new Response<string>();
-            response.StatusCode = ResponseCode.success;
-            response.Message= "success";
-            response.Data = "success";
-            return Ok(response);
+            try
+            {
+                _dBContext.SaveChanges();
+                var response = new Response<string>();
+                response.StatusCode = ResponseCode.success;
+                response.Message = "success";
+                response.Data = "success";
+                return Ok(response);
             }
             catch
             {
@@ -94,23 +103,37 @@ namespace TechnoEgypt.Controllers
         }
 
         [HttpPost("GetRoadMap")]
-        public IActionResult GetRoadMap(languageDto model)
+        public IActionResult GetRoadMap(BaseDto model)
         {
             var response = new Response<List<RoadmapDto>>();
-            response.StatusCode= ResponseCode.success;
+            response.StatusCode = ResponseCode.success;
             response.Message = "success";
-            var data = _dBContext.Stages.Include(w => w.CourseCategories);
+            var data = _dBContext.Stages.Include(w => w.CourseCategories).ThenInclude(w => w.Courses).ThenInclude(w => w.ChildCourses);
+            foreach (var w in data)
+            {
+               
+            }
             response.Data = data.Select(w => new RoadmapDto()
             {
-                Name= w.Name,
-                Courses= w.CourseCategories.Select(c=>new RoadMapCoursesDTO() 
-                { 
-                group_id=w.Id,
-                Id=c.Id,
-                Title=c.Name
+                Name = w.Name,
+                AgeFrom = w.AgeFrom,
+                AgeTo = w.AgeTo,
+               CourcesTakenPrecentage=(int) GetCourcesTaken(w,model.UserId),
+                Courses = w.CourseCategories.Select(c => new RoadMapCoursesDTO()
+                {
+                    group_id = w.Id,
+                    Id = c.Id,
+                    Title = c.Name
                 }).ToList()
             }).ToList();
             return Ok(response);
         }
-	}
+
+        internal static double GetCourcesTaken(Stage w, int? userId)
+        {
+            double CourseCount = w.CourseCategories.SelectMany(w => w.Courses).Count();
+            double userCourseCount = w.CourseCategories.SelectMany(w => w.Courses).SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
+            return CourseCount==0?0: (userCourseCount / CourseCount) * 100;
+        }
+    }
 }
