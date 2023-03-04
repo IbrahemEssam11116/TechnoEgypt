@@ -9,6 +9,8 @@ namespace TechnoEgypt.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Descripttion { get; set; }
+        public string ArName { get; set; }
+        public string ArDescripttion { get; set; }
         public string ImageURL { get; set; }
         public DateTime? ValidFrom{ get; set; }
         public DateTime? ValidTo{ get; set; }

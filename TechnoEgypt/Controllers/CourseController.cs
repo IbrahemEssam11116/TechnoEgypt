@@ -34,8 +34,8 @@ namespace TechnoEgypt.Controllers
             response.Data = new CourseDto()
             {
                 Id = course.Id,
-                Desc = course.Descripttion,
-                Title = course.Name,
+                Desc =model.languageId==0? course.Descripttion:course.ArDescripttion,
+                Title =model.languageId==0? course.Name:course.ArName,
                 Image_URL = course.ImageURL,
                 IsAvailable = !course.ChildCourses.Any(w => w.ChildId == model.UserId),
                 CognitiveAbilities = course.CognitiveAbilities,
@@ -63,7 +63,7 @@ namespace TechnoEgypt.Controllers
             {
                 Course_Title = w.Name,
                 Id = w.Id,
-                Tool = w.courseTool.Name,
+                Tool =model.languageId==0? w.courseTool.Name:w.courseTool.ArName,
                 Track_Id = w.CourseCategoryId,
                 ValidFrom = w.ValidFrom,
                 ValidTo = w.ValidTo,
@@ -109,13 +109,9 @@ namespace TechnoEgypt.Controllers
             response.StatusCode = ResponseCode.success;
             response.Message = "success";
             var data = _dBContext.Stages.Include(w => w.CourseCategories).ThenInclude(w => w.Courses).ThenInclude(w => w.ChildCourses);
-            foreach (var w in data)
-            {
-               
-            }
             response.Data = data.Select(w => new RoadmapDto()
             {
-                Name = w.Name,
+                Name =model.languageId==0? w.Name:w.ArName,
                 AgeFrom = w.AgeFrom,
                 AgeTo = w.AgeTo,
                CourcesTakenPrecentage=(int) GetCourcesTaken(w,model.UserId),
@@ -123,12 +119,11 @@ namespace TechnoEgypt.Controllers
                 {
                     group_id = w.Id,
                     Id = c.Id,
-                    Title = c.Name
+                    Title =model.languageId==0? c.Name:c.ArName
                 }).ToList()
             }).ToList();
             return Ok(response);
         }
-
         internal static double GetCourcesTaken(Stage w, int? userId)
         {
             double CourseCount = w.CourseCategories.SelectMany(w => w.Courses).Count();

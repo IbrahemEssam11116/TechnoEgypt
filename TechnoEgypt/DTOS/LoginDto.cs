@@ -1,6 +1,6 @@
 ﻿namespace TechnoEgypt.DTOS
 {
-    public class LoginDto
+    public class LoginDto:languageDto
     {
         public string UserName { get; set; }
         public string PhoneNumber { get; set; }

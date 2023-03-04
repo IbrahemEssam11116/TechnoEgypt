@@ -8,6 +8,7 @@ namespace TechnoEgypt.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ArName { get; set; }
         public int StageId { get; set; }
         [ForeignKey("StageId")]
         public Stage Stage { get; set; }
