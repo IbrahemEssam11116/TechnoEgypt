@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Security.Cryptography.Xml;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
+using TechnoEgypt.ViewModel;
+
+
 
 namespace TechnoEgypt.Controllers
 {
@@ -108,5 +112,5 @@ namespace TechnoEgypt.Controllers
             }).ToList();
             return Ok(response);
         }
-    }
+	}
 }

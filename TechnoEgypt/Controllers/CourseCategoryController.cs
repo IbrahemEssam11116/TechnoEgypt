@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 using TechnoEgypt.Models;
@@ -29,17 +30,20 @@ namespace TechnoEgypt.Controllers
             ViewBag.IsEdit = Id == null ? false : true;
             if (Id == null)
             {
-                return View();
+                CourseCategoryIndex coursecategory = new CourseCategoryIndex();
+				coursecategory.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name", coursecategory.StageId);
+				return View(coursecategory);
             }
             else
             {
                 var coursecategory = await _dBContext.CourseCategories.Where(w=>w.Id==Id)
                     .Include(CourseCategories => CourseCategories.Stage).
-                    Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name, TrackName = w.Stage.Name })
+                    Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name,StageId=w.StageId })
                     .FirstOrDefaultAsync();
                 coursecategory.Stages = _dBContext.Stages.ToList();
+				coursecategory.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name",coursecategory.StageId);
 
-                if (coursecategory == null)
+				if (coursecategory == null)
                 {
                     return NotFound();
                 }
@@ -49,7 +53,7 @@ namespace TechnoEgypt.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit(CourseCategory coursecategory)
+        public async Task<IActionResult> AddOrEdit(CourseCategoryIndex coursecategory)
         {
 
             // coursecategory.Stages = _dBContext.Stages.ToList();
@@ -73,11 +77,10 @@ namespace TechnoEgypt.Controllers
             {
                 try
                 {
-                    coursecategoryData.Name = coursecategoryData.Name;
-                    coursecategoryData.StageId = coursecategoryData.StageId;
-                   // stageData.AgeTo = stage.AgeTo;
-
-                    if (IsEmployeeExist)
+                    coursecategoryData.Name = coursecategory.Name;
+                    coursecategoryData.StageId = coursecategory.StageId;
+					// stageData.AgeTo = stage.AgeTo;
+					if (IsEmployeeExist)
                     {
                         _dBContext.Update(coursecategoryData);
                     }
@@ -95,5 +98,14 @@ namespace TechnoEgypt.Controllers
             }
             return RedirectToAction("Index", "CourseCategory");
         }
-    }
+		public async Task<ActionResult> Delete(int Id)
+		{
+			var track = await _dBContext.CourseCategories.FindAsync(Id);
+			_dBContext.Entry(track).State = EntityState.Deleted;
+			await _dBContext.SaveChangesAsync();
+			//AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
+
+			return RedirectToAction("Index");
+		}
+	}
 }
