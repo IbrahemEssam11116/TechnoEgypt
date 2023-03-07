@@ -5,7 +5,7 @@
 	<h1> @ViewBag.PageName</h1>
 
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-lg-12">
 			<hr />
 			<form asp-action="AddOrEdit">
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -13,28 +13,120 @@
 				{
 					<input type="hidden" asp-for="Id" />
 				}
-				<div class="form-group">
-					<label asp-for="Name" class="control-label"></label>
-					<input asp-for="Name" class="form-control" />
-					<span asp-validation-for="Name" class="text-danger"></span>
+				<div class="row">
+					<div class="form-group col-sm-4">
+						<label asp-for="StageId" class="control-label"></label>
+						@Html.DropDownList("StageId", Model.StageList as SelectList, "", new { @class = "form-control col-md-3", @id = "StageId" }), new {onchange="changespeciality(this.value)"} )
+						<span asp-validation-for="StageId" class="text-danger"></span>
+					</div>
+					<div class="form-group col-sm-4">
+						<label asp-for="CourseCategoryId" class="control-label"></label>
+						@Html.DropDownList("CourseCategoryID", Model.CourseCategoryList as SelectList, "", new { @class = "form-control col-md-3", @id = "CourseCategoryID" })
+						<span asp-validation-for="CourseCategoryId" class="text-danger"></span>
+					</div>
+					<div class="form-group col-sm-4">
+						<label asp-for="ToolID" class="control-label"></label>
+						@Html.DropDownList("ToolID", Model.ToolList as SelectList, "", new { @class = "form-control col-md-3", @id = "ToolID" })
+						<span asp-validation-for="ToolID" class="text-danger"></span>
+					</div>
 				</div>
-				@*<div class="form-group">
-					<label asp-for="Name" class="control-label"></label>
-					<input asp-for="Name" class="form-control" />
-					<span asp-validation-for="Name" class="text-danger"></span>
-				</div>*@
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label asp-for="course.Name" class="control-label"></label>
+						<input asp-for="course.Name" class="form-control" />
+						<span asp-validation-for="course.Name" class="text-danger"></span>
+					</div>
+					<div class="form-group col-sm-6">
+						<label asp-for="course.ArName" class="control-label"></label>
+						<input asp-for="course.ArName" class="form-control" />
+						<span asp-validation-for="course.ArName" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label asp-for="course.Descripttion" class="control-label"></label>
+						<input asp-for="course.Descripttion" class="form-control" />
+						<span asp-validation-for="course.Descripttion" class="text-danger"></span>
+					</div>
+					<div class="form-group col-sm-6">
+						<label asp-for="course.ArDescripttion" class="control-label"></label>
+						<input asp-for="course.ArDescripttion" class="form-control" />
+						<span asp-validation-for="course.ArDescripttion" class="text-danger"></span>
+					</div>
+				</div>
 
-				<div class="form-group">
-					<label asp-for="StageId" class="control-label"></label>
-					@Html.DropDownList("StageId", Model.StageList as SelectList, "", new { @class = "form-control col-md-3", @id = "StageId" })
-					<span asp-validation-for="StageId" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<label asp-for="CourseCategoryId" class="control-label"></label>
-					@Html.DropDownList("CourseCategoryID", Model.CourseCategoryList as SelectList, "", new { @class = "form-control col-md-3", @id = "CourseCategoryID" })
-					<span asp-validation-for="CourseCategoryId" class="text-danger"></span>
-				</div>
+				<div>
+					<div class="fs-6 mb-3 \n">
+						<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-asterisk" viewBox="0 0 16 16" font-size="12">
+							<path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"></path>
+						</svg>
+						Course Skills:
+					</div>
+					<div class=row>
+						<div class="col-lg-12">
+							<div class="card">
+								<div class="card-body">
+									<div class="row">
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.CriticalThinking" type="checkbox" value="">
+											<label asp-for="course.CriticalThinking" class="control-label"></label>
+										</div>
+										<div class="form-check col-lg-3">
+											<input asp-for="course.Planning" type="checkbox" value="" >
+											<label asp-for="course.Planning" ></label>
+										</div>
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.ScientificResearch" type="checkbox" value="false" id="ScientificResearch">
+											<label asp-for="course.ScientificResearch" class="control-label"></label>
+										</div>
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.MathematicalReasoning" type="checkbox" value="false" id="MathematicalReasoning">
+											<label asp-for="course.MathematicalReasoning" class="control-label"></label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.LogicalThinking" type="checkbox" value="false" id="LogicalThinking">
+											<label asp-for="course.LogicalThinking" class="control-label"></label>
+										</div>
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.Innovation" type="checkbox" value="false" id="Innovation">
+											<label asp-for="course.Innovation" class="control-label"></label>
+										</div>
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.CognitiveAbilities" type="checkbox" value="false" id="CognitiveAbilities">
+											<label asp-for="course.CognitiveAbilities" class="control-label">
+											</label>
+										</div>
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.ProblemSolving" type="checkbox" value="false" id="ProblemSolving">
+											<label asp-for="course.ProblemSolving" class="control-label">
+											</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.SocialLifeSkills" type="checkbox" value="false" id="SocialLifeSkills">
+											<label asp-for="course.SocialLifeSkills" class="control-label">
+											</label>
+										</div>
 
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.Concentration" type="checkbox" value="false" id="Concentration">
+											<label asp-for="course.Concentration" class="control-label">
+											</label>
+										</div>
+										<div class="form-check col-lg-3">
+											<input class="form-check-input" asp-for="course.DataCollectionandAnalysis" type="checkbox" value="" id="DataCollectionandAnalysis">
+											<label asp-for="course.DataCollectionandAnalysis" class="control-label"></label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
 				<div class="form-group">
 					<input class="btn btn-primary" type="submit" value="Save" />
 					<a class="btn btn-danger" asp-action="Index">Back</a>
@@ -49,8 +141,11 @@
 		</div>
 	</div>
 </div>
+
 @section Scripts {
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
 	}
     }

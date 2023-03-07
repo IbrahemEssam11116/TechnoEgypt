@@ -1,28 +1,21 @@
-﻿@model List<TechnoEgypt.ViewModel.WebCourseIndex>
+﻿@model List<CourseTool>
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
 
-<h1>Course List</h1>
+<h1>Tool List</h1>
 
 <p style="text-align:right;margin-right:20px;">
     <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
 </p>
-
 <div class="table-responsive">
     <table class="table">
         <thead>
             <tr>
                 <th>
                     Name
-                </th>
-                <th>
-                    Stage
-                </th>
-                <th>
-                    Track
                 </th>
                 <th>Edit Action</th>
                 <th>Delete Action</th>
@@ -35,12 +28,7 @@
                     <td>
                         @item.Name
                     </td>
-                    <td>
-                        @item.StageName
-                    </td>
-                    <td>
-                        @item.CourseCategoryName
-                    </td>
+
                     <td class="text-center">
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
                     </td>

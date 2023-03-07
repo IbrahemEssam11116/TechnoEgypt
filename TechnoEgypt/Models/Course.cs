@@ -24,7 +24,8 @@ namespace TechnoEgypt.Models
         public bool ProblemSolving { get; set; }
         public bool SocialLifeSkills{ get; set; }
         public bool ScientificResearch { get; set; }
-        public int CourseCategoryId { get; set; }
+		public bool Concentration { get; set; }
+		public int CourseCategoryId { get; set; }
         [ForeignKey("CourseCategoryId")]
         public CourseCategory CourseCategory { get; set; }
         public int ToolId { get; set; }
