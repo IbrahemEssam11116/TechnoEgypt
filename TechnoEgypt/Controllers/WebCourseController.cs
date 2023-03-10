@@ -9,9 +9,12 @@ namespace TechnoEgypt.Controllers
 	public class WebCourseController : Controller
 	{
 		private readonly AppDBContext _dBContext;
-		public WebCourseController(AppDBContext dBContext)
+        private readonly IWebHostEnvironment env;
+
+		public WebCourseController(AppDBContext dBContext, IWebHostEnvironment env)
 		{
 			_dBContext = dBContext;
+			this.env = env;
 		}
 		public IActionResult Index()
 		{
@@ -64,8 +67,17 @@ namespace TechnoEgypt.Controllers
 		{
 
 			// coursecategory.Stages = _dBContext.Stages.ToList();
-
-
+			string IImageName="";
+			if( webcourse.Image != null)
+			{
+                var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + webcourse.Image.FileName;
+                var path = env.WebRootPath + FilePath;
+                using (FileStream fs = System.IO.File.Create(path))
+                {
+                    webcourse.Image.CopyTo(fs);
+                }
+				IImageName = FilePath;
+            }
 			bool IsEmployeeExist = false;
 
 			var courseData = await _dBContext.Courses.FindAsync(webcourse.Id);
@@ -88,7 +100,7 @@ namespace TechnoEgypt.Controllers
 					courseData.Id = webcourse.Id;
 					courseData.ToolId = webcourse.ToolID;
 					courseData.CourseCategoryId= webcourse.CourseCategoryId;
-                    
+					courseData.ImageURL = IImageName;
 
                     if (IsEmployeeExist)
 					{

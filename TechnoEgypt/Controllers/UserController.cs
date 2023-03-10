@@ -70,56 +70,112 @@ namespace TechnoEgypt.Controllers
             response.Message = "success";
             return Ok(response);
         }
-        [HttpPost("StationData")]
-        public IActionResult StationData(languageDto model)
-        {
-            var response = new Response<List<StationDataDto>>();
-            response.Message = "success";
-            response.StatusCode = ResponseCode.success;
-            var data = _dBContext.station.Include(w => w.childCVDatas).ToList();
-            response.Data = data.Select(w => new StationDataDto()
-            {
-                Id = w.Id,
-                Title = model.languageId == 0 ? w.Title : w.ArTitle,
-                Desc = model.languageId == 0 ? w.Description : w.ArDescription,
-                available = w.IsAvilable,
-                Icon = w.IconURL
-            }).ToList();
-            return Ok(response);
-        }
+        //[HttpPost("StationData")]
+        //public IActionResult StationData(languageDto model)
+        //{
+        //    var response = new Response<List<StationDataDto>>();
+        //    response.Message = "success";
+        //    response.StatusCode = ResponseCode.success;
+        //    var data = _dBContext.station.Include(w => w.childCVDatas).ToList();
+        //    response.Data = data.Select(w => new StationDataDto()
+        //    {
+        //        Id = w.Id,
+        //        Title = model.languageId == 0 ? w.Title : w.ArTitle,
+        //        Desc = model.languageId == 0 ? w.Description : w.ArDescription,
+        //        available = w.IsAvilable,
+        //        Icon = w.IconURL
+        //    }).ToList();
+        //    return Ok(response);
+        //}
         [HttpPost("UpdateChildCVData")]
         public IActionResult UpdateChildCVData([FromForm] ChildCVoSaveDto model)
         {
-            var FilePath = "\\Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
+            var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
             var path = env.WebRootPath + FilePath;
             using (FileStream fs = System.IO.File.Create(path))
             {
                 model.File.CopyTo(fs);
             }
-            var station = _dBContext.childCVData.FirstOrDefault(w => w.ChildId == model.UserId && w.stationId == model.StationId);
-            if (station == null)
+            var station = new ChildCVData()
             {
-                station = new ChildCVData()
-                {
-                    stationId = model.StationId,
-                    Date = model.Date,
-                    ChildId = model.UserId.Value,
-                    Name = model.Name,
-                    FileURL = FilePath,
-                    Note = model.Note
-                };
-                _dBContext.childCVData.Add(station);
-            }
-            else
-            {
-                station.Date = model.Date;
-                station.Name = model.Name;
-                station.Note = model.Note;
-                station.FileURL = FilePath;
-                _dBContext.Entry<ChildCVData>(station).State = EntityState.Modified;
-            }
+                stationId = model.StationId,
+                Date = model.Date,
+                ChildId = model.UserId.Value,
+                Name = model.Name,
+                FileURL = FilePath,
+                Note = model.Note
+            };
+            _dBContext.childCVData.Add(station);
+
             _dBContext.SaveChanges();
             return Ok();
+        }
+        [HttpPost("GetUserCvDataByStationType")]
+        public IActionResult GetUserCvDataByStationType([FromForm] ChildCVoGetDto model)
+        {
+            var response = new Response<List<ChildCVData>>
+            {
+                StatusCode = ResponseCode.success,
+            };
+            response.Data = _dBContext.childCVData.Where(w => w.stationId == model.StationId && w.ChildId == model.UserId).ToList();
+            return Ok(response);
+        }
+        [HttpPost("UpdateChildSchoolData")]
+        public IActionResult UpdateChildSchoolData([FromForm] ChildSchoolData model)
+        {
+            var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
+            var path = env.WebRootPath + FilePath;
+            using (FileStream fs = System.IO.File.Create(path))
+            {
+                model.File.CopyTo(fs);
+            }
+            var station = new ChildSchoolReport()
+            {
+                Date = model.Date,
+                ChildId = model.UserId.Value,
+                Name = model.Name,
+                FileURL = FilePath,
+                Note = model.Note,
+                SchoolName= model.SchoolName,
+                Grade=model.Grade
+            };
+            _dBContext.childSchoolReports.Add(station);
+
+            _dBContext.SaveChanges();
+            return Ok();
+        }
+        [HttpPost("GetChildSchoolData")]
+        public IActionResult GetChildSchoolData([FromForm] BaseDto model)
+        {
+            var response = new Response<List<ChildSchoolReport>>
+            {
+                StatusCode = ResponseCode.success,
+            };
+            response.Data = _dBContext.childSchoolReports.Where(w =>  w.ChildId == model.UserId).ToList();
+            return Ok(response);
+        }
+        [HttpPost("UpdateChildPersonalData")]
+        public IActionResult UpdateChildPersonalData([FromForm] ChildPersonalData model)
+        {
+          
+            var station = new ChildPersonalStatement()
+            {
+                ChildId = model.UserId.Value,
+                Note = model.Note
+            };
+            _dBContext.childPersonalStatements.Add(station);
+            _dBContext.SaveChanges();
+            return Ok();
+        }
+        [HttpPost("GetChildPersonalData")]
+        public IActionResult GetChildPersonalData([FromForm] BaseDto model)
+        {
+            var response = new Response<List<ChildPersonalStatement>>
+            {
+                StatusCode = ResponseCode.success,
+            };
+            response.Data = _dBContext.childPersonalStatements.Where(w => w.ChildId == model.UserId).ToList();
+            return Ok(response);
         }
         [HttpPost("GetUserStatistic")]
         public IActionResult GetUserStatistic(BaseDto model)
@@ -201,6 +257,7 @@ namespace TechnoEgypt.Controllers
         }
 
     }
+
     enum SkillType
     {
         DataCollectionandAnalysis = 0,

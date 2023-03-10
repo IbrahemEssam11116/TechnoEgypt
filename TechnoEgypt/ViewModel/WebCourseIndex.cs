@@ -14,6 +14,7 @@ namespace TechnoEgypt.ViewModel
 		[DisplayName("Tool Name")]
 		public int ToolID { get; set; }
 		public string ToolName { get; set; }
+		public IFormFile Image { get; set; }
 		public List<CourseTool> Tools { get; set; }
 		public SelectList ToolList { get; set; }
 
