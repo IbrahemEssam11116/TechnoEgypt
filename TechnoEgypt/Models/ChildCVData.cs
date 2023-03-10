@@ -5,7 +5,7 @@ namespace TechnoEgypt.Models
 {
   public enum StationType
     {
-        Awards=0,
+        Awards=1,
         championships,
         Others,
         LanguageTests,

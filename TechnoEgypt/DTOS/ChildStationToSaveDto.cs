@@ -13,7 +13,7 @@ namespace TechnoEgypt.DTOS
         [Required]
         public IFormFile File { get; set; }
         [Required]
-        public StationType StationId { get; set; }
+        public StationType? StationId { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

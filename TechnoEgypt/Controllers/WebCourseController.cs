@@ -71,7 +71,7 @@ namespace TechnoEgypt.Controllers
 			if( webcourse.Image != null)
 			{
                 var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + webcourse.Image.FileName;
-                var path = env.WebRootPath + FilePath;
+                var path = env.WebRootPath + "\\" + FilePath;
                 using (FileStream fs = System.IO.File.Create(path))
                 {
                     webcourse.Image.CopyTo(fs);

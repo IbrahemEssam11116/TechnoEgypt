@@ -91,14 +91,14 @@ namespace TechnoEgypt.Controllers
         public IActionResult UpdateChildCVData([FromForm] ChildCVoSaveDto model)
         {
             var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
-            var path = env.WebRootPath + FilePath;
+            var path = env.WebRootPath+"\\" + FilePath;
             using (FileStream fs = System.IO.File.Create(path))
             {
                 model.File.CopyTo(fs);
             }
             var station = new ChildCVData()
             {
-                stationId = model.StationId,
+                stationId = model.StationId.Value,
                 Date = model.Date,
                 ChildId = model.UserId.Value,
                 Name = model.Name,
@@ -111,7 +111,7 @@ namespace TechnoEgypt.Controllers
             return Ok();
         }
         [HttpPost("GetUserCvDataByStationType")]
-        public IActionResult GetUserCvDataByStationType([FromForm] ChildCVoGetDto model)
+        public IActionResult GetUserCvDataByStationType( ChildCVoGetDto model)
         {
             var response = new Response<List<ChildCVData>>
             {
@@ -124,7 +124,7 @@ namespace TechnoEgypt.Controllers
         public IActionResult UpdateChildSchoolData([FromForm] ChildSchoolData model)
         {
             var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
-            var path = env.WebRootPath + FilePath;
+            var path = env.WebRootPath+"\\" + FilePath;
             using (FileStream fs = System.IO.File.Create(path))
             {
                 model.File.CopyTo(fs);
@@ -145,7 +145,7 @@ namespace TechnoEgypt.Controllers
             return Ok();
         }
         [HttpPost("GetChildSchoolData")]
-        public IActionResult GetChildSchoolData([FromForm] BaseDto model)
+        public IActionResult GetChildSchoolData(BaseDto model)
         {
             var response = new Response<List<ChildSchoolReport>>
             {
@@ -155,7 +155,7 @@ namespace TechnoEgypt.Controllers
             return Ok(response);
         }
         [HttpPost("UpdateChildPersonalData")]
-        public IActionResult UpdateChildPersonalData([FromForm] ChildPersonalData model)
+        public IActionResult UpdateChildPersonalData( ChildPersonalData model)
         {
           
             var station = new ChildPersonalStatement()
@@ -168,7 +168,7 @@ namespace TechnoEgypt.Controllers
             return Ok();
         }
         [HttpPost("GetChildPersonalData")]
-        public IActionResult GetChildPersonalData([FromForm] BaseDto model)
+        public IActionResult GetChildPersonalData( BaseDto model)
         {
             var response = new Response<List<ChildPersonalStatement>>
             {
