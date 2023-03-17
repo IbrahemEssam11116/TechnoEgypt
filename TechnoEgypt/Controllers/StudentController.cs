@@ -97,9 +97,76 @@ namespace TechnoEgypt.Controllers
 				}
 				return RedirectToAction(nameof(Index));
 			}
-			return RedirectToAction("Index", "Stage");
+			return RedirectToAction("Index", "Student");
 		}
+		public async Task<IActionResult> AddOrEditStudent(int? Id)
+		{
+			ViewBag.PageName = Id == null ? "Create Parent" : "Edit Parent";
+			ViewBag.IsEdit = Id == null ? false : true;
+			if (Id == null)
+			{
+				return View();
+			}
+			else
+			{
+				var student = await _dBContext.children.FindAsync(Id);
 
+				if (student == null)
+				{
+					return NotFound();
+				}
+				return View(student);
+			}
+
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> AddOrEditStudent(Parent parent)
+		{
+			bool IsEmployeeExist = false;
+
+			var parentData = await _dBContext.Parents.FindAsync(parent.Id);
+
+			if (parentData != null)
+			{
+				IsEmployeeExist = true;
+			}
+			else
+			{
+				parentData = new Parent();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					parentData.UserName = parent.UserName;
+					parentData.HomePhoneNumber = parent.HomePhoneNumber;
+					parentData.Address = parent.Address;
+					parentData.FatherTitle = parent.FatherTitle;
+					parentData.FatherPhoneNumber = parent.FatherPhoneNumber;
+					parentData.FatherEmail = parent.FatherEmail;
+					parentData.MotherTitle = parent.MotherTitle;
+					parentData.MotherPhoneNumber = parent.MotherPhoneNumber;
+					parentData.MotherEmail = parent.MotherEmail;
+					if (IsEmployeeExist)
+					{
+						_dBContext.Update(parentData);
+					}
+					else
+					{
+						_dBContext.Parents.Add(parentData);
+					}
+					await _dBContext.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw;
+				}
+				return RedirectToAction(nameof(Index));
+			}
+			return RedirectToAction("StudentIndex", "Student");
+		}
 		//public ActionResult Delete(int ID)
 		//{
 
