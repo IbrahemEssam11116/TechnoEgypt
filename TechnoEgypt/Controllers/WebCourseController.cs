@@ -101,11 +101,15 @@ namespace TechnoEgypt.Controllers
 			{
 				try
 				{
-					courseData = webcourse.course;
+					//courseData = webcourse.course;
 					courseData.Id = webcourse.Id;
 					courseData.ToolId = webcourse.ToolID;
 					courseData.CourseCategoryId= webcourse.CourseCategoryId;
 					courseData.ImageURL = IImageName;
+					courseData.ArDescripttion = webcourse.course.ArDescripttion;
+					courseData.ArName = webcourse.course.ArName;
+
+					
 
                     if (IsEmployeeExist)
 					{

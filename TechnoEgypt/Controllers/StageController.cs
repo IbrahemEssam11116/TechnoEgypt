@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
@@ -6,15 +7,18 @@ using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
 namespace TechnoEgypt.Controllers
 {
+	[Authorize]
 	public class StageController : Controller
 	{
 		private readonly UserDbContext _dBContext;
+
 		public StageController(UserDbContext dBContext)
 		{
 			_dBContext = dBContext;
 		}
 		public IActionResult Index()
 		{
+
 			var stages = _dBContext.Stages.ToList();
 			return View(stages);
 		}
