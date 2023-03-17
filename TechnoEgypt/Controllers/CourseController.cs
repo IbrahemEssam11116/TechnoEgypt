@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Security.Cryptography.Xml;
+using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
 
@@ -12,9 +13,9 @@ namespace TechnoEgypt.Controllers
     [ApiController]
     public class CourseController : ControllerBase
     {
-        private readonly AppDBContext _dBContext;
+        private readonly UserDbContext _dBContext;
 
-        public CourseController(AppDBContext dBContext)
+        public CourseController(UserDbContext dBContext)
         {
             _dBContext = dBContext;
         }

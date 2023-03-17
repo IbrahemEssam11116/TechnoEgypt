@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-
+using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
 
@@ -10,8 +10,8 @@ namespace TechnoEgypt.Controllers
     public class CourseCategoryController : Controller
 
     {
-        private readonly AppDBContext _dBContext;
-        public CourseCategoryController(AppDBContext dBContext)
+        private readonly UserDbContext _dBContext;
+        public CourseCategoryController(UserDbContext dBContext)
         {
             _dBContext = dBContext;
         }
