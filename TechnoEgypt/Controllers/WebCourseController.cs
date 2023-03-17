@@ -29,14 +29,14 @@ namespace TechnoEgypt.Controllers
 		public async Task<IActionResult> AddOrEdit(int? Id)
 		{
             WebCourseIndex courses = new WebCourseIndex();
-            courses.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name", courses.StageId);
-            courses.CourseCategoryList = new SelectList(_dBContext.CourseCategories.ToList(), "Id", "Name", courses.CourseCategoryId);
-			courses.ToolList = new SelectList(_dBContext.CourseToolsMyProperty.ToList(), "Id", "Name", courses.ToolID);
             ViewBag.PageName = Id == null ? "Create Course" : "Edit Course";
 			ViewBag.IsEdit = Id == null ? false : true;
 			if (Id == null)
 			{
-				
+
+                courses.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name", courses.StageId);
+                courses.CourseCategoryList = new SelectList(_dBContext.CourseCategories.ToList(), "Id", "Name", courses.CourseCategoryId);
+                courses.ToolList = new SelectList(_dBContext.CourseToolsMyProperty.ToList(), "Id", "Name", courses.ToolID);
                 return View(courses);
 			}
 			else
@@ -82,10 +82,14 @@ namespace TechnoEgypt.Controllers
 
 			var courseData = await _dBContext.Courses.FindAsync(webcourse.Id);
 
-
+			
 			if (courseData != null)
 			{
 				IsEmployeeExist = true;
+				if (courseData.ImageURL != null && IImageName == "")
+				{
+					IImageName = courseData.ImageURL;
+				}
 			}
 			else
 			{
@@ -104,7 +108,7 @@ namespace TechnoEgypt.Controllers
 
                     if (IsEmployeeExist)
 					{
-						_dBContext.Update(courseData);
+						_dBContext.Entry<Course>(courseData).State=EntityState.Modified;
 					}
 					else
 					{

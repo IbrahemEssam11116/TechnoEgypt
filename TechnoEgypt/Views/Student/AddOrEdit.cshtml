@@ -1,0 +1,83 @@
+﻿@model Parent
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container p-3 my-3 border">
+	<h1> @ViewBag.PageName</h1>
+
+	<div class="row">
+
+		<hr />
+		<form asp-action="AddOrEdit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			@if (@ViewBag.IsEdit)
+			{
+				<input type="hidden" asp-for="Id" />
+			}
+			<div class="row">
+				<div class="form-group col-4">
+					<label asp-for="UserName" class="control-label"></label>
+					<input asp-for="UserName" class="form-control" />
+					<span asp-validation-for="UserName" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="HomePhoneNumber" class="control-label"></label>
+					<input asp-for="HomePhoneNumber" class="form-control" />
+					<span asp-validation-for="HomePhoneNumber" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="Address" class="control-label"></label>
+					<input asp-for="Address" class="form-control" />
+					<span asp-validation-for="Address" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-4">
+					<label asp-for="FatherTitle" class="control-label"></label>
+					<input asp-for="FatherTitle" class="form-control" />
+					<span asp-validation-for="FatherTitle" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="FatherPhoneNumber" class="control-label"></label>
+					<input asp-for="FatherPhoneNumber" class="form-control" />
+					<span asp-validation-for="FatherPhoneNumber" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="FatherEmail" class="control-label"></label>
+					<input asp-for="FatherEmail" class="form-control" />
+					<span asp-validation-for="FatherEmail" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-4">
+					<label asp-for="MotherTitle" class="control-label"></label>
+					<input asp-for="MotherTitle" class="form-control" />
+					<span asp-validation-for="MotherTitle" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="MotherPhoneNumber" class="control-label"></label>
+					<input asp-for="MotherPhoneNumber" class="form-control" />
+					<span asp-validation-for="MotherPhoneNumber" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="MotherEmail" class="control-label"></label>
+					<input asp-for="MotherEmail" class="form-control" />
+					<span asp-validation-for="MotherEmail" class="text-danger"></span>
+				</div>
+
+			</div>
+				<div class="form-group">
+				<input class="btn btn-primary" type="submit" value="Save" />
+				<a class="btn btn-danger" asp-action="Index">Back</a>
+				</div>
+		</form>
+
+	</div>
+</div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+    }

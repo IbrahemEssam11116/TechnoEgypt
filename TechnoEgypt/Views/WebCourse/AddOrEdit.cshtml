@@ -11,10 +11,14 @@
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 				@if (@ViewBag.IsEdit)
 				{
+					
 					<input type="hidden" asp-for="Id" />
-					<img src="~/@Model.course.ImageURL">
+					<img src="~/@Model.course.ImageURL" width="100">
+					//<input type="file" asp-for="Image" id="Image" name="Image"  />
+					
 				}
-				else{
+				else
+				{
 					<input type="file" asp-for="Image" id="Image" name="Image" />
 
 				}

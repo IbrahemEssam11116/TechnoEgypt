@@ -14,61 +14,79 @@ namespace TechnoEgypt.Controllers
 		}
 		public IActionResult Index()
 		{
-			var students = _dBContext.children.ToList();
-			return View(students);
+			var parent = _dBContext.Parents
+				.Include(parents => parents.Children)
+				.Select(w => new Student { Id = w.Id, StudentCount = w.Children.Count,UserName = w.UserName, FatherTitle = w.FatherTitle, FatherPhoneNumber = w.FatherPhoneNumber })
+				.ToList();
+			return View(parent);
 		}
-		public async Task<IActionResult> AddOrEdit(int? Id)
+        public async Task<IActionResult> StudentIndex(int Id)
+        {
+			var father = await _dBContext.Parents.FindAsync(Id);
+            ViewBag.PageName = father.FatherTitle;
+
+			var student =  await _dBContext.children.Where(w => w.ParentId == Id)
+				 .Select(w => new Student { Id = w.Id, FatherId = Id, Name = w.Name })
+				 .ToListAsync();
+            return View(student);
+        }
+        public async Task<IActionResult> AddOrEdit(int? Id)
 		{
-			ViewBag.PageName = Id == null ? "Create Stage" : "Edit Stage";
-			ViewBag.IsEdit = Id == null ? false : true;
-			if (Id == null)
-			{
-				return View();
-			}
-			else
-			{
-				var stage = await _dBContext.Stages.FindAsync(Id);
+             ViewBag.PageName = Id == null ? "Create Parent" : "Edit Parent";
+             ViewBag.IsEdit = Id == null ? false : true;
+             if (Id == null)
+             {
+                return View();
+             }
+             else
+             {
+                var parent = await _dBContext.Parents.FindAsync(Id);
 
-				if (stage == null)
-				{
-					return NotFound();
-				}
-				return View(stage);
-			}
+                if (parent == null)
+                {
+                  return NotFound();
+                }
+                return View(parent);
+             }
 
-		}
+        }
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> AddOrEdit(Stage stage)
+		public async Task<IActionResult> AddOrEdit(Parent parent)
 		{
 			bool IsEmployeeExist = false;
 
-			var stageData = await _dBContext.Stages.FindAsync(stage.Id);
+			var parentData = await _dBContext.Parents.FindAsync(parent.Id);
 
-			if (stageData != null)
+			if (parentData != null)
 			{
 				IsEmployeeExist = true;
 			}
 			else
 			{
-				stageData = new Stage();
+				parentData = new Parent();
 			}
 
 			if (ModelState.IsValid)
 			{
 				try
 				{
-					stageData.Name = stage.Name;
-					stageData.AgeFrom = stage.AgeFrom;
-					stageData.AgeTo = stage.AgeTo;
-
+					parentData.UserName = parent.UserName;
+					parentData.HomePhoneNumber = parent.HomePhoneNumber;
+					parentData.Address = parent.Address;
+					parentData.FatherTitle = parent.FatherTitle;
+					parentData.FatherPhoneNumber = parent.FatherPhoneNumber;
+					parentData.FatherEmail = parent.FatherEmail;
+					parentData.MotherTitle = parent.MotherTitle;
+					parentData.MotherPhoneNumber = parent.MotherPhoneNumber;
+					parentData.MotherEmail = parent.MotherEmail;
 					if (IsEmployeeExist)
 					{
-						_dBContext.Update(stageData);
+						_dBContext.Update(parentData);
 					}
 					else
 					{
-						_dBContext.Stages.Add(stageData);
+						_dBContext.Parents.Add(parentData);
 					}
 					await _dBContext.SaveChangesAsync();
 				}
@@ -103,14 +121,14 @@ namespace TechnoEgypt.Controllers
 
 		//	return RedirectToAction("Index");
 		//}
-		public async Task<ActionResult> Delete(int Id)
-		{
-			var stage = await _dBContext.Stages.FindAsync(Id);
-			_dBContext.Entry(stage).State = EntityState.Deleted;
-			await _dBContext.SaveChangesAsync();
-			//AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
+		//public async Task<ActionResult> Delete(int Id)
+		//{
+		//	var stage = await _dBContext.Stages.FindAsync(Id);
+		//	_dBContext.Entry(stage).State = EntityState.Deleted;
+		//	await _dBContext.SaveChangesAsync();
+		//	AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
 
-			return RedirectToAction("Index");
-		}
+		//	return RedirectToAction("Index");
+		//}
 	}
 }

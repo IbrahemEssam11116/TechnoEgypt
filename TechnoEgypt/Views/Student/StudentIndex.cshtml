@@ -5,7 +5,8 @@
 @{
 }
 
-<h1>Clint List</h1>
+<h2>Children List Of @ViewBag.PageName</h2>
+
 
 <p style="text-align:right;margin-right:20px;">
     <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
@@ -14,13 +15,10 @@
     <table class="table">
         <thead>
             <tr>
-                <th>UserName</th>
-                <th>FatherName</th>
-                <th>ParentPhoneNr</th>
-                <th>Kids Nr</th>
-                <th>Children</th>
-                <th>Edit Action</th>
-                <th>Delete Action</th>
+                
+                <th>Name</th>
+                <th class="text-center">Edit Action</th>
+                <th class="text-center">Delete Action</th>
             </tr>
         </thead>
         <tbody>
@@ -28,19 +26,7 @@
             {
                 <tr>
                     <td>
-                        @item.UserName
-                    </td>
-                    <td>
-                        @item.FatherTitle
-                    </td>
-                    <td>
-                        @item.FatherPhoneNumber
-                    </td>
-                    <td>
-                        @item.StudentCount
-                    </td>
-                    <td class="text-left">
-                        <a asp-action="StudentIndex" class="btn btn-outline-primary" asp-route-Id="@item.Id">Children</a>
+                        @item.Name
                     </td>
                     <td class="text-center">
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
