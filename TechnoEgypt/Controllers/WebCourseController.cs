@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
 
@@ -8,10 +9,10 @@ namespace TechnoEgypt.Controllers
 {
 	public class WebCourseController : Controller
 	{
-		private readonly AppDBContext _dBContext;
+		private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
 
-		public WebCourseController(AppDBContext dBContext, IWebHostEnvironment env)
+		public WebCourseController(UserDbContext dBContext, IWebHostEnvironment env)
 		{
 			_dBContext = dBContext;
 			this.env = env;

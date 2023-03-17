@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.IO;
+using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
 
@@ -12,10 +13,10 @@ namespace TechnoEgypt.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AppDBContext _dBContext;
+        private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
 
-        public UserController(AppDBContext dBContext, IWebHostEnvironment env)
+        public UserController(UserDbContext dBContext, IWebHostEnvironment env)
         {
             _dBContext = dBContext;
             this.env = env;

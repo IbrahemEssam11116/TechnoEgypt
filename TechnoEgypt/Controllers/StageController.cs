@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
 namespace TechnoEgypt.Controllers
 {
 	public class StageController : Controller
 	{
-		private readonly AppDBContext _dBContext;
-		public StageController(AppDBContext dBContext)
+		private readonly UserDbContext _dBContext;
+		public StageController(UserDbContext dBContext)
 		{
 			_dBContext = dBContext;
 		}

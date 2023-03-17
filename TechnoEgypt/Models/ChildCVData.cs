@@ -5,15 +5,15 @@ namespace TechnoEgypt.Models
 {
   public enum StationType
     {
-        Awards=1,
-        championships,
-        Others,
-        LanguageTests,
-        Volunteer,
-        Internship,
-        HighSchool,
-        InternationalTest,
-        RecommendationLetters,
+        IqTest=1,
+        Awards=2,
+        Others=3,
+        LanguageTests=4,
+        Volunteer=5,
+        Internship=6,
+        HighSchool=7,
+        InternationalTest=8,
+        RecommendationLetters=9
         
     }
     public class ChildCVData
