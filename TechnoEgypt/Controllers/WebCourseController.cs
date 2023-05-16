@@ -103,6 +103,7 @@ namespace TechnoEgypt.Controllers
 				{
 					//courseData = webcourse.course;
 					courseData.Id = webcourse.Id;
+					courseData.Name = webcourse.Name;
 					courseData.ToolId = webcourse.ToolID;
 					courseData.CourseCategoryId= webcourse.CourseCategoryId;
 					courseData.ImageURL = IImageName;
