@@ -1,0 +1,67 @@
+﻿@model child
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container p-3 my-3 border">
+	<h1> @ViewBag.PageName</h1>
+
+	<div class="row">
+
+		<hr />
+		<form asp-action="AddOrEditStudent">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			@if (@ViewBag.IsEdit)
+			{
+				<input type="hidden" asp-for="Id" />
+				<input type="hidden" asp-for="ParentId" />
+
+			}
+			<div class="row">
+				<div class="form-group col-4">
+					<label asp-for="Name" class="control-label"></label>
+					<input asp-for="Name" class="form-control" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="SchoolName" class="control-label"></label>
+					<input asp-for="SchoolName" class="form-control" />
+					<span asp-validation-for="SchoolName" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="DateOfBirth" class="control-label"></label>
+					<input asp-for="DateOfBirth" class="form-control" />
+					<span asp-validation-for="DateOfBirth" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-4">
+					<label asp-for="Phone" class="control-label"></label>
+					<input asp-for="Phone" class="form-control" />
+					<span asp-validation-for="Phone" class="text-danger"></span>
+				</div>
+				@*<div class="form-group col-4">
+					<label asp-for="FatherPhoneNumber" class="control-label"></label>
+					<input asp-for="FatherPhoneNumber" class="form-control" />
+					<span asp-validation-for="FatherPhoneNumber" class="text-danger"></span>
+				</div>
+				<div class="form-group col-4">
+					<label asp-for="FatherEmail" class="control-label"></label>
+					<input asp-for="FatherEmail" class="form-control" />
+					<span asp-validation-for="FatherEmail" class="text-danger"></span>
+				</div>*@
+			</div>
+			<div class="form-group">
+				<input class="btn btn-primary" type="submit" value="Save" />
+				<a class="btn btn-danger" asp-action="StudentIndex">Back</a>
+			</div>
+		</form>
+
+	</div>
+</div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+    }
