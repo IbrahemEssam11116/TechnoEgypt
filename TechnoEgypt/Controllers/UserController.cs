@@ -92,7 +92,7 @@ namespace TechnoEgypt.Controllers
         public IActionResult UpdateChildCVData([FromForm] ChildCVoSaveDto model)
         {
             var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
-            var path = env.WebRootPath+"\\" + FilePath;
+            var path = env.WebRootPath + "\\" + FilePath;
             using (FileStream fs = System.IO.File.Create(path))
             {
                 model.File.CopyTo(fs);
@@ -112,7 +112,7 @@ namespace TechnoEgypt.Controllers
             return Ok();
         }
         [HttpPost("GetUserCvDataByStationType")]
-        public IActionResult GetUserCvDataByStationType( ChildCVoGetDto model)
+        public IActionResult GetUserCvDataByStationType(ChildCVoGetDto model)
         {
             var response = new Response<List<ChildCVData>>
             {
@@ -125,7 +125,7 @@ namespace TechnoEgypt.Controllers
         public IActionResult UpdateChildSchoolData([FromForm] ChildSchoolData model)
         {
             var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
-            var path = env.WebRootPath+"\\" + FilePath;
+            var path = env.WebRootPath + "\\" + FilePath;
             using (FileStream fs = System.IO.File.Create(path))
             {
                 model.File.CopyTo(fs);
@@ -137,8 +137,8 @@ namespace TechnoEgypt.Controllers
                 Name = model.Name,
                 FileURL = FilePath,
                 Note = model.Note,
-                SchoolName= model.SchoolName,
-                Grade=model.Grade
+                SchoolName = model.SchoolName,
+                Grade = model.Grade
             };
             _dBContext.childSchoolReports.Add(station);
 
@@ -152,13 +152,13 @@ namespace TechnoEgypt.Controllers
             {
                 StatusCode = ResponseCode.success,
             };
-            response.Data = _dBContext.childSchoolReports.Where(w =>  w.ChildId == model.UserId).ToList();
+            response.Data = _dBContext.childSchoolReports.Where(w => w.ChildId == model.UserId).ToList();
             return Ok(response);
         }
         [HttpPost("UpdateChildPersonalData")]
-        public IActionResult UpdateChildPersonalData( ChildPersonalData model)
+        public IActionResult UpdateChildPersonalData(ChildPersonalData model)
         {
-          
+
             var station = new ChildPersonalStatement()
             {
                 ChildId = model.UserId.Value,
@@ -169,7 +169,7 @@ namespace TechnoEgypt.Controllers
             return Ok();
         }
         [HttpPost("GetChildPersonalData")]
-        public IActionResult GetChildPersonalData( BaseDto model)
+        public IActionResult GetChildPersonalData(BaseDto model)
         {
             var response = new Response<List<ChildPersonalStatement>>
             {
@@ -198,51 +198,72 @@ namespace TechnoEgypt.Controllers
                             SkillId=SkillType.DataCollectionandAnalysis,
                             Name=model.languageId==0?"Data Collection and Analysis":"تجميع البيانات وتحليلها",
                             Precentage=GetPresentage(courses.Count(w=>w.DataCollectionandAnalysis),userCourses.Count(w=>w.DataCollectionandAnalysis)),
+                            CompletedCourse=userCourses.Count(w=>w.DataCollectionandAnalysis),
+                            AllCourse=courses.Count(w=>w.DataCollectionandAnalysis),
                         },
                         new SkillDto(){
                             SkillId=SkillType.CriticalThinking,
                             Name=model.languageId==0?"Critical Thinking":"التفكير النقدي",
                             Precentage=GetPresentage(courses.Count(w=>w.CriticalThinking),userCourses.Count(w=>w.CriticalThinking)),
+                            CompletedCourse=userCourses.Count(w=>w.CriticalThinking),
+                            AllCourse=courses.Count(w=>w.CriticalThinking)
                         },
                         new SkillDto(){
                             SkillId=SkillType.Planning,
                             Name=model.languageId==0?"Planning":"تخطيط",
                             Precentage=GetPresentage(courses.Count(w=>w.Planning),userCourses.Count(w=>w.Planning)),
+                            CompletedCourse=userCourses.Count(w=>w.Planning),
+                                AllCourse=courses.Count(w=>w.Planning)
                         },
                         new SkillDto(){
                             SkillId=SkillType.MathematicalReasoning,
                             Name=model.languageId==0?"Mathematical Reasoning":"المنطق الرياضي",
                             Precentage=GetPresentage(courses.Count(w=>w.MathematicalReasoning),userCourses.Count(w=>w.MathematicalReasoning)),
+                             CompletedCourse=userCourses.Count(w=>w.MathematicalReasoning),
+                             AllCourse=courses.Count(w=>w.MathematicalReasoning)
                         },
                          new SkillDto(){
                             SkillId=SkillType.Innovation,
                             Name=model.languageId==0?"Innovation":"ابتكار",
                             Precentage=GetPresentage(courses.Count(w=>w.Innovation),userCourses.Count(w=>w.Innovation)),
+                            CompletedCourse=userCourses.Count(w=>w.Innovation),
+                            AllCourse=courses.Count(w=>w.Innovation)
                         },
                          new SkillDto(){
                             SkillId=SkillType.LogicalThinking,
                             Name=model.languageId==0?"Logical Thinking":"التفكير المنطقي",
                             Precentage=GetPresentage(courses.Count(w=>w.LogicalThinking),userCourses.Count(w=>w.LogicalThinking)),
+                            CompletedCourse=userCourses.Count(w=>w.LogicalThinking),
+                            AllCourse=courses.Count(w=>w.LogicalThinking)
                         },
                          new SkillDto(){
                             SkillId=SkillType.CognitiveAbilities,
                             Name=model.languageId==0?"Cognitive Abilities":"القدرات المعرفية",
                             Precentage=GetPresentage(courses.Count(w=>w.CognitiveAbilities),userCourses.Count(w=>w.CognitiveAbilities)),
+                            CompletedCourse=userCourses.Count(w=>w.CognitiveAbilities),
+                            AllCourse=courses.Count(w=>w.CognitiveAbilities),
+                            
                         },
                          new SkillDto(){
                             SkillId=SkillType.ProblemSolving,
                             Name=model.languageId==0?"Problem Solving":"حل المشاكل",
                             Precentage=GetPresentage(courses.Count(w=>w.ProblemSolving),userCourses.Count(w=>w.ProblemSolving)),
+                            CompletedCourse=userCourses.Count(w=>w.ProblemSolving),
+                            AllCourse=courses.Count(w=>w.ProblemSolving),
                         },
                          new SkillDto(){
                             SkillId=SkillType.SocialLifeSkills,
                             Name=model.languageId==0?"Social Life Skills":"مهارات الحياة الاجتماعية",
                             Precentage=GetPresentage(courses.Count(w=>w.SocialLifeSkills),userCourses.Count(w=>w.SocialLifeSkills)),
+                            CompletedCourse=userCourses.Count(w=>w.SocialLifeSkills),
+                            AllCourse=courses.Count(w=>w.SocialLifeSkills),
                         },
                          new SkillDto(){
                             SkillId=SkillType.ScientificResearch,
                             Name=model.languageId==0?"Scientific Research":"بحث علمي",
                             Precentage=GetPresentage(courses.Count(w=>w.ScientificResearch),userCourses.Count(w=>w.ScientificResearch)),
+                            CompletedCourse=userCourses.Count(w=>w.ScientificResearch),
+                            AllCourse=courses.Count(w=>w.ScientificResearch),
                         }
                     };
                     data.Add(st);
@@ -284,5 +305,7 @@ namespace TechnoEgypt.Controllers
         public SkillType SkillId { get; set; }
         public string Name { get; set; }
         public int Precentage { get; set; }
+        public int CompletedCourse { get; set; }
+        public int AllCourse { get; set; }
     }
 }

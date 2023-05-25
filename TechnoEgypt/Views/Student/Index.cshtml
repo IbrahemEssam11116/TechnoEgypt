@@ -28,7 +28,8 @@
             {
                 <tr>
                     <td>
-                        @item.UserName
+                      <a asp-action="StudentIndex" asp-route-Id="@item.Id"> @item.UserName </a>
+
                     </td>
                     <td>
                         @item.FatherTitle

@@ -4,8 +4,12 @@
 *@
 @{
 }
-
+<form asp-action="Index" asp-controller="WebCourse" method="get">
+    <input  type="text" name="SearchName" placeholder="Seaech"/>
+<button >Search</button>
 <h1>Course List</h1>
+</form>
+
 
 <p style="text-align:right;margin-right:20px;">
     <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
