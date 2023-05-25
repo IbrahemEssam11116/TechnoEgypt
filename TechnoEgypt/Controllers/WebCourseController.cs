@@ -17,10 +17,10 @@ namespace TechnoEgypt.Controllers
 			_dBContext = dBContext;
 			this.env = env;
 		}
-		public IActionResult Index()
+		public IActionResult Index(string SearchName)
 		{
 
-			var courses = _dBContext.Courses
+			var courses = _dBContext.Courses.Where(w=>(SearchName==null||w.Name==SearchName))
 				.Include(Courses => Courses.CourseCategory).ThenInclude(CourseCategory => CourseCategory.Stage)
 				.Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, CourseCategoryName = w.CourseCategory.Name, StageName= w.CourseCategory.Stage.Name })
 				.ToList();
@@ -138,6 +138,12 @@ namespace TechnoEgypt.Controllers
 			//AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
 
 			return RedirectToAction("Index");
+		}
+		public IActionResult GetSpec(int Id)
+        {
+			var sta = new SelectList(_dBContext.CourseCategories.Where(w=>w.StageId==Id).ToList(), "Id", "Name");
+			return Json(sta);
+
 		}
 		//public IActionResult GetFilteredStages(int CourseTypeID)
 		//{

@@ -33,12 +33,15 @@ namespace TechnoEgypt.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly UserDbContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
         public RegisterModel(
             UserManager<AppUser> userManager,
             IUserStore<AppUser> userStore,
             SignInManager<AppUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager
 ,
             UserDbContext context)
         {
@@ -49,6 +52,7 @@ namespace TechnoEgypt.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
+            _roleManager= roleManager;
         }
 
         /// <summary>
@@ -72,6 +76,7 @@ namespace TechnoEgypt.Areas.Identity.Pages.Account
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public SelectList branches { get; set; }
+        public SelectList Permissions { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -108,13 +113,17 @@ namespace TechnoEgypt.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Branch")]
             public int BranchId { get;set; }
+            [Display(Name = "Permissions")]
+           public List<string> PermissionIds { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            branches = new SelectList(_context.Branch.ToList(), "Id", "Name"); 
+            branches = new SelectList(_context.Branch.ToList(), "Id", "Name");
+            var aa = _roleManager.Roles.ToList();
+            Permissions = new SelectList(_roleManager.Roles.ToList(), "NormalizedName", "Name"); 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -155,6 +164,10 @@ namespace TechnoEgypt.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        foreach (var item in Input.PermissionIds)
+                        {
+                            var results= await  _userManager.AddToRoleAsync(user,item);
+                        }
                         return LocalRedirect(returnUrl);
                     }
                 }
@@ -165,7 +178,8 @@ namespace TechnoEgypt.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            return Page();
+
+            return RedirectToPage("./Register", Input);
         }
 
         private AppUser CreateUser()
