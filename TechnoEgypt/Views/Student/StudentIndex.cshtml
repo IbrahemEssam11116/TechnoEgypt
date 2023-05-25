@@ -5,11 +5,11 @@
 @{
 }
 
-<h2>Children List Of @ViewBag.PageName</h2>
+<h2>Kids List of @ViewBag.PageName</h2>
 
 
 <p style="text-align:right;margin-right:20px;">
-    <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
+    <a class="btn btn-outline-primary" asp-action="AddOrEditStudent" asp-route-ParentID="@ViewBag.ParentID">Create New</a>
 </p>
 <div class="table-responsive">
     <table class="table">
@@ -17,6 +17,7 @@
             <tr>
                 
                 <th>Name</th>
+                <th>FatherTitle</th>
                 <th class="text-center">Edit Action</th>
                 <th class="text-center">Delete Action</th>
             </tr>
@@ -28,12 +29,13 @@
                     <td>
                         @item.Name
                     </td>
+                    <td>@item.FatherTitle</td>
                     <td class="text-center">
-                        <a asp-action="AddOrEditStudent" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
+                        <a asp-action="AddOrEditStudent" class="btn btn-outline-primary" asp-route-ParentID="@item.Id">Edit</a>
                     </td>
 
                     <td class="text-center">
-                        <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
+                        <a asp-action="Delete" class="btn btn-outline-danger" asp-route-ParentID="@item.Id">Delete</a>
                     </td>
                 </tr>
             }

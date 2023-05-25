@@ -5,7 +5,7 @@
 @{
 }
 
-<h1>Clint List</h1>
+<h1>Parent List</h1>
 
 <p style="text-align:right;margin-right:20px;">
     <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
@@ -16,9 +16,9 @@
             <tr>
                 <th>UserName</th>
                 <th>FatherName</th>
-                <th>ParentPhoneNr</th>
-                <th>Kids Nr</th>
-                <th>Children</th>
+                <th>Parent Phone No.</th>
+                <th>Kids No.</th>
+                <th>Kids</th>
                 <th>Edit Action</th>
                 <th>Delete Action</th>
             </tr>
@@ -40,7 +40,7 @@
                         @item.StudentCount
                     </td>
                     <td class="text-left">
-                        <a asp-action="StudentIndex" class="btn btn-outline-primary" asp-route-Id="@item.Id">Children</a>
+                        <a asp-action="StudentIndex" class="btn btn-outline-primary" asp-route-Id="@item.Id">View</a>
                     </td>
                     <td class="text-center">
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>

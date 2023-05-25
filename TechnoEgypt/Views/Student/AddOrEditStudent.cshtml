@@ -12,12 +12,11 @@
 		<hr />
 		<form asp-action="AddOrEditStudent">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			@if (@ViewBag.IsEdit)
-			{
+			
 				<input type="hidden" asp-for="Id" />
 				<input type="hidden" asp-for="ParentId" />
 
-			}
+			
 			<div class="row">
 				<div class="form-group col-4">
 					<label asp-for="Name" class="control-label"></label>

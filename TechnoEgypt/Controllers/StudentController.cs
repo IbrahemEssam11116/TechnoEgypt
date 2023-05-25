@@ -31,9 +31,9 @@ namespace TechnoEgypt.Controllers
         {
             var father = await _dBContext.Parents.FindAsync(Id);
             ViewBag.PageName = father.FatherTitle;
-
-            var student = await _dBContext.children.Where(w => w.ParentId == Id)
-                 .Select(w => new Student { Id = w.Id, FatherId = Id, Name = w.Name })
+			ViewBag.ParentID = Id;
+            var student = await _dBContext.children
+                 .Select(w => new Student { Id = w.Id, FatherId = Id,  Name = w.Name , FatherTitle= w.parent.FatherTitle})
                  .ToListAsync();
             return View(student);
         }
@@ -109,13 +109,16 @@ namespace TechnoEgypt.Controllers
 			}
 			return RedirectToAction("Index", "Student");
 		}
-		public async Task<IActionResult> AddOrEditStudent(int? Id)
+		public async Task<IActionResult> AddOrEditStudent(int? Id,int ParentID)
 		{
 			ViewBag.PageName = Id == null ? "Create Student" : "Edit Student";
 			ViewBag.IsEdit = Id == null ? false : true;
+			
 			if (Id == null)
 			{
-				return View();
+				var student = new child();
+				student.ParentId = ParentID;
+				return View(student);
 			}
 			else
 			{
