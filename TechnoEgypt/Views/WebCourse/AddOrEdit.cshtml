@@ -13,15 +13,17 @@
                 {
 
                     <input type="hidden" asp-for="Id" />
-                    <img src="~/@Model.course.ImageURL" width="100">
+                    if (!string.IsNullOrEmpty(@Model.course.ImageURL))
+                    {
+                     <img src="~/@Model.course.ImageURL" width="100">
+                    }
                     //<input type="file" asp-for="Image" id="Image" name="Image"  />
 
                 }
-                else
-                {
+               
                     <input type="file" asp-for="Image" id="Image" name="Image" />
 
-                }
+                
                 <div class="row">
                     <div class="form-group col-sm-4">
                         <label asp-for="StageId" class="control-label"></label>
