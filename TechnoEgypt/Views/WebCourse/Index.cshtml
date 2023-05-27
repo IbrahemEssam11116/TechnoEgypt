@@ -4,16 +4,25 @@
 *@
 @{
 }
-<form asp-action="Index" asp-controller="WebCourse" method="get">
-    <input  type="text" name="SearchName" placeholder="Seaech"/>
-<button >Search</button>
+
+
+
+
 <h1>Course List</h1>
-</form>
+<div class="row">
+    <div class="col-6">
+        <form asp-action="Index" asp-controller="WebCourse" method="get">
+            <input  type="text" name="SearchName" placeholder="Search" />
+            <button class="btn btn-outline-success" style="font-display:auto">Search</button>
+        </form>
+    </div>
+    <div class="col-6">
+        <p style="text-align:right;margin-right:20px;">
+            <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
+        </p>
+    </div>
+</div>
 
-
-<p style="text-align:right;margin-right:20px;">
-    <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
-</p>
 
 <div class="table-responsive">
     <table class="table">
