@@ -17,10 +17,10 @@ namespace TechnoEgypt.Controllers
 			_dBContext = dBContext;
 			this.env = env;
 		}
-		public IActionResult Index(string SearchName)
+		public IActionResult Index()
 		{
 
-			var courses = _dBContext.Courses.Where(w=>(SearchName==null||w.Name==SearchName))
+			var courses = _dBContext.Courses
 				.Include(Courses => Courses.CourseCategory).ThenInclude(CourseCategory => CourseCategory.Stage)
 				.Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, CourseCategoryName = w.CourseCategory.Name, StageName= w.CourseCategory.Stage.Name })
 				.ToList();
