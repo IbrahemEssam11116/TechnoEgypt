@@ -164,7 +164,7 @@ namespace TechnoEgypt.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        foreach (var item in Input.PermissionIds)
+                        foreach (var item in Input.PermissionIds.Where(w=>w!=null))
                         {
                             var results= await  _userManager.AddToRoleAsync(user,item);
                         }
