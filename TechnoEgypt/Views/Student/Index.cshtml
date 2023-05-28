@@ -4,17 +4,21 @@
 *@
 @{
 }
-
-<h1>Parent List</h1>
-
-<p style="text-align:right;margin-right:20px;">
-    <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
-</p>
+<div class="row">
+    <div class="col-5">
+        <h2>Parent List</h2>
+    </div>
+    <div class="col-7">
+        <p style="text-align:left;margin-right:20px;margin-top:5px">
+            <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
+        </p>
+    </div>
+</div>
 <div class="table-responsive">
-    <table class="table">
+    <table class="table" id="table">
         <thead>
             <tr>
-                <th>UserName</th>
+                <th>StudenName</th>
                 <th>FatherName</th>
                 <th>Parent Phone No.</th>
                 <th>Kids No.</th>
@@ -28,11 +32,10 @@
             {
                 <tr>
                     <td>
-                      <a asp-action="StudentIndex" asp-route-Id="@item.Id"> @item.UserName </a>
-
+                        <a asp-action="AddOrEditStudent" asp-route-Id="@item.Id"> @item.Name </a>
                     </td>
                     <td>
-                        @item.FatherTitle
+                        <a asp-action="AddOrEdit" asp-route-Id="@item.FatherId"> @item.FatherTitle </a>
                     </td>
                     <td>
                         @item.FatherPhoneNumber
@@ -55,3 +58,13 @@
         </tbody>
     </table>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                pagingType: 'full_numbers',
+            });
+        });
+    </script>
+}

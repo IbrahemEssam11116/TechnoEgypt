@@ -30,14 +30,18 @@ namespace TechnoEgypt.Controllers
 			_dBContext.SaveChanges();
 			return RedirectToAction("AddOrEditStudent", "Student", new { Id = childCourse.ChildId });
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-         
-            var parent = _dBContext.Parents
-                .Include(parents => parents.Children)
-                .Select(w => new Student { Id = w.Id, StudentCount = w.Children.Count, UserName = w.UserName, FatherTitle = w.FatherTitle, FatherPhoneNumber = w.FatherPhoneNumber })
-                .ToList();
-            return View(parent);
+
+            //var parent = _dBContext.Parents
+            //    .Include(parents => parents.Children)
+            //    .Select(w => new Student { Id = w.Id, StudentCount = w.Children.Count, UserName = w.UserName, FatherTitle = w.FatherTitle, FatherPhoneNumber = w.FatherPhoneNumber })
+            //    .ToList();
+            //return View(parent);
+            var student = await _dBContext.children
+                 .Select(w => new Student { Id = w.Id, FatherId =w.ParentId, Name = w.Name, FatherTitle = w.parent.FatherTitle })
+                 .ToListAsync();
+			return View(student);
         }
         public async Task<IActionResult> StudentIndex(int Id)
         {

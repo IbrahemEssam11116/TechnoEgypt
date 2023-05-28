@@ -22,7 +22,8 @@ namespace TechnoEgypt.Controllers
 
 			var courses = _dBContext.Courses
 				.Include(Courses => Courses.CourseCategory).ThenInclude(CourseCategory => CourseCategory.Stage)
-				.Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, CourseCategoryName = w.CourseCategory.Name, StageName= w.CourseCategory.Stage.Name })
+				.Include(courses => courses.courseTool)
+				.Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, CourseCategoryName = w.CourseCategory.Name, StageName= w.CourseCategory.Stage.Name ,ToolName = w.courseTool.Name })
 				.ToList();
 
 			return View(courses);

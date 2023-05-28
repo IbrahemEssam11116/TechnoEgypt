@@ -4,14 +4,18 @@
 *@
 @{
 }
-
-<h1>Software List</h1>
-
-<p style="text-align:right;margin-right:20px;">
-    <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
-</p>
+<div class="row">
+<div class="col-5">
+        <h2>Software List</h2>
+</div>
+<div class="col-7">
+    <p style="text-align:left;margin-right:20px;margin-top:5px">
+        <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
+    </p>
+</div>
+</div>
 <div class="table-responsive">
-    <table class="table">
+    <table class="table" id="table">
         <thead>
             <tr>
                 <th>
@@ -29,11 +33,11 @@
                         @item.Name
                     </td>
 
-                    <td class="text-center">
+                    <td>
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
                     </td>
 
-                    <td class="text-center">
+                    <td>
                         <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
                     </td>
                 </tr>
@@ -41,3 +45,13 @@
         </tbody>
     </table>
 </div>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            $(document).ready(function () {
+                $('#table').DataTable({
+                    pagingType: 'full_numbers',
+                });
+            });
+        </script>
+    }

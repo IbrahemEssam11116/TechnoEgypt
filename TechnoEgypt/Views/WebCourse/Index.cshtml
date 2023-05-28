@@ -4,12 +4,16 @@
 *@
 @{
 }
-
-
-<p style="text-align:right;margin-right:20px;">
-    <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
-</p>
-
+<div class="row">
+<div class="col-5">
+<h2>Course List</h2>
+</div>
+<div class="col-7">
+    <p style="text-align:left;margin-right:20px;margin-top:5px">
+            <a class="btn btn-outline-primary" asp-action="AddOrEdit">Create New</a>
+    </p>
+    </div>
+</div>
 <div class="table-responsive">
     <table class="table" id="table">
         <thead>
@@ -17,14 +21,17 @@
                 <th>
                     Name
                 </th>
-                <th>
+                <th >
                     Stage
                 </th>
-                <th>
+                <th >
                     Track
+                </th >
+                <th>
+                    Tool
                 </th>
-                <th>Edit Action</th>
-                <th>Delete Action</th>
+                <th  >Edit Action</th>
+                <th  >Delete Action</th>
             </tr>
         </thead>
         <tbody>
@@ -34,17 +41,20 @@
                     <td>
                         @item.Name
                     </td>
-                    <td>
+                    <td >
                         @item.StageName
                     </td>
                     <td>
                         @item.CourseCategoryName
                     </td>
-                    <td class="text-center">
+                    <td>
+                        @item.ToolName
+                    </td>
+                    <td>
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
                     </td>
 
-                    <td class="text-center">
+                    <td>
                         <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
                     </td>
                 </tr>
@@ -52,6 +62,9 @@
         </tbody>
     </table>
 </div>
+
+
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
