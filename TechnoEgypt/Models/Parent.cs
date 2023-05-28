@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TechnoEgypt.Areas.Identity.Data;
 
 namespace TechnoEgypt.Models
 {
@@ -34,6 +35,7 @@ namespace TechnoEgypt.Models
         public string WhatsappNumber{ get; set; }
         public string Address { get; set; }
         public ICollection<Parent> Parents{ get; set; }
+        public ICollection<AppUser> AppUsers{ get; set; }
 
     }
 }
