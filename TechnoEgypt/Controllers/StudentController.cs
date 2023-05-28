@@ -18,6 +18,18 @@ namespace TechnoEgypt.Controllers
             _dBContext = dBContext;
             _userManager = userManager;
         }
+		public IActionResult AddStudentCourses(int StudentId)
+        {
+			ViewBag.Coursers = new SelectList(_dBContext.Courses.ToList(),"Id","Name");
+			return PartialView(new ChildCourse() { ChildId = StudentId });
+        }
+        [HttpPost]
+		public IActionResult SaveStudentCourse(ChildCourse childCourse)
+        {
+			_dBContext.childCourses.Add(childCourse);
+			_dBContext.SaveChanges();
+			return RedirectToAction("AddOrEditStudent", "Student", new { Id = childCourse.ChildId });
+        }
         public IActionResult Index()
         {
          
@@ -122,7 +134,7 @@ namespace TechnoEgypt.Controllers
 			}
 			else
 			{
-				var student = await _dBContext.children.FindAsync(Id);
+				var student =  _dBContext.children.Include(w=>w.ChildCourses).ThenInclude(w=>w.Course).FirstOrDefault(w=>w.Id==Id);
 
 				if (student == null)
 				{
