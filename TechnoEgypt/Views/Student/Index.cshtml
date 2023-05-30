@@ -6,7 +6,7 @@
 }
 <div class="row">
     <div class="col-5">
-        <h2>Parent List</h2>
+        <h2>Application List</h2>
     </div>
     <div class="col-7">
         <p style="text-align:left;margin-right:20px;margin-top:5px">
@@ -20,11 +20,10 @@
             <tr>
                 <th>StudenName</th>
                 <th>FatherName</th>
-                <th>Parent Phone No.</th>
-                <th>Kids No.</th>
-                <th>Kids</th>
-                <th>Edit Action</th>
-                <th>Delete Action</th>
+                <th>Father No.</th>
+                <th>Mother No.</th>
+                @*<th>Kids</th>*@
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -41,17 +40,16 @@
                         @item.FatherPhoneNumber
                     </td>
                     <td>
-                        @item.StudentCount
+                        @item.MotherPhoneNumber
                     </td>
-                    <td class="text-left">
+                    @*<td class="text-left">
                         <a asp-action="StudentIndex" class="btn btn-outline-primary" asp-route-Id="@item.Id">View</a>
                     </td>
-                    <td class="text-center">
-                        <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
-                    </td>
+                   *@
 
-                    <td class="text-center">
-                        <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
+                    <td class="text-left">
+                        <a asp-action="AddOrEditStudent" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
+                        <a asp-action="DeleteStudent" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }

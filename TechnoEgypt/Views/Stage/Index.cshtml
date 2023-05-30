@@ -27,8 +27,7 @@
                 <th>
                     Age To
                 </th>
-                <th>Edit Action</th>
-                <th>Delete Action</th>
+                <th class="text-center">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -44,12 +43,8 @@
                     <td>
                          @item.AgeTo
                     </td>
-                    
-                    <td>
+                    <td class="text-center">
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
-                    </td>
-                    
-                    <td>
                         <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
                     </td>
                 </tr>

@@ -20,17 +20,16 @@ namespace TechnoEgypt.Controllers
         public IActionResult Index()
         {
 
-            //var staff = _dBContext.Users
-            //    .Include(Staff => User.bra).ThenInclude(CourseCategory => CourseCategory.Stage)
-            //    .Include(courses => courses.courseTool)
-            //    .Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, CourseCategoryName = w.CourseCategory.Name, StageName = w.CourseCategory.Stage.Name, ToolName = w.courseTool.Name })
-            //    .ToList();
+            var users = _dBContext.Users
+                .Include(User => User.Branc)
+                .Select(w => new Staffindex { Id = w.Id, UserName = w.UserName, Email = w.Email, Phone = w.PhoneNumber, BranchId = w.BranchId,BranchName=w.Branc.Name })
+                .ToList();
             //var courses = _dBContext.Courses
             //    .Include(Courses => Courses.CourseCategory).ThenInclude(CourseCategory => CourseCategory.Stage)
             //    .Include(courses => courses.courseTool)
             //    .Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, CourseCategoryName = w.CourseCategory.Name, StageName = w.CourseCategory.Stage.Name, ToolName = w.courseTool.Name })
             //    .ToList();
-            return View();
+            return View(users);
         }
         public async Task<IActionResult> AddOrEdit(int? Id)
         {

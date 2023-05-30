@@ -39,7 +39,7 @@ namespace TechnoEgypt.Controllers
             //    .ToList();
             //return View(parent);
             var student = await _dBContext.children
-                 .Select(w => new Student { Id = w.Id, FatherId =w.ParentId, Name = w.Name, FatherTitle = w.parent.FatherTitle })
+                 .Select(w => new Student { Id = w.Id, FatherId =w.ParentId, Name = w.Name, FatherTitle = w.parent.FatherTitle , FatherPhoneNumber = w.parent.FatherPhoneNumber, MotherPhoneNumber = w.parent.MotherPhoneNumber })
                  .ToListAsync();
 			return View(student);
         }
@@ -63,9 +63,9 @@ namespace TechnoEgypt.Controllers
             }
             else
             {
-                var parent = await _dBContext.Parents.FindAsync(Id);
+				var parent = await _dBContext.Parents.Include(w => w.Children).FirstOrDefaultAsync(w => w.Id == Id);
 
-                if (parent == null)
+				if (parent == null)
                 {
                     return NotFound();
                 }
@@ -138,7 +138,7 @@ namespace TechnoEgypt.Controllers
 			}
 			else
 			{
-				var student =  _dBContext.children.Include(w=>w.ChildCourses).ThenInclude(w=>w.Course).FirstOrDefault(w=>w.Id==Id);
+				var student = await _dBContext.children.Include(w=>w.ChildCourses).ThenInclude(w=>w.Course).FirstOrDefaultAsync(w=>w.Id==Id);
 
 				if (student == null)
 				{
@@ -190,40 +190,27 @@ namespace TechnoEgypt.Controllers
 				{
 					throw;
 				}
-				return RedirectToAction(nameof(StudentIndex),new {Id=student.ParentId });
+				return RedirectToAction(nameof(AddOrEdit),new {Id=student.ParentId });
 			}
-			return RedirectToAction("StudentIndex", "Student", new {Id= student.ParentId});
+			return RedirectToAction("AddOrEdit", "Student", new {Id= student.ParentId});
 		}
-		//public ActionResult Delete(int ID)
-		//{
+        public async Task<ActionResult> DeleteStudent(int Id)
+        {
+            var student = await _dBContext.children.FindAsync(Id);
+            _dBContext.Entry(student).State = EntityState.Deleted;
+            await _dBContext.SaveChangesAsync();
+            //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
 
-		//	return PartialView("DeleteItem", new DeleteItemModel
-		//	{
-		//		ItemID = ID,
-		//		ActionName = "Delete",
-		//		ControllerName = "StageController",
-		//	});
-		//}
+            return RedirectToAction("Index");
+        }
+        public async Task<ActionResult> DeleteChildCourse(int Id)
+        {
+            var studentcourse = await _dBContext.childCourses.FindAsync(Id);
+            _dBContext.Entry(studentcourse).State = EntityState.Deleted;
+            await _dBContext.SaveChangesAsync();
+            //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
 
-		////[SmartAuthorize(UserPermission.Course_Delete)]
-		//[HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
-		//public async Task<ActionResult> ConfirmDelete(int ItemID)
-		//{
-		//	var stage = await _dBContext.Stages.FindAsync(ItemID);
-		//	_dBContext.Entry(stage).State = EntityState.Deleted;
-		//	_dBContext.SaveChangesAsync();
-		//	//AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
-
-		//	return RedirectToAction("Index");
-		//}
-		//public async Task<ActionResult> Delete(int Id)
-		//{
-		//	var stage = await _dBContext.Stages.FindAsync(Id);
-		//	_dBContext.Entry(stage).State = EntityState.Deleted;
-		//	await _dBContext.SaveChangesAsync();
-		//	AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
-
-		//	return RedirectToAction("Index");
-		//}
-	}
+            return RedirectToAction("AddOrEditStudent","Student", new {id=studentcourse.ChildId });
+        }
+    }
 }
