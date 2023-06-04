@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
+using TechnoEgypt.Migrations;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
 
@@ -110,7 +111,17 @@ namespace TechnoEgypt.Controllers
 					courseData.ImageURL = IImageName;
 					courseData.ArDescripttion = webcourse.course.ArDescripttion;
 					courseData.ArName = webcourse.course.ArName;
-
+					courseData.CognitiveAbilities = webcourse.course.CognitiveAbilities;
+					courseData.Concentration = webcourse.course.Concentration;
+					courseData.CriticalThinking = webcourse.course.CriticalThinking;
+					courseData.LogicalThinking = webcourse.course.LogicalThinking;
+					courseData.DataCollectionandAnalysis = webcourse.course.DataCollectionandAnalysis;
+					courseData.MathematicalReasoning = webcourse.course.MathematicalReasoning;
+					courseData.ProblemSolving = webcourse.course.ProblemSolving;
+					courseData.Planning = webcourse.course.Planning;
+					courseData.Innovation = webcourse.course.Innovation;
+					courseData.SocialLifeSkills = webcourse.course.SocialLifeSkills;
+					courseData.ScientificResearch = webcourse.course.ScientificResearch;
 					
 
                     if (IsEmployeeExist)

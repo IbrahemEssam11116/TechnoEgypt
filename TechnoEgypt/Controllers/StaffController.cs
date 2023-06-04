@@ -149,7 +149,85 @@ namespace TechnoEgypt.Controllers
             return Json(sta);
 
         }
-       
+        public IActionResult BranchIndex()
+        {
+
+            var branchs = _dBContext.Branch.ToList();
+            return View(branchs);
+        }
+        public async Task<IActionResult> BranchAddOrEdit(int? Id)
+        {
+            ViewBag.PageName = Id == null ? "Create Branch" : "Edit Branch";
+            ViewBag.IsEdit = Id == null ? false : true;
+            if (Id == null)
+            {
+                return View();
+            }
+            else
+            {
+                var branch = await _dBContext.Branch.FindAsync(Id);
+
+                if (branch == null)
+                {
+                    return NotFound();
+                }
+                return View(branch);
+            }
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BranchAddOrEdit(Branch branch)
+        {
+            bool IsEmployeeExist = false;
+
+            var branchData = await _dBContext.Branch.FindAsync(branch.Id);
+
+            if (branchData != null)
+            {
+                IsEmployeeExist = true;
+            }
+            else
+            {
+                branchData = new Branch();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    branchData.Name = branch.Name;
+                    branchData.PhoneNumbers = branch.PhoneNumbers;
+                    branchData.WhatsappNumber = branch.WhatsappNumber;
+                    branchData.Address = branch.Address;
+
+                    if (IsEmployeeExist)
+                    {
+                        _dBContext.Update(branchData);
+                    }
+                    else
+                    {
+                        _dBContext.Branch.Add(branchData);
+                    }
+                    await _dBContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return RedirectToAction(nameof(BranchIndex));
+            }
+            return RedirectToAction("BranchIndex", "Staff");
+        }
+        public async Task<ActionResult> BranchDelete(int Id)
+        {
+            var branch = await _dBContext.Branch.FindAsync(Id);
+            _dBContext.Entry(branch).State = EntityState.Deleted;
+            await _dBContext.SaveChangesAsync();
+            //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
+
+            return RedirectToAction("BranchIndex");
+        }
 
 
 

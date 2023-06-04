@@ -115,8 +115,10 @@ namespace TechnoEgypt.Controllers
                 Name =model.languageId==0? w.Name:w.ArName,
                 AgeFrom = w.AgeFrom,
                 AgeTo = w.AgeTo,
-               CourcesTakenPrecentage=(int) GetCourcesTaken(w,model.UserId),
-                Courses = w.CourseCategories.Select(c => new RoadMapCoursesDTO()
+                CourseTaken= GetCoursesTaken(w,model.UserId),
+                TrackTotal= GetTrackTotal(w,model.UserId),
+
+            Courses = w.CourseCategories.Select(c => new RoadMapCoursesDTO()
                 {
                     group_id = w.Id,
                     Id = c.Id,
@@ -125,11 +127,13 @@ namespace TechnoEgypt.Controllers
             }).ToList();
             return Ok(response);
         }
-        internal static double GetCourcesTaken(Stage w, int? userId)
+        internal static int GetCoursesTaken(Stage w, int? userId)
         {
-            double CourseCount = w.CourseCategories.SelectMany(w => w.Courses).Count();
-            double userCourseCount = w.CourseCategories.SelectMany(w => w.Courses).SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
-            return CourseCount==0?0: (userCourseCount / CourseCount) * 100;
+            return  w.CourseCategories.SelectMany(w => w.Courses).SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
+        }
+        internal static int GetTrackTotal(Stage w, int? userId)
+        {
+            return  w.CourseCategories.SelectMany(w => w.Courses).Count();
         }
     }
 }

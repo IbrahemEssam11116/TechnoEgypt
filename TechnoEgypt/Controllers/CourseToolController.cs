@@ -20,7 +20,7 @@ namespace TechnoEgypt.Controllers
 		}
 		public async Task<IActionResult> AddOrEdit(int? Id)
 		{
-			ViewBag.PageName = Id == null ? "Create Tool" : "Edit Tool";
+			ViewBag.PageName = Id == null ? "Create Software" : "Edit Software";
 			ViewBag.IsEdit = Id == null ? false : true;
 			if (Id == null)
 			{

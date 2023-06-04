@@ -1,0 +1,53 @@
+﻿@model Branch
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container p-3 my-3 border">
+    <h1> @ViewBag.PageName</h1>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <hr />
+            <form asp-action="BranchAddOrEdit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (@ViewBag.IsEdit)
+                {
+                    <input type="hidden" asp-for="Id" />
+                }
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-3 ">
+                        <label asp-for="PhoneNumbers" class="control-label"></label>
+                        <input asp-for="PhoneNumbers" class="form-control" />
+                        <span asp-validation-for="PhoneNumbers" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-3">
+                        <label asp-for="WhatsappNumber" class="control-label"></label>
+                        <input asp-for="WhatsappNumber" class="form-control" />
+                        <span asp-validation-for="WhatsappNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-3">
+                        <label asp-for="Address" class="control-label"></label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group text-center" style="margin-bottom:10px;margin-top:10px;">
+                    <input class="btn btn-primary" type="submit" value="Save" />
+                    <a class="btn btn-danger" asp-action="BranchIndex">Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

@@ -13,6 +13,8 @@
         public int AgeFrom { get; set; }
         public int AgeTo { get; set; }
         public int CourcesTakenPrecentage { get; set; }
+        public int CourseTaken { get; set; }
+        public int TrackTotal { get; set; }
         public List<RoadMapCoursesDTO> Courses{ get; set; }
     }
 }

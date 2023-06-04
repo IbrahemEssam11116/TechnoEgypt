@@ -8,34 +8,19 @@ namespace TechnoEgypt.ViewModel
     public class Student
     {
         public int Id { get; set; }
-        public int FatherId { get; set; }
+        public string ImageURL { get; set; }
         public string Name { get; set; }
-        public Parent parent { get; set; }
-        public string UserName { get; set; }
-        public int StudentCount { get; set; }
-        public string FatherPhoneNumber { get; set; }
-		public string MotherPhoneNumber { get; set; }
-		public string FatherTitle { get; set; }
-		public string MotherTitle { get; set; }
+        public string SchoolName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Phone { get; set; }
+        public int ParentId { get; set; }
+        public Parents parent { get; set; }
+        public  child childrens { get; set; }
+        public IFormFile Image { get; set; }
+        public ICollection<ChildCVData> ChildCVs { get; set; }
+        public ICollection<ChildCourse> ChildCourses { get; set; }
+        public ICollection<ChildCertificate> ChildCertificates { get; set; }
 
-		//[DisplayName("Tool Name")]
-  //      public int ToolID { get; set; }
-  //      public string ToolName { get; set; }
-  //      public IFormFile Image { get; set; }
-        //public List<child> children { get; set; }
-        public SelectList children { get; set; }
-
-        //[DisplayName("Stage Name")]
-        //public int StageId { get; set; }
-        //public string StageName { get; set; }
-        //public List<Stage> Stages { get; set; }
-        //public SelectList StageList { get; set; }
-
-        //[DisplayName("Track Name")]
-        //public int CourseCategoryId { get; set; }
-        //public string CourseCategoryName { get; set; }
-        //public List<CourseCategory> CourseCategories { get; set; }
-        //public SelectList CourseCategoryList { get; set; }
 
     }
 }

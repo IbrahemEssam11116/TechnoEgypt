@@ -189,8 +189,8 @@ namespace TechnoEgypt.Controllers
                 st.Name = model.languageId == 0 ? item.Name : item.ArName;
                 st.Id = item.Id;
                 var courses = item.CourseCategories.SelectMany(w => w.Courses).ToList();
-                if (courses.Count > 0)
-                {
+                //if (courses.Count > 0)
+                //{
                     var userCourses = courses.Where(w => w.ChildCourses.Any(w => w.ChildId == model.UserId)).ToList();
                     st.skills = new()
                     {
@@ -267,7 +267,7 @@ namespace TechnoEgypt.Controllers
                         }
                     };
                     data.Add(st);
-                }
+                //}
             }
 
             return Ok(data);

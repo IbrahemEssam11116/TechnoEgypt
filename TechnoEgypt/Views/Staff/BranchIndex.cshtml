@@ -1,0 +1,70 @@
+﻿@model List<Branch>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="row">
+    <div class="col-5">
+        <h2>Branchs List</h2>
+    </div>
+    <div class="col-7">
+        <p style="text-align:left;margin-right:20px;margin-top:5px">
+            <a class="btn btn-outline-primary" asp-action="BranchAddOrEdit">Create New</a>
+        </p>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table" id="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Phone NO.
+                </th>
+                <th>
+                    Whatsapp NO.
+                </th>
+                <th>
+                    Address
+                </th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.PhoneNumbers
+                    </td>
+                    <td>
+                        @item.WhatsappNumber
+                    </td>
+                    <td>
+                        @item.Address
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="BranchAddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
+                        <a asp-action="BranchDelete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                pagingType: 'full_numbers',
+            });
+        });
+    </script>
+}

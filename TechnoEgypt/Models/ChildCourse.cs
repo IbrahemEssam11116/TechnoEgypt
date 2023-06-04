@@ -8,7 +8,7 @@ namespace TechnoEgypt.Models
         [Key]
         public int Id { get; set; }
         public int CourseId { get; set; }
-        //public DateTime CertificationDate { get; set; }
+        public DateTime CertificationDate { get; set; }
 
         public int ChildId { get; set; }
         [ForeignKey("CourseId")]

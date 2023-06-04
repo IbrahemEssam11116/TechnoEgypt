@@ -1,4 +1,4 @@
-﻿@model List<TechnoEgypt.ViewModel.Student>
+﻿@model List<TechnoEgypt.ViewModel.Parents>
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -31,10 +31,10 @@
             {
                 <tr>
                     <td>
-                        <a asp-action="AddOrEditStudent" asp-route-Id="@item.Id"> @item.Name </a>
+                        <a asp-action="AddOrEditStudent" asp-route-Id="@item.StudentId" asp-route-ParentID="@item.Id"> @item.Name </a>
                     </td>
                     <td>
-                        <a asp-action="AddOrEdit" asp-route-Id="@item.FatherId"> @item.FatherTitle </a>
+                        <a asp-action="AddOrEdit" asp-route-Id="@item.Id"> @item.FatherTitle </a>
                     </td>
                     <td>
                         @item.FatherPhoneNumber
@@ -48,8 +48,15 @@
                    *@
 
                     <td class="text-left">
-                        <a asp-action="AddOrEditStudent" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
-                        <a asp-action="DeleteStudent" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
+                        @if (item.Name != null) { 
+                        <a asp-action="AddOrEditStudent" class="btn btn-outline-primary" asp-route-Id="@item.StudentId">Edit</a>
+                            <a asp-action="DeleteStudent" class="btn btn-outline-danger" asp-route-Id="@item.StudentId">Delete</a>
+                        }
+                        else
+                        {
+                            <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
+                            <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a> 
+                        }
                     </td>
                 </tr>
             }
