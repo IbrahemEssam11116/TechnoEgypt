@@ -25,9 +25,9 @@ namespace TechnoEgypt.Controllers
             this.notificationSevice = notificationSevice;
         }
         [HttpPatch]
-        public IActionResult users()
+        public async Task<IActionResult> users()
         {
-            notificationSevice.SendNotification("Test", "test", 1);
+           await notificationSevice.SendNotification("Test", "test", 1);
             return Ok(_dBContext.Parents.ToArray());
         }
         [HttpPost("Login")]
