@@ -13,12 +13,15 @@ namespace TechnoEgypt.Models
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; }
         public int ParentId { get; set; }
+        public string Token { get; set; }
         public bool IsActive { get; set; }
         [ForeignKey("ParentId")]
         public Parent parent { get; set; }
         public ICollection<ChildCVData> ChildCVs { get; set; }
         public ICollection<ChildCourse> ChildCourses{ get; set; }
         public ICollection<ChildCertificate> ChildCertificates { get; set; }
+        public ICollection<ChildMessage> ChildMessage{ get; set; }
+
 
     }
 }

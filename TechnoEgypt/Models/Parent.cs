@@ -21,6 +21,7 @@ namespace TechnoEgypt.Models
         public string Address{ get; set; }
         public int MyProperty { get; set; }
         public bool IsActive{ get; set; }
+        public string Token { get; set; }
         public int BranchId { get; set; }
         [ForeignKey("BranchId")]
         public Branch Branch { get; set; }

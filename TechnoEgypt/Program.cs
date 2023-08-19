@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Models;
 using Microsoft.AspNetCore.Identity;
 using TechnoEgypt.Areas.Identity.Data;
+using TechnoEgypt.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("UserDbContextConnection") ?? throw new InvalidOperationException("Connection string 'UserDbContextConnection' not found.");
@@ -10,6 +11,7 @@ var connectionString = builder.Configuration.GetConnectionString("UserDbContextC
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddTransient<NotificationSevice>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

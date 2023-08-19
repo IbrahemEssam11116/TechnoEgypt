@@ -6,6 +6,7 @@ using System.IO;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
+using TechnoEgypt.Services;
 
 namespace TechnoEgypt.Controllers
 {
@@ -15,13 +16,20 @@ namespace TechnoEgypt.Controllers
     {
         private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
+        private readonly NotificationSevice notificationSevice;
 
-        public UserController(UserDbContext dBContext, IWebHostEnvironment env)
+        public UserController(UserDbContext dBContext, IWebHostEnvironment env, NotificationSevice notificationSevice)
         {
             _dBContext = dBContext;
             this.env = env;
+            this.notificationSevice = notificationSevice;
         }
-
+        [HttpPatch]
+        public IActionResult users()
+        {
+            notificationSevice.SendNotification("Test", "test", 1);
+            return Ok(_dBContext.Parents.ToArray());
+        }
         [HttpPost("Login")]
         public IActionResult Login(LoginDto model)
         {
@@ -49,6 +57,10 @@ namespace TechnoEgypt.Controllers
                 childern = data.FirstOrDefault().Children.Where(w => w.IsActive).Select(w => new ChildData() { Id = w.Id, Name = w.Name }).ToList()
             };
             response.Message = "success";
+            var parent = data.FirstOrDefault();
+            parent.Token= model.FCMToken;
+            
+            _dBContext.SaveChanges();
             return Ok(response);
         }
         [HttpPost("GetUserChildById")]
