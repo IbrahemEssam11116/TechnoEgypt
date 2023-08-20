@@ -1,0 +1,40 @@
+﻿@model TechnoEgypt.ViewModel.UserPermissions
+@*
+
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    string sepr = ",";
+}
+<form asp-action="AddPermission" asp-controller="Staff" method="post">
+    <input type="hidden" asp-for="UserId" />
+    <p>Old Permissions</p>
+    <p>@foreach (var item in Model.PermissionIds)
+        {
+            @item
+            
+            @sepr
+
+
+        }</p>
+    <div class="form-group col-sm-4">
+        <label asp-for="PermissionIds" class="control-label"> Permissions</label>
+        @Html.DropDownList("PermissionIds", ViewBag.permissions as SelectList, "", new { @class = "form-control",@id = "PermissionIds" ,multiple = "multiple"})
+        <span asp-validation-for="PermissionIds" class="text-danger"></span>
+    </div>
+
+    @*<div class="form-group col-4">
+    <label asp-for="CertificationDate" class="control-label"></label>
+    <input asp-for="CertificationDate" class="form-control" />
+    <span asp-validation-for="CertificationDate" class="text-danger"></span>
+    </div>*@
+    <input class="btn btn-primary" type="submit" value="Save" />
+
+</form>
+<script type="text/javascript">
+    $(function () {
+        $("#PermissionIds").select2({
+            dropdownParent: $("#modal")
+        });
+    });
+</script>

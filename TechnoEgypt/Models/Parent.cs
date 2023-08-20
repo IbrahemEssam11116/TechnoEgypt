@@ -22,7 +22,7 @@ namespace TechnoEgypt.Models
         public int MyProperty { get; set; }
         public bool IsActive{ get; set; }
         public string Token { get; set; }
-        public int BranchId { get; set; }
+        public int? BranchId { get; set; }
         [ForeignKey("BranchId")]
         public Branch Branch { get; set; }
         public ICollection<child> Children{ get; set; }

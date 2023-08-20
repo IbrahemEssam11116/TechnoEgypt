@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
@@ -11,18 +12,22 @@ namespace TechnoEgypt.Controllers
     {
         private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public StaffController(UserDbContext dBContext, IWebHostEnvironment env)
+        public StaffController(UserDbContext dBContext, IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager)
         {
             _dBContext = dBContext;
             this.env = env;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
 
             var users = _dBContext.Users
                 .Include(User => User.Branc)
-                .Select(w => new Staffindex { Id = w.Id, UserName = w.UserName, Email = w.Email, Phone = w.PhoneNumber, BranchId = w.BranchId,BranchName=w.Branc.Name })
+                .Select(w => new Staffindex { Id = w.Id, UserName = w.UserName, Email = w.Email, Phone = w.PhoneNumber, BranchId = w.BranchId, BranchName = w.Branc.Name })
                 .ToList();
             //var courses = _dBContext.Courses
             //    .Include(Courses => Courses.CourseCategory).ThenInclude(CourseCategory => CourseCategory.Stage)
@@ -30,6 +35,57 @@ namespace TechnoEgypt.Controllers
             //    .Select(w => new WebCourseIndex { Id = w.Id, Name = w.Name, CourseCategoryName = w.CourseCategory.Name, StageName = w.CourseCategory.Stage.Name, ToolName = w.courseTool.Name })
             //    .ToList();
             return View(users);
+        }
+
+        [HttpGet]
+        public IActionResult AddBranch(string userId)
+        {
+            ViewBag.Branches = new SelectList(_dBContext.Branch.ToList(), "Id", "Name");
+            return PartialView(new UserBranch() { UserId = userId });
+        }
+        [HttpGet]
+        public async Task<IActionResult> AddPermission(string userId)
+        {
+            ViewBag.permissions = new SelectList(_dBContext.Roles.ToList(), "NormalizedName", "Name");
+            var permissions = _dBContext.UserRoles.Where(w => w.UserId == userId).Select(w => w.RoleId).ToList();
+            List<string> namesPermissions = new List<string>();
+            foreach (var item in permissions)
+            {
+                try
+                {
+                    var a = await _roleManager.FindByIdAsync(item);
+                    namesPermissions.Add(a.NormalizedName);
+                }
+                catch (Exception ex)
+                {
+
+                }
+              
+            }
+            return PartialView(new UserPermissions() { UserId = userId, PermissionIds = namesPermissions });
+        }
+        public async Task<IActionResult> AddPermission(UserPermissions model)
+        {
+            var user = _dBContext.Users.Find(model.UserId);
+            _dBContext.UserRoles.RemoveRange(_dBContext.UserRoles.Where(w => w.UserId == model.UserId));
+            foreach (var item in model.PermissionIds)
+            {
+              var a=  await _userManager.AddToRoleAsync(user, item);
+            }
+            return RedirectToAction("Index", "Staff");
+
+        }
+        public IActionResult AddBranch(UserBranch model)
+        {
+
+            var user = _dBContext.Users.Find(model.UserId);
+            if (model.branchId == 0)
+            {
+                model.branchId = null;
+            }
+            user.BranchId = model.branchId;
+            _dBContext.SaveChanges();
+            return RedirectToAction("Index", "Staff");
         }
         public async Task<IActionResult> AddOrEdit(int? Id)
         {

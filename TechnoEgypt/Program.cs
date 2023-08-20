@@ -18,7 +18,12 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddDbContext<AppDBContext>(option => option.UseSqlServer("name=ConnectionStrings:DefaultConnectionString"));
 builder.Services.AddDbContext<UserDbContext>(option => option.UseSqlServer("name=ConnectionStrings:DefaultConnectionString"));
 
-builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<AppUser>(
+    options => { options.SignIn.RequireConfirmedAccount = false;
+        options.User.RequireUniqueEmail = false;
+
+    }
+    )
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<UserDbContext>();
 var app = builder.Build();

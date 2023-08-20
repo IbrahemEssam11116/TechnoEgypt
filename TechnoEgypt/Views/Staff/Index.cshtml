@@ -1,1 +1,96 @@
-﻿
+﻿@model List<TechnoEgypt.ViewModel.Staffindex>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="table-responsive">
+    <table class="table" id="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Age Branch
+                </th>
+               
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.UserName
+                    </td>
+                    <td>
+                        @if(@item.BranchId!=null){
+                        @item.BranchName
+                        }
+                        else{
+                        <button class="btn btn-outline-primary" onclick="AddBranch('@item.Id')"> Add Branch</button>
+                        }
+                    </td>
+                   
+                    <td class="text-center">
+                        <button class="btn btn-outline-primary" onclick="AddPermission('@item.Id')"> Add Permission</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                pagingType: 'full_numbers',
+            });
+        });
+        function AddBranch(userId){
+            showLoader();
+            $.ajax({
+                url: "/Staff/AddBranch?userId=" + userId,
+                type: "GET",
+                success: function (response) {
+                    console.log(response)
+                    debugger;
+                    $("#modal-body").html(response);
+                    $("#modal-title").html("Add Course")
+                    $('#modal').modal('toggle');
+
+                    // Handle the JSON response here
+                },
+                error: function (xhr, status, error) {
+                    // Handle the error here
+                }
+            });
+            hideLoader();
+        }
+
+        function AddPermission(userId) {
+            showLoader();
+            $.ajax({
+                url: "/Staff/AddPermission?userId=" + userId,
+                type: "GET",
+                success: function (response) {
+                    console.log(response)
+                    debugger;
+                    $("#modal-body").html(response);
+                    $("#modal-title").html("Add Course")
+                    $('#modal').modal('toggle');
+
+                    // Handle the JSON response here
+                },
+                error: function (xhr, status, error) {
+                    // Handle the error here
+                }
+            });
+            hideLoader();
+        }
+    </script>
+}

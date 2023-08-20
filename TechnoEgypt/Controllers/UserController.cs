@@ -292,7 +292,7 @@ namespace TechnoEgypt.Controllers
 
     }
 
-    enum SkillType
+   public enum SkillType
     {
         DataCollectionandAnalysis = 0,
         CriticalThinking,

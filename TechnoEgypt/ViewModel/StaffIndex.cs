@@ -16,7 +16,7 @@ namespace TechnoEgypt.ViewModel
 
 
         [DisplayName("Branch Name")]
-        public int BranchId { get; set; }
+        public int? BranchId { get; set; }
         public string BranchName { get; set; }
         public List<Stage> Branchs { get; set; }
         public SelectList BranchList { get; set; }
