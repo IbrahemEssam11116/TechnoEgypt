@@ -5,7 +5,9 @@
         public int Id { get; set; }
         public int group_id { get; set; }
         public string Title { get; set; }
-      
+        public int CourseTaken { get; set; }
+        public int TrackTotal { get; set; }
+
     }
     public class RoadmapDto
     {

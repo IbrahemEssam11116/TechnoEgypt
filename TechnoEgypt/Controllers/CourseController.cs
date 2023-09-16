@@ -180,8 +180,10 @@ namespace TechnoEgypt.Controllers
                 {
                     group_id = w.Id,
                     Id = c.Id,
-                    Title =model.languageId==0? c.Name:c.ArName
-                }).ToList()
+                    Title =model.languageId==0? c.Name:c.ArName,
+                    CourseTaken = GetCoursesTaken(c, model.UserId),
+                TrackTotal = GetTrackTotal(c, model.UserId),
+            }).ToList()
             }).ToList();
             return Ok(response);
         }
@@ -193,5 +195,14 @@ namespace TechnoEgypt.Controllers
         {
             return  w.CourseCategories.SelectMany(w => w.Courses).Count();
         }
+        internal static int GetCoursesTaken(CourseCategory w, int? userId)
+        {
+            return  w.Courses.SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
+        }
+        internal static int GetTrackTotal(CourseCategory w, int? userId)
+        {
+            return  w.Courses.Count();
+        }
+       
     }
 }
