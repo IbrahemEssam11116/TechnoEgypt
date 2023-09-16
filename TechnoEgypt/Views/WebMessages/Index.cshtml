@@ -1,0 +1,99 @@
+﻿@model List<TechnoEgypt.ViewModel.WebMessagesIndex>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="row">
+    <div class="col-5">
+        <h2>Message List</h2>
+    </div>
+    <div class="col-7">
+        <p style="text-align:left;margin-right:20px;margin-top:5px">
+            <a class="btn btn-outline-primary" onclick="AddMessage('@Model.FirstOrDefault().Id')">Create New</a>
+        </p>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table" id="table">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                   Message
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    SenderName
+                </th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        @item.Message
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
+                        <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                pagingType: 'full_numbers',
+            });
+        });
+        function AddMessage(userId) {
+            showLoader();
+            $.ajax({
+                url: "/WebMessages/CreateMessage?userId=" + userId,
+                type: "GET",
+                success: function (response) {
+                    console.log(response)
+                    debugger;
+                    $("#modal-body").html(response);
+                    $("#modal-title").html("Add Message")
+                    $('#modal').modal('toggle');
+
+                    // Handle the JSON response here
+                },
+                error: function (xhr, status, error) {
+                    // Handle the error here
+                }
+            });
+            hideLoader();
+        }
+    </script>
+}
