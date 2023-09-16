@@ -6,6 +6,7 @@ using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Migrations;
 using TechnoEgypt.Models;
+using TechnoEgypt.Services;
 using TechnoEgypt.ViewModel;
 
 namespace TechnoEgypt.Controllers
@@ -15,19 +16,20 @@ namespace TechnoEgypt.Controllers
         private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
 		private readonly UserManager<AppUser> _userManager;
+        private readonly NotificationSevice _notificationSevice;
 
-		public WebMessagesController(UserDbContext dBContext, UserManager<AppUser> userManager,  IWebHostEnvironment env)
+        public WebMessagesController(UserDbContext dBContext, UserManager<AppUser> userManager, IWebHostEnvironment env, NotificationSevice notificationSevice)
         {
             _dBContext = dBContext;
             this.env = env;
-			_userManager = userManager;
-			
-		}
+            _userManager = userManager;
+            _notificationSevice = notificationSevice;
+        }
         public IActionResult Index()
         {
 
             var Messages = _dBContext.ChildMessages
-                .Include(Messages => Messages.Child)
+                .Include(Messages => Messages.Parent)
                 .Select(w => new WebMessagesIndex { Id = w.Id, Message = w.Message})
                 .ToList();
 
@@ -42,25 +44,22 @@ namespace TechnoEgypt.Controllers
             return PartialView(new WebMessagesIndex() { Message = userId });
         }
         [HttpPost]
-        public IActionResult CreateMessage(WebMessagesIndex model)
+        public async Task<IActionResult> CreateMessage(WebMessagesIndex model)
         {
-            var MessageInfo = new ChildMessage();
-            var ParentList = new SelectList(_dBContext.Parents.ToList(),"id");
+            var ParentList = _dBContext.Parents.ToList();
 			var userId = this.User.Identity.GetUserId();
 
 			foreach (var item in ParentList)
             {
-                //MessageInfo.ChildId = item.id;
-				MessageInfo.Message = model.Message;
-				// MessageInfo.Title = model.Title;
-				// MessageInfo.SenderId = userId;
-				// MessageInfo.Date = DateTime.Now();
+                ParentMessage MessageInfo = new ParentMessage();
+                MessageInfo.ParentId = item.Id;
+                MessageInfo.Message = model.Message;
+			    MessageInfo.Title = model.Title;
+				MessageInfo.CreatedUserId = userId;
+				MessageInfo.Date = DateTime.Now;
 				_dBContext.ChildMessages.Add(MessageInfo);
-				
+                await _notificationSevice.SendNotification(model.Title, model.Message, item.Id);
 			}
-
-
-
 			_dBContext.SaveChanges();
             return RedirectToAction("Index", "WebMessages");
         }

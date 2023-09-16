@@ -19,8 +19,9 @@ namespace TechnoEgypt.Controllers
         [HttpPost("GetUserMessage")]
         public IActionResult GetUserMessage(BaseDto model)
         {
-            var response = new Response<List<ChildMessage>>();
-            var messages = _dBContext.ChildMessages.Where(w=>w.ChildId==model.UserId).ToList();
+            var response = new Response<List<ParentMessage>>();
+            var parentId=_dBContext.children.Find(model.UserId)?.ParentId;
+            var messages = _dBContext.ChildMessages.Where(w=>w.ParentId== parentId).ToList();
             response.Data = messages;
             response.StatusCode = ResponseCode.success;
             response.Message = "all message";

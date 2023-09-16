@@ -26,7 +26,7 @@ public class UserDbContext : IdentityDbContext<AppUser>
     public DbSet<ChildCertificate> ChildCertificates { get; set; }
     //public DbSet<station> station { get; set; }
     public DbSet<Branch> Branch { get; set; }
-    public DbSet<ChildMessage> ChildMessages { get; set; }
+    public DbSet<ParentMessage> ChildMessages { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

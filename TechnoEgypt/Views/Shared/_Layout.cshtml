@@ -55,7 +55,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal-title">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" onclick="closeModal()" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -163,6 +163,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script>
+
+
+        function closeModal(){
+            $('#modal').modal('toggle');
+        }
         function showLoader() {
             $('.loader-wrapper').fadeIn();
         }
@@ -170,6 +175,7 @@
         function hideLoader() {
             $('.loader-wrapper').fadeOut();
         }
+      
         function getPart() {
             $.ajax({
                 url: "/WebCourse/index",
