@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TechnoEgypt.Areas.Identity.Data;
 
 namespace TechnoEgypt.Models
 {
@@ -12,5 +14,12 @@ namespace TechnoEgypt.Models
         public child Child { get; set; }
         public bool Isread{ get; set; }
         public string Message{ get; set; }
+        public string Title { get; set; }
+        public DateTime? Date { get; set; }
+        public string CreatedUserId { get; set; }
+        [ForeignKey("CreatedUserId")]
+        public AppUser CreatedUser { get; set; }
+
     }
 }
+
