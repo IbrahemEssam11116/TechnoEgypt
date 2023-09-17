@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Security.Cryptography.Xml;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
-
 namespace TechnoEgypt.Controllers
 {
     [Route("api/[controller]")]
@@ -58,38 +54,38 @@ namespace TechnoEgypt.Controllers
         {
             var response = new Response<List<TrackCoursresDto>>();
             List<Course> courlist = new List<Course>();
-            var courses = _dBContext.Courses;
+            var courses = _dBContext.Courses.Where(w => (model.StageId==null||model.StageId==0|| w.CourseCategory.StageId == model.StageId));
             switch (model.SkillType)
             {
                 case SkillType.DataCollectionandAnalysis:
                     courlist = courses.Where(w => w.DataCollectionandAnalysis).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList() ;
                     break;
                 case SkillType.CriticalThinking:
-                    courlist = courses.Where(w => w.DataCollectionandAnalysis).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.DataCollectionandAnalysis).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.Planning:
-                    courlist = courses.Where(w => w.Planning).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.Planning).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.MathematicalReasoning:
-                    courlist = courses.Where(w => w.MathematicalReasoning).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.MathematicalReasoning).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.Innovation:
-                    courlist = courses.Where(w => w.Innovation).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.Innovation).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.LogicalThinking:
-                    courlist = courses.Where(w => w.LogicalThinking).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.LogicalThinking).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.CognitiveAbilities:
-                    courlist = courses.Where(w => w.CognitiveAbilities).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.CognitiveAbilities).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.ProblemSolving:
-                    courlist = courses.Where(w => w.ProblemSolving).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.ProblemSolving).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.SocialLifeSkills:
-                    courlist = courses.Where(w => w.SocialLifeSkills).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.SocialLifeSkills).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.ScientificResearch:
-                    courlist = courses.Where(w => w.ScientificResearch).Include(w => w.CriticalThinking).Include(w => w.ChildCourses).ToList();
+                    courlist = courses.Where(w => w.ScientificResearch).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 default:
                     return Ok( response);
@@ -99,7 +95,7 @@ namespace TechnoEgypt.Controllers
             response.Message = "success";
             response.Data = courlist.Select(w => new TrackCoursresDto()
             {
-                Course_Title = w.Name,
+                Course_Title = model.languageId == 0 ? w.Name:w.ArName,
                 Id = w.Id,
                 Tool = model.languageId == 0 ? w.courseTool.Name : w.courseTool.ArName,
                 Track_Id = w.CourseCategoryId,
@@ -120,7 +116,7 @@ namespace TechnoEgypt.Controllers
             response.Message = "success";
             response.Data = courses.Select(w => new TrackCoursresDto()
             {
-                Course_Title = w.Name,
+                Course_Title = model.languageId == 0 ? w.Name : w.ArName,
                 Id = w.Id,
                 Tool =model.languageId==0? w.courseTool.Name:w.courseTool.ArName,
                 Track_Id = w.CourseCategoryId,

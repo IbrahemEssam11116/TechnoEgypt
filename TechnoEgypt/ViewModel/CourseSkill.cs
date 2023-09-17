@@ -6,5 +6,6 @@ namespace TechnoEgypt.ViewModel
     public class CourseSkill: BaseDto
     {
         public SkillType SkillType { get; set; }
+        public int? StageId { get; set; }
     }
 }
