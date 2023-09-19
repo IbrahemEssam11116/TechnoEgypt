@@ -131,15 +131,7 @@ namespace TechnoEgypt.Controllers
             System.Drawing.Point point;
             var userc = 1;
             var pathin = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
-            //MedLineUserCourseEntity userCourseEntity = new MedLineUserCourseEntity(UserCourseID);
-            //PrefetchPath2 path = new PrefetchPath2(EntityType.MedLineUserCourseEntity);
-            //path.Add(MedLineUserCourseEntity.PrefetchPathMedLineCourseItem);
-            //path.Add(MedLineUserCourseEntity.PrefetchPathMedLineUserItem);
-            //EMedLine.BL.DataBaseClassHelper.FillEntity(userCourseEntity, path);
-
-            //string oldFile = "E:\\EMDEDLINE_Files\\EMDEDLINE_Files\\CertificateTemp.pdf";
-            //string newFile = "E:\\EMDEDLINE_Files\\EMDEDLINE_Files\\CertificateTemp1.pdf";
-            //string pathin = "E:\\EMDEDLINE_Files\\EMDEDLINE_Files\\CertificateTemp.pdf";
+            var usercoursedata= _dBContext.childCourses.Include(w=>w.)
             //var pathin = Path.Combine(env.WebRootPath, "CertificateTemp.pdf");
             var pathfont = Path.Combine(env.WebRootPath, "MTCORSVA.TTF");
             //string newName = $"{Guid.NewGuid():N}.pdf";
