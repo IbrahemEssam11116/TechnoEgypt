@@ -30,7 +30,7 @@
                 <th>
                     SenderName
                 </th>
-                <th class="text-center">Action</th>
+               @* <th class="text-center">Action</th>*@
             </tr>
         </thead>
         <tbody>
@@ -50,10 +50,10 @@
                         @item.SenderName
                     </td>
 
-                    <td class="text-center">
+                   @* <td class="text-center">
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
                         <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
-                    </td>
+                    </td>*@
                 </tr>
             }
         </tbody>
