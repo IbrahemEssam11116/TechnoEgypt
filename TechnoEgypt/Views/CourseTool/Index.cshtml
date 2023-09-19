@@ -21,6 +21,10 @@
                 <th>
                     Name
                 </th>
+                <th>
+                    ArName
+                </th>
+
                 <th class="text-center">Action</th>
             </tr>
         </thead>
@@ -31,6 +35,10 @@
                     <td>
                         @item.Name
                     </td>
+                    <td>
+                        @item.ArName
+                    </td>
+
 
                     <td class="text-center">
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>

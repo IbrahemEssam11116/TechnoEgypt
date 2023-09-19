@@ -64,7 +64,9 @@ namespace TechnoEgypt.Controllers
 				try
 				{
 					stageData.Name = stage.Name;
-					stageData.AgeFrom = stage.AgeFrom;
+                    stageData.ArName = stage.ArName;
+
+                    stageData.AgeFrom = stage.AgeFrom;
 					stageData.AgeTo = stage.AgeTo;
 
 					if (IsEmployeeExist)

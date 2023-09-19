@@ -60,7 +60,9 @@ namespace TechnoEgypt.Controllers
 				try
 				{
                     courseToolData.Name = coursetool.Name;
-					if (IsEmployeeExist)
+                    courseToolData.ArName = coursetool.ArName;
+
+                    if (IsEmployeeExist)
 					{
 						_dBContext.Update(courseToolData);
 					}
