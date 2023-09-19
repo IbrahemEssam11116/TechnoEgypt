@@ -20,7 +20,6 @@ namespace TechnoEgypt.Models
         public ICollection<ChildCVData> ChildCVs { get; set; }
         public ICollection<ChildCourse> ChildCourses{ get; set; }
         public ICollection<ChildCertificate> ChildCertificates { get; set; }
-        public ICollection<ChildMessage> ChildMessage{ get; set; }
 
 
     }

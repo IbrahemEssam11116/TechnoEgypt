@@ -5,13 +5,13 @@ using TechnoEgypt.Areas.Identity.Data;
 
 namespace TechnoEgypt.Models
 {
-    public class ChildMessage
+    public class ParentMessage
     {
         [Key]
         public int Id { get; set; }
-        public int ChildId { get; set; }
-        [ForeignKey("ChildId")]
-        public child Child { get; set; }
+        public int ParentId { get; set; }
+        [ForeignKey("ParentId")]
+        public Parent Parent { get; set; }
         public bool Isread{ get; set; }
         public string Message{ get; set; }
         public string Title { get; set; }

@@ -26,6 +26,8 @@ namespace TechnoEgypt.Models
         [ForeignKey("BranchId")]
         public Branch Branch { get; set; }
         public ICollection<child> Children{ get; set; }
+        public ICollection<ParentMessage> ChildMessage { get; set; }
+
     }
     public class Branch
     {
