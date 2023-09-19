@@ -131,7 +131,7 @@ namespace TechnoEgypt.Controllers
             System.Drawing.Point point;
             var userc = 1;
             var pathin = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
-            var usercoursedata= _dBContext.childCourses.Include(w=>w.)
+            var usercoursedata =  _dBContext.childCourses.Where(w=>w.Id==userc).Include(w => w.Course).Include(w => w.Child).FirstOrDefault();
             //var pathin = Path.Combine(env.WebRootPath, "CertificateTemp.pdf");
             var pathfont = Path.Combine(env.WebRootPath, "MTCORSVA.TTF");
             //string newName = $"{Guid.NewGuid():N}.pdf";
@@ -162,8 +162,8 @@ namespace TechnoEgypt.Controllers
                 //add content to the page using ColumnText
                 Font font = new Font();
                 font.Size = 18;
-                string UserName = userCourseEntity.MedLineUserItem.Fname + userCourseEntity.MedLineUserItem.Mname + userCourseEntity.MedLineUserItem.Lname;
-                string CourseName = userCourseEntity.MedLineCourseItem.Title;
+                string UserName = usercoursedata.Child.Name;
+                string CourseName = usercoursedata.Course.Name;
                 //font.Style = "Arial";
                 //setting up the X and Y coordinates of the document
                 point = new System.Drawing.Point(); 
@@ -181,13 +181,13 @@ namespace TechnoEgypt.Controllers
                 ColumnText.ShowTextAligned(pbover, Element.ALIGN_CENTER, new Phrase(CourseName, font), x1, y1, 0);
                 font.Size = 14;
                 ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(DT, font), x2, y2, 0);
-                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(UserCourseID.ToString(), font), 170, 105, 0);
+                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(userc.ToString(), font), 170, 105, 0);
 
 
             }
-            RelationPredicateBucket filter = new RelationPredicateBucket();
-            filter.PredicateExpression.Add(MedLineUserCourseFields.ID == userCourseEntity.ID);
-            SStorm.EMedLine.BL.DataBaseClassHelper.UpdateEntityDirectly(userCourseEntity, filter, 0);
+            //RelationPredicateBucket filter = new RelationPredicateBucket();
+            //filter.PredicateExpression.Add(MedLineUserCourseFields.ID == userCourseEntity.ID);
+            //SStorm.EMedLine.BL.DataBaseClassHelper.UpdateEntityDirectly(userCourseEntity, filter, 0);
 
 
 
