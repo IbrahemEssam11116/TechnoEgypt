@@ -10,7 +10,7 @@
     </div>
     <div class="col-7">
         <p style="text-align:left;margin-right:20px;margin-top:5px">
-            <a class="btn btn-outline-primary" onclick="AddMessage('@Model.FirstOrDefault().Id')">Create New</a>
+            <a class="btn btn-outline-primary" onclick="AddMessage()">Create New</a>
         </p>
     </div>
 </div>
@@ -22,13 +22,7 @@
                     ID
                 </th>
                 <th>
-                   Message
-                </th>
-                <th>
                     Title
-                </th>
-                <th>
-                    Message
                 </th>
                 <th>
                     Date
@@ -47,17 +41,15 @@
                         @item.Id
                     </td>
                     <td>
+                        @item.Title
                     </td>
                     <td>
-                        @item.Message
+                      @item.Date
                     </td>
                     <td>
-                        
+                        @item.SenderName
                     </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
+
                     <td class="text-center">
                         <a asp-action="AddOrEdit" class="btn btn-outline-primary" asp-route-Id="@item.Id">Edit</a>
                         <a asp-action="Delete" class="btn btn-outline-danger" asp-route-Id="@item.Id">Delete</a>
@@ -75,10 +67,10 @@
                 pagingType: 'full_numbers',
             });
         });
-        function AddMessage(userId) {
+        function AddMessage() {
             showLoader();
             $.ajax({
-                url: "/WebMessages/CreateMessage?userId=" + userId,
+                url: "/WebMessages/CreateMessage",
                 type: "GET",
                 success: function (response) {
                     console.log(response)

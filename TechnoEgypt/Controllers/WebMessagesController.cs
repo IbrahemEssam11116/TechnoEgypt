@@ -29,8 +29,9 @@ namespace TechnoEgypt.Controllers
         {
 
             var Messages = _dBContext.ChildMessages
-                .Include(Messages => Messages.Parent)
-                .Select(w => new WebMessagesIndex { Id = w.Id, Message = w.Message})
+                .Include(Messages => Messages.Parent).Include(w=>w.CreatedUser)
+                .Select(w => new WebMessagesIndex {Date= w.Date==null?"":w.Date.Value.ToString("MM/dd/yyyy")
+                , Id = w.Id,Title=w.Title, Message = w.Message,SenderName=w.CreatedUser!=null?w.CreatedUser.UserName:""})
                 .ToList();
 
             return View(Messages);
@@ -38,10 +39,10 @@ namespace TechnoEgypt.Controllers
 
         }
         [HttpGet]
-        public IActionResult CreateMessage(string userId)
+        public IActionResult CreateMessage()
         {
             ViewBag.Messages = new SelectList(_dBContext.ChildMessages.ToList(), "Id", "Name");
-            return PartialView(new WebMessagesIndex() { Message = userId });
+            return PartialView(new WebMessagesIndex());
         }
         [HttpPost]
         public async Task<IActionResult> CreateMessage(WebMessagesIndex model)

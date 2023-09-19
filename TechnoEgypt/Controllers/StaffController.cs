@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -121,6 +123,84 @@ namespace TechnoEgypt.Controllers
                 return View(courses);
             }
 
+        }
+        [HttpPost]
+
+        public IActionResult createCertificate()
+        {
+            System.Drawing.Point point;
+            var userc = 1;
+            var pathin = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
+            //MedLineUserCourseEntity userCourseEntity = new MedLineUserCourseEntity(UserCourseID);
+            //PrefetchPath2 path = new PrefetchPath2(EntityType.MedLineUserCourseEntity);
+            //path.Add(MedLineUserCourseEntity.PrefetchPathMedLineCourseItem);
+            //path.Add(MedLineUserCourseEntity.PrefetchPathMedLineUserItem);
+            //EMedLine.BL.DataBaseClassHelper.FillEntity(userCourseEntity, path);
+
+            //string oldFile = "E:\\EMDEDLINE_Files\\EMDEDLINE_Files\\CertificateTemp.pdf";
+            //string newFile = "E:\\EMDEDLINE_Files\\EMDEDLINE_Files\\CertificateTemp1.pdf";
+            //string pathin = "E:\\EMDEDLINE_Files\\EMDEDLINE_Files\\CertificateTemp.pdf";
+            //var pathin = Path.Combine(env.WebRootPath, "CertificateTemp.pdf");
+            var pathfont = Path.Combine(env.WebRootPath, "MTCORSVA.TTF");
+            //string newName = $"{Guid.NewGuid():N}.pdf";
+            ////string FolderPath = $"{MainFolderPath}/{userCourseEntity.LearnerID}";
+            //if (!Directory.Exists(FolderPath))
+            //    Directory.CreateDirectory(FolderPath);
+            //string pathout = $"{FolderPath}/{newName}";
+            string pathout = env.WebRootPath + "\\Files\\new.pdf";
+            //userCourseEntity.Certificate = Path.Combine(userCourseEntity.LearnerID.ToString(), newName);
+
+            //create PdfReader object to read from the existing document
+            using (PdfReader reader = new PdfReader(pathin))
+            //create PdfStamper object to write to get the pages from reader 
+            using (PdfStamper stamper = new PdfStamper(reader, new FileStream(pathout, FileMode.Create)))
+            {
+                //select two pages from the original document
+                reader.SelectPages("1-2");
+
+                //gettins the page size in order to substract from the iTextSharp coordinates
+                var pageSize = reader.GetPageSize(1);
+
+                // PdfContentByte from stamper to add content to the pages over the original content
+                PdfContentByte pbover = stamper.GetOverContent(1);
+                BaseFont bf = BaseFont.CreateFont(@pathfont, "Identity-H", BaseFont.EMBEDDED);
+                Font NameFont = new Font(bf, 10);
+                NameFont.Size = 26;
+
+                //add content to the page using ColumnText
+                Font font = new Font();
+                font.Size = 18;
+                string UserName = userCourseEntity.MedLineUserItem.Fname + userCourseEntity.MedLineUserItem.Mname + userCourseEntity.MedLineUserItem.Lname;
+                string CourseName = userCourseEntity.MedLineCourseItem.Title;
+                //font.Style = "Arial";
+                //setting up the X and Y coordinates of the document
+                point = new System.Drawing.Point(); 
+                int x = point.X + 370;
+                int y = point.Y + 230;
+                int x1 = point.X + 450;
+                int y1 = point.Y + 300;
+                y = (int)(pageSize.Height - y);
+                DateTime now = DateTime.Now;
+                string DT = now.ToString().Substring(0, 10);
+                int x2 = point.X + 190;
+                int y2 = point.Y + 120;
+
+                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(UserName, NameFont), x, y, 0);
+                ColumnText.ShowTextAligned(pbover, Element.ALIGN_CENTER, new Phrase(CourseName, font), x1, y1, 0);
+                font.Size = 14;
+                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(DT, font), x2, y2, 0);
+                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(UserCourseID.ToString(), font), 170, 105, 0);
+
+
+            }
+            RelationPredicateBucket filter = new RelationPredicateBucket();
+            filter.PredicateExpression.Add(MedLineUserCourseFields.ID == userCourseEntity.ID);
+            SStorm.EMedLine.BL.DataBaseClassHelper.UpdateEntityDirectly(userCourseEntity, filter, 0);
+
+
+
+
+            return File(new MemoryStream(),"png");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
