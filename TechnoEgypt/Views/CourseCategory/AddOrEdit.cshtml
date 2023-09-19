@@ -19,6 +19,13 @@
 					<input asp-for="Name" class="form-control" />
 					<span asp-validation-for="Name" class="text-danger"></span>
 				</div>
+					<div class="form-group col-6">
+						<label asp-for="ArName" class="control-label"></label>
+						<input asp-for="ArName" class="form-control" />
+						<span asp-validation-for="ArName" class="text-danger"></span>
+					</div>
+					</div>
+					<div class="row">
 				<div class="form-group col-6">
 					<label asp-for="StageId" class="control-label"></label>
 					@Html.DropDownList("StageId", Model.StageList as SelectList, "", new { @class = "form-control col-md-3", @id = "StageId" })

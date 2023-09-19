@@ -9,7 +9,9 @@ namespace TechnoEgypt.ViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string TrackName { get; set; }
+		public string ArName { get; set; }
+
+		public string TrackName { get; set; }
         [DisplayName("Stage Name")]
         [Required(ErrorMessage ="aloooooooooooooooooooo")]
         public int StageId { get; set; }

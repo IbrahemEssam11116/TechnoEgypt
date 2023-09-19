@@ -19,7 +19,7 @@ namespace TechnoEgypt.Controllers
         {
 
             var coursecategory = _dBContext.CourseCategories
-                .Include(CourseCategories => CourseCategories.Stage).Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name, TrackName = w.Stage.Name }).ToList();
+                .Include(CourseCategories => CourseCategories.Stage).Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name, ArName=w.ArName, TrackName = w.Stage.Name }).ToList();
             
             return View(coursecategory);
         }
@@ -38,7 +38,7 @@ namespace TechnoEgypt.Controllers
             {
                 var coursecategory = await _dBContext.CourseCategories.Where(w=>w.Id==Id)
                     .Include(CourseCategories => CourseCategories.Stage).
-                    Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name,StageId=w.StageId })
+                    Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name,ArName =w.ArName,StageId=w.StageId })
                     .FirstOrDefaultAsync();
                 coursecategory.Stages = _dBContext.Stages.ToList();
 				coursecategory.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name",coursecategory.StageId);
@@ -78,6 +78,8 @@ namespace TechnoEgypt.Controllers
                 try
                 {
                     coursecategoryData.Name = coursecategory.Name;
+                    coursecategoryData.ArName = coursecategory.ArName;
+
                     coursecategoryData.StageId = coursecategory.StageId;
 					// stageData.AgeTo = stage.AgeTo;
 					if (IsEmployeeExist)
