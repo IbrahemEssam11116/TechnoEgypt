@@ -62,7 +62,7 @@ namespace TechnoEgypt.Controllers
                 {
 
                 }
-              
+
             }
             return PartialView(new UserPermissions() { UserId = userId, PermissionIds = namesPermissions });
         }
@@ -72,7 +72,7 @@ namespace TechnoEgypt.Controllers
             _dBContext.UserRoles.RemoveRange(_dBContext.UserRoles.Where(w => w.UserId == model.UserId));
             foreach (var item in model.PermissionIds)
             {
-              var a=  await _userManager.AddToRoleAsync(user, item);
+                var a = await _userManager.AddToRoleAsync(user, item);
             }
             return RedirectToAction("Index", "Staff");
 
@@ -124,14 +124,13 @@ namespace TechnoEgypt.Controllers
             }
 
         }
-        [HttpPost]
-
+        [HttpGet]
         public IActionResult createCertificate()
         {
             System.Drawing.Point point;
             var userc = 1;
             var pathin = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
-            var usercoursedata =  _dBContext.childCourses.Where(w=>w.Id==userc).Include(w => w.Course).Include(w => w.Child).FirstOrDefault();
+            var usercoursedata = _dBContext.childCourses.Where(w => w.ChildId == userc).Include(w => w.Course).Include(w => w.Child).FirstOrDefault();
             //var pathin = Path.Combine(env.WebRootPath, "CertificateTemp.pdf");
             var pathfont = Path.Combine(env.WebRootPath, "MTCORSVA.TTF");
             //string newName = $"{Guid.NewGuid():N}.pdf";
@@ -145,45 +144,52 @@ namespace TechnoEgypt.Controllers
             //create PdfReader object to read from the existing document
             using (PdfReader reader = new PdfReader(pathin))
             //create PdfStamper object to write to get the pages from reader 
-            using (PdfStamper stamper = new PdfStamper(reader, new FileStream(pathout, FileMode.Create)))
+            using (MemoryStream ms = new MemoryStream())
             {
-                //select two pages from the original document
-                reader.SelectPages("1-2");
 
-                //gettins the page size in order to substract from the iTextSharp coordinates
-                var pageSize = reader.GetPageSize(1);
+                using (PdfStamper stamper = new PdfStamper(reader, ms, '\0',true))
+                {
+                    //select two pages from the original document
+                    reader.SelectPages("1-2");
 
-                // PdfContentByte from stamper to add content to the pages over the original content
-                PdfContentByte pbover = stamper.GetOverContent(1);
-                BaseFont bf = BaseFont.CreateFont(@pathfont, "Identity-H", BaseFont.EMBEDDED);
-                Font NameFont = new Font(bf, 10);
-                NameFont.Size = 26;
+                    //gettins the page size in order to substract from the iTextSharp coordinates
+                    var pageSize = reader.GetPageSize(1);
 
-                //add content to the page using ColumnText
-                Font font = new Font();
-                font.Size = 18;
-                string UserName = usercoursedata.Child.Name;
-                string CourseName = usercoursedata.Course.Name;
-                //font.Style = "Arial";
-                //setting up the X and Y coordinates of the document
-                point = new System.Drawing.Point(); 
-                int x = point.X + 370;
-                int y = point.Y + 230;
-                int x1 = point.X + 450;
-                int y1 = point.Y + 300;
-                y = (int)(pageSize.Height - y);
-                DateTime now = DateTime.Now;
-                string DT = now.ToString().Substring(0, 10);
-                int x2 = point.X + 190;
-                int y2 = point.Y + 120;
+                    // PdfContentByte from stamper to add content to the pages over the original content
+                    PdfContentByte pbover = stamper.GetOverContent(1);
+                    //BaseFont bf = BaseFont.CreateFont(@pathfont, "Identity-H", BaseFont.EMBEDDED);
+                    //Font NameFont = new Font(bf, 10);
+                    //NameFont.Size = 26;
 
-                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(UserName, NameFont), x, y, 0);
-                ColumnText.ShowTextAligned(pbover, Element.ALIGN_CENTER, new Phrase(CourseName, font), x1, y1, 0);
-                font.Size = 14;
-                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(DT, font), x2, y2, 0);
-                ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(userc.ToString(), font), 170, 105, 0);
+                    //add content to the page using ColumnText
+                    Font font = new Font();
+                    font.Size = 18;
+                    string UserName = usercoursedata.Child.Name;
+                    string CourseName = usercoursedata.Course.Name;
+                    //font.Style = "Arial";
+                    //setting up the X and Y coordinates of the document
+                    point = new System.Drawing.Point();
+                    int x = point.X + 370;
+                    int y = point.Y + 230;
+                    int x1 = point.X + 450;
+                    int y1 = point.Y + 300;
+                    y = (int)(pageSize.Height - y);
+                    DateTime now = DateTime.Now;
+                    string DT = now.ToString().Substring(0, 10);
+                    int x2 = point.X + 190;
+                    int y2 = point.Y + 120;
 
+                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(UserName, font), x, y, 0);
+                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_CENTER, new Phrase(CourseName, font), x1, y1, 0);
+                    font.Size = 14;
+                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(DT, font), x2, y2, 0);
+                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(userc.ToString(), font), 170, 105, 0);
+                    ms.Position = 0;
+                    var bytes = ms.ToArray();
+                    stamper.Close();
+                    return File(bytes, "application/pdf","a.pdf");
 
+                }
             }
             //RelationPredicateBucket filter = new RelationPredicateBucket();
             //filter.PredicateExpression.Add(MedLineUserCourseFields.ID == userCourseEntity.ID);
@@ -192,7 +198,6 @@ namespace TechnoEgypt.Controllers
 
 
 
-            return File(new MemoryStream(),"png");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
