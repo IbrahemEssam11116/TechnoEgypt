@@ -26,13 +26,15 @@ namespace TechnoEgypt.Services
             }
             string UserName = usercoursedata.Child.Name + " " + usercoursedata.Child.parent.FatherTitle;
             string CourseName = usercoursedata.Course.Name;
-            var Cdate = usercoursedata.CertificationDate.ToString();
+            var Cdate = usercoursedata.CertificationDate;
             string oldFile = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
             string watermarkedFile = env.WebRootPath + "\\Files\\new.pdf";
             // Creating watermark on a separate layer
             // Creating iTextSharp.text.pdf.PdfReader object to read the Existing PDF Document
             PdfReader reader1 = new PdfReader(oldFile);
             using (MemoryStream ms = new MemoryStream())
+            {
+
             // Creating iTextSharp.text.pdf.PdfStamper object to write Data from iTextSharp.text.pdf.PdfReader object to FileStream object
             using (PdfStamper stamper = new PdfStamper(reader1, ms, '\0', true))
             {
@@ -61,15 +63,14 @@ namespace TechnoEgypt.Services
                 cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, UserName, rect.Width - 700, rect.Height - 360, 0);
                 cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, CourseName, rect.Width - 700, rect.Height - 460, 0);
                 cb.SetFontAndSize(bf, 10);
-                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate, rect.Width - 800, rect.Height - 580, 0);
+                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 800, rect.Height - 580, 0);
                 cb.EndText();
 
                 // Close the layer
                 cb.EndLayer();
-                ms.Position = 0;
-                var bytes = ms.ToArray();
-                stamper.Close();
-                return (bytes, $"{UserName}_{CourseName}.pdf");
+
+            }
+            return (ms.ToArray(), $"{UserName}_{CourseName}.pdf");
             }
 
         }
