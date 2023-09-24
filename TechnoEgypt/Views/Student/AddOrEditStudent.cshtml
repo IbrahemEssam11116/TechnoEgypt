@@ -99,7 +99,7 @@
                         @item.Course.Name
                     </td>
                      <td>
-                        @item.Course.Name
+                      <a asp-action="createCertificate" asp-controller="Staff" class="btn btn-outline-primary" asp-route-userc="@item.Id">Download</a>
                     </td>
                     <td>
                         @*<a asp-action="AddOrEditStudent" class="btn btn-outline-primary" asp-route-ParentID="@item.Id">Edit</a>*@
@@ -145,5 +145,6 @@
 
 
         }
+
         </script>
     }

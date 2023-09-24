@@ -125,79 +125,178 @@ namespace TechnoEgypt.Controllers
 
         }
         [HttpGet]
-        public IActionResult createCertificate()
+        //public IActionResult createCertificate(int userc)
+        //{
+        //    System.Drawing.Point point;
+        //   // var userc = 1;
+        //    var pathin = env.WebRootPath + "\\Files\\blank.pdf";
+        //    var usercoursedata = _dBContext.childCourses.Where(w => w.Id == userc).Include(w => w.Course).Include(w => w.Child).FirstOrDefault();
+        //    //var pathin = Path.Combine(env.WebRootPath, "CertificateTemp.pdf");
+        //    var pathfont = Path.Combine(env.WebRootPath, "MTCORSVA.TTF");
+        //    //string newName = $"{Guid.NewGuid():N}.pdf";
+        //    ////string FolderPath = $"{MainFolderPath}/{userCourseEntity.LearnerID}";
+        //    //if (!Directory.Exists(FolderPath))
+        //    //    Directory.CreateDirectory(FolderPath);
+        //    //string pathout = $"{FolderPath}/{newName}";
+        //    string pathout = env.WebRootPath + "\\Files\\new.pdf";
+        //    //userCourseEntity.Certificate = Path.Combine(userCourseEntity.LearnerID.ToString(), newName);
+
+        //    //create PdfReader object to read from the existing document
+        //    using (PdfReader reader = new PdfReader(pathin))
+        //    //create PdfStamper object to write to get the pages from reader 
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+
+        //        using (PdfStamper stamper = new PdfStamper(reader, ms, '\0',true))
+        //        {
+        //            //select two pages from the original document
+        //            reader.SelectPages("1-2");
+
+        //            //gettins the page size in order to substract from the iTextSharp coordinates
+        //            var pageSize = reader.GetPageSize(1);
+
+        //            // PdfContentByte from stamper to add content to the pages over the original content
+        //            PdfContentByte pbover = stamper.GetOverContent(1);
+        //            //BaseFont bf = BaseFont.CreateFont(@pathfont, "Identity-H", BaseFont.EMBEDDED);
+        //            //Font NameFont = new Font(bf, 10);
+        //            //NameFont.Size = 26;
+
+        //            //add content to the page using ColumnText
+        //            var bf = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        //            Font font = new Font(bf , 50, Font.NORMAL, BaseColor.RED);
+        //            //font.Size = 50;
+        //            //font.Color = BaseColor.RED;
+        //            string UserName = usercoursedata.Child.Name;
+        //            string CourseName = usercoursedata.Course.Name;
+        //            //font.Style = "Arial";
+        //            //setting up the X and Y coordinates of the document
+        //            point = new System.Drawing.Point();
+        //            int x = point.X + 370;
+        //            int y = point.Y + 230;
+        //            int x1 = point.X + 450;
+        //            int y1 = point.Y + 300;
+        //            y = (int)(pageSize.Height - y);
+        //            DateTime now = DateTime.Now;
+        //            string DT = now.ToString().Substring(0, 10);
+        //            int x2 = point.X + 190;
+        //            int y2 = point.Y + 120;
+
+        //            ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(UserName, font), 100, 100, 0);
+        //            ColumnText.ShowTextAligned(pbover, Element.ALIGN_CENTER, new Phrase(CourseName, font), 100, 100, 0);
+        //            font.Size = 14;
+        //            ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(DT, font), x2, y2, 0);
+        //            ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(userc.ToString(), font), 170, 105, 0);
+        //            ms.Position = 0;
+        //            var bytes = ms.ToArray();
+        //            stamper.Close();
+        //            return File(bytes, "application/pdf","a.pdf");
+
+        //        }
+        //    }
+        //    //RelationPredicateBucket filter = new RelationPredicateBucket();
+        //    //filter.PredicateExpression.Add(MedLineUserCourseFields.ID == userCourseEntity.ID);
+        //    //SStorm.EMedLine.BL.DataBaseClassHelper.UpdateEntityDirectly(userCourseEntity, filter, 0);
+
+
+
+
+        //}
+        
+        //public void createCertificatenew(int userc)
+        //{
+            
+        //    var oldFile = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
+        //    string newFile = env.WebRootPath + "\\Files\\new.pdf";
+
+        //    var usercoursedata = _dBContext.childCourses.Where(w => w.Id == userc).Include(w => w.Course).Include(w => w.Child).FirstOrDefault();
+        //    string UserName = usercoursedata.Child.Name;
+        //    string CourseName = usercoursedata.Course.Name;
+        //    // open the reader
+        //    PdfReader reader = new PdfReader(oldFile);
+        //    Rectangle size = reader.GetPageSizeWithRotation(1);
+        //    Document document = new Document(size);
+
+        //    // open the writer
+        //    FileStream fs = new FileStream(newFile, FileMode.Create, FileAccess.Write);
+        //    PdfWriter writer = PdfWriter.GetInstance(document, fs);
+        //    document.Open();
+        //    // the pdf content
+        //    PdfContentByte cb = writer.DirectContent;
+        //    // select the font properties
+        //    BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        //    cb.SetColorFill(BaseColor.DARK_GRAY);
+        //    cb.SetFontAndSize(bf, 50);
+        //    // write the text in the pdf content
+        //    cb.BeginText();
+        //   // string text = "Some random blablablabla...";
+        //    // put the alignment and coordinates here
+        //    cb.ShowTextAligned(1, UserName, 520, 640, 0);
+        //    cb.EndText();
+        //    cb.BeginText();
+        //   // text = "Other random blabla...";
+        //    // put the alignment and coordinates here
+        //    cb.ShowTextAligned(2, CourseName, 100, 200, 0);
+        //    cb.EndText();
+        //    // create the new page and add it to the pdf
+        //    PdfImportedPage page = writer.GetImportedPage(reader, 1);
+        //    cb.AddTemplate(page, 0, 0);
+            
+            
+        //    // close the streams and voilá the file should be changed :)
+        //    document.Close();
+        //    fs.Close();
+        //    writer.Close();
+        //    reader.Close();
+        //}
+        public void createCertificate(int userc)
         {
-            System.Drawing.Point point;
-            var userc = 1;
-            var pathin = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
-            var usercoursedata = _dBContext.childCourses.Where(w => w.ChildId == userc).Include(w => w.Course).Include(w => w.Child).FirstOrDefault();
-            //var pathin = Path.Combine(env.WebRootPath, "CertificateTemp.pdf");
-            var pathfont = Path.Combine(env.WebRootPath, "MTCORSVA.TTF");
-            //string newName = $"{Guid.NewGuid():N}.pdf";
-            ////string FolderPath = $"{MainFolderPath}/{userCourseEntity.LearnerID}";
-            //if (!Directory.Exists(FolderPath))
-            //    Directory.CreateDirectory(FolderPath);
-            //string pathout = $"{FolderPath}/{newName}";
-            string pathout = env.WebRootPath + "\\Files\\new.pdf";
-            //userCourseEntity.Certificate = Path.Combine(userCourseEntity.LearnerID.ToString(), newName);
 
-            //create PdfReader object to read from the existing document
-            using (PdfReader reader = new PdfReader(pathin))
-            //create PdfStamper object to write to get the pages from reader 
-            using (MemoryStream ms = new MemoryStream())
+            var usercoursedata = _dBContext.childCourses.Where(w => w.Id == userc).Include(w => w.Course).Include(w => w.Child).ThenInclude(w =>w.parent).FirstOrDefault();
+            string UserName = usercoursedata.Child.Name +" "+ usercoursedata.Child.parent.FatherTitle;
+            string CourseName = usercoursedata.Course.Name;
+            var Cdate = usercoursedata.CertificationDate.ToString();
+            string oldFile = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
+            string watermarkedFile = env.WebRootPath + "\\Files\\new.pdf";
+            // Creating watermark on a separate layer
+            // Creating iTextSharp.text.pdf.PdfReader object to read the Existing PDF Document
+            PdfReader reader1 = new PdfReader(oldFile);
+            using (FileStream fs = new FileStream(watermarkedFile, FileMode.Create, FileAccess.Write, FileShare.None))
+            // Creating iTextSharp.text.pdf.PdfStamper object to write Data from iTextSharp.text.pdf.PdfReader object to FileStream object
+            using (PdfStamper stamper = new PdfStamper(reader1, fs))
             {
+                // Getting total number of pages of the Existing Document
+                //int pageCount = reader1.NumberOfPages;
 
-                using (PdfStamper stamper = new PdfStamper(reader, ms, '\0',true))
-                {
-                    //select two pages from the original document
-                    reader.SelectPages("1-2");
+                // Create New Layer for Watermark
+                PdfLayer layer = new PdfLayer("Layer", stamper.Writer);
+                // Loop through each Page
+                
+                    // Getting the Page Size
+                    Rectangle rect = reader1.GetPageSize(1);
 
-                    //gettins the page size in order to substract from the iTextSharp coordinates
-                    var pageSize = reader.GetPageSize(1);
+                    // Get the ContentByte object
+                    PdfContentByte cb = stamper.GetOverContent(1);
 
-                    // PdfContentByte from stamper to add content to the pages over the original content
-                    PdfContentByte pbover = stamper.GetOverContent(1);
-                    //BaseFont bf = BaseFont.CreateFont(@pathfont, "Identity-H", BaseFont.EMBEDDED);
-                    //Font NameFont = new Font(bf, 10);
-                    //NameFont.Size = 26;
+                    // Tell the cb that the next commands should be "bound" to this new layer
+                    cb.BeginLayer(layer);
 
-                    //add content to the page using ColumnText
-                    Font font = new Font();
-                    font.Size = 18;
-                    string UserName = usercoursedata.Child.Name;
-                    string CourseName = usercoursedata.Course.Name;
-                    //font.Style = "Arial";
-                    //setting up the X and Y coordinates of the document
-                    point = new System.Drawing.Point();
-                    int x = point.X + 370;
-                    int y = point.Y + 230;
-                    int x1 = point.X + 450;
-                    int y1 = point.Y + 300;
-                    y = (int)(pageSize.Height - y);
-                    DateTime now = DateTime.Now;
-                    string DT = now.ToString().Substring(0, 10);
-                    int x2 = point.X + 190;
-                    int y2 = point.Y + 120;
+                    BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                    cb.SetColorFill(BaseColor.BLUE);
+                    cb.SetFontAndSize(bf, 30);
 
-                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(UserName, font), x, y, 0);
-                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_CENTER, new Phrase(CourseName, font), x1, y1, 0);
-                    font.Size = 14;
-                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(DT, font), x2, y2, 0);
-                    ColumnText.ShowTextAligned(pbover, Element.ALIGN_LEFT, new Phrase(userc.ToString(), font), 170, 105, 0);
-                    ms.Position = 0;
-                    var bytes = ms.ToArray();
-                    stamper.Close();
-                    return File(bytes, "application/pdf","a.pdf");
+                    cb.BeginText();
+                    
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, UserName, rect.Width-700, rect.Height -360, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, CourseName, rect.Width-700, rect.Height -460, 0);
+                    cb.SetFontAndSize(bf, 10);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate, rect.Width - 800, rect.Height - 580, 0) ;
+                    cb.EndText();
 
-                }
+                    // Close the layer
+                    cb.EndLayer();
+                
             }
-            //RelationPredicateBucket filter = new RelationPredicateBucket();
-            //filter.PredicateExpression.Add(MedLineUserCourseFields.ID == userCourseEntity.ID);
-            //SStorm.EMedLine.BL.DataBaseClassHelper.UpdateEntityDirectly(userCourseEntity, filter, 0);
-
-
-
-
+            
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

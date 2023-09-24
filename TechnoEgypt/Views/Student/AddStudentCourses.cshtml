@@ -4,19 +4,37 @@
 *@
 @{
 }
-<form asp-action="SaveStudentCourse" asp-controller="Student" method="post">
-      <input type="hidden"  asp-for="ChildId" />
-      <div class="form-group col-sm-4">
-                        <label asp-for="CourseId"  class="control-label"> Course</label>
-                        @Html.DropDownList("CourseId", ViewBag.Coursers as SelectList, "", new { @class = "form-control",@id = "CourseId" })
-                        <span asp-validation-for="CourseId" class="text-danger"></span>
-                    </div>
 
-    @*<div class="form-group col-4">
+<form asp-action="SaveStudentCourse" asp-controller="Student" method="post">
+    <input type="hidden" asp-for="ChildId" />
+    <div class="row">
+    <div class="form-group col-6  col-sm-6">
+        <label asp-for="CourseId" class="control-label"> Course</label><br />
+
+        @Html.DropDownList("CourseId", ViewBag.Coursers as SelectList, "", new { @class = "form-control js-states",@id = "CourseId", style="width: 100%;"})
+        <span asp-validation-for="CourseId" class="text-danger"></span>
+    </div>
+    <div class="form-group col-sm-6">
         <label asp-for="CertificationDate" class="control-label"></label>
         <input asp-for="CertificationDate" class="form-control" />
         <span asp-validation-for="CertificationDate" class="text-danger"></span>
+    </div>
+    </div>
+    @*<div class="form-group col-4">
+    <label asp-for="CertificationDate" class="control-label"></label>
+    <input asp-for="CertificationDate" class="form-control" />
+    <span asp-validation-for="CertificationDate" class="text-danger"></span>
     </div>*@
-                                    <input class="btn btn-primary" type="submit" value="Save" />
+    <input class="btn btn-primary" type="submit" value="Save" />
 
 </form>
+<script>
+    $(".js-states").select2({
+        //containerCssClass:"error",
+        //dropdownCssClass: "test"
+        width: 'resolve',
+        dropdownParent: $('#modal')
+
+    });
+
+</script>
