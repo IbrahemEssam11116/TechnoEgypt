@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
+using TechnoEgypt.Services;
 using TechnoEgypt.ViewModel;
 namespace TechnoEgypt.Controllers
 {
@@ -11,10 +12,12 @@ namespace TechnoEgypt.Controllers
     public class CourseController : ControllerBase
     {
         private readonly UserDbContext _dBContext;
+        private readonly Certificate _certificate;
 
-        public CourseController(UserDbContext dBContext)
+        public CourseController(UserDbContext dBContext, Certificate certificate)
         {
             _dBContext = dBContext;
+            _certificate = certificate;
         }
         [HttpPost("GetCourseById")]
         public IActionResult GetCourseById(BaseDto model)
@@ -48,6 +51,15 @@ namespace TechnoEgypt.Controllers
                 SocialLifeSkills = course.SocialLifeSkills
             };
             return Ok(response);
+        }
+        [HttpPost("DownloadCertificate")]
+        public IActionResult DownloadCertificate(BaseDto model)
+        {
+           var data= _dBContext.childCourses.FirstOrDefault(w => w.ChildId == model.UserId && w.CourseId == model.Id);
+            if (data == null)
+                return NotFound();
+            var file = _certificate.CreateCertificate(data.Id);
+            return File(file.Item1, "application/pdf", file.Item2);
         }
         [HttpPost("GetCoursesBySkills")]
         public IActionResult GetCoursesBySkills([FromBody] CourseSkill model)

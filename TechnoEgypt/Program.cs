@@ -12,6 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("UserDbContextC
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddTransient<NotificationSevice>();
+builder.Services.AddTransient<Certificate>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

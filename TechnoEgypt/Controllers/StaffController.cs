@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.Models;
+using TechnoEgypt.Services;
 using TechnoEgypt.ViewModel;
 
 namespace TechnoEgypt.Controllers
@@ -16,13 +17,15 @@ namespace TechnoEgypt.Controllers
         private readonly IWebHostEnvironment env;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly Certificate _certificate;
 
-        public StaffController(UserDbContext dBContext, IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager)
+        public StaffController(UserDbContext dBContext, IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager, Certificate certificate)
         {
             _dBContext = dBContext;
             this.env = env;
             _roleManager = roleManager;
             _userManager = userManager;
+            _certificate = certificate;
         }
         public IActionResult Index()
         {
@@ -201,10 +204,10 @@ namespace TechnoEgypt.Controllers
 
 
         //}
-        
+
         //public void createCertificatenew(int userc)
         //{
-            
+
         //    var oldFile = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
         //    string newFile = env.WebRootPath + "\\Files\\new.pdf";
 
@@ -240,228 +243,189 @@ namespace TechnoEgypt.Controllers
         //    // create the new page and add it to the pdf
         //    PdfImportedPage page = writer.GetImportedPage(reader, 1);
         //    cb.AddTemplate(page, 0, 0);
-            
-            
+
+
         //    // close the streams and voilá the file should be changed :)
         //    document.Close();
         //    fs.Close();
         //    writer.Close();
         //    reader.Close();
         //}
-        public void createCertificate(int userc)
+        public IActionResult CreateCertificate(int userc)
         {
 
-            var usercoursedata = _dBContext.childCourses.Where(w => w.Id == userc).Include(w => w.Course).Include(w => w.Child).ThenInclude(w =>w.parent).FirstOrDefault();
-            string UserName = usercoursedata.Child.Name +" "+ usercoursedata.Child.parent.FatherTitle;
-            string CourseName = usercoursedata.Course.Name;
-            var Cdate = usercoursedata.CertificationDate.ToString();
-            string oldFile = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
-            string watermarkedFile = env.WebRootPath + "\\Files\\new.pdf";
-            // Creating watermark on a separate layer
-            // Creating iTextSharp.text.pdf.PdfReader object to read the Existing PDF Document
-            PdfReader reader1 = new PdfReader(oldFile);
-            using (FileStream fs = new FileStream(watermarkedFile, FileMode.Create, FileAccess.Write, FileShare.None))
-            // Creating iTextSharp.text.pdf.PdfStamper object to write Data from iTextSharp.text.pdf.PdfReader object to FileStream object
-            using (PdfStamper stamper = new PdfStamper(reader1, fs))
-            {
-                // Getting total number of pages of the Existing Document
-                //int pageCount = reader1.NumberOfPages;
+            var data = _certificate.CreateCertificate(userc);
+            if(data.Item1 == null)
+                return Ok();
+            return File(data.Item1, "application/pdf", data.Item2);
 
-                // Create New Layer for Watermark
-                PdfLayer layer = new PdfLayer("Layer", stamper.Writer);
-                // Loop through each Page
-                
-                    // Getting the Page Size
-                    Rectangle rect = reader1.GetPageSize(1);
 
-                    // Get the ContentByte object
-                    PdfContentByte cb = stamper.GetOverContent(1);
-
-                    // Tell the cb that the next commands should be "bound" to this new layer
-                    cb.BeginLayer(layer);
-
-                    BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                    cb.SetColorFill(BaseColor.BLUE);
-                    cb.SetFontAndSize(bf, 30);
-
-                    cb.BeginText();
-                    
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, UserName, rect.Width-700, rect.Height -360, 0);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, CourseName, rect.Width-700, rect.Height -460, 0);
-                    cb.SetFontAndSize(bf, 10);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate, rect.Width - 800, rect.Height - 580, 0) ;
-                    cb.EndText();
-
-                    // Close the layer
-                    cb.EndLayer();
-                
-            }
-            
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit(WebCourseIndex webcourse)
-        {
 
-            // coursecategory.Stages = _dBContext.Stages.ToList();
-            string IImageName = "";
-            if (webcourse.Image != null)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddOrEdit(WebCourseIndex webcourse)
+    {
+
+        // coursecategory.Stages = _dBContext.Stages.ToList();
+        string IImageName = "";
+        if (webcourse.Image != null)
+        {
+            var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + webcourse.Image.FileName;
+            var path = env.WebRootPath + "\\" + FilePath;
+            using (FileStream fs = System.IO.File.Create(path))
             {
-                var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + webcourse.Image.FileName;
-                var path = env.WebRootPath + "\\" + FilePath;
-                using (FileStream fs = System.IO.File.Create(path))
+                webcourse.Image.CopyTo(fs);
+            }
+            IImageName = FilePath;
+        }
+        bool IsEmployeeExist = false;
+
+        var courseData = await _dBContext.Courses.FindAsync(webcourse.Id);
+
+
+        if (courseData != null)
+        {
+            IsEmployeeExist = true;
+            if (courseData.ImageURL != null && IImageName == "")
+            {
+                IImageName = courseData.ImageURL;
+            }
+        }
+        else
+        {
+            courseData = new Course();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                //courseData = webcourse.course;
+                courseData.Id = webcourse.Id;
+                courseData.Name = webcourse.Name;
+                courseData.ToolId = webcourse.ToolID;
+                courseData.CourseCategoryId = webcourse.CourseCategoryId;
+                courseData.ImageURL = IImageName;
+                courseData.ArDescripttion = webcourse.course.ArDescripttion;
+                courseData.ArName = webcourse.course.ArName;
+
+
+
+                if (IsEmployeeExist)
                 {
-                    webcourse.Image.CopyTo(fs);
+                    _dBContext.Entry<Course>(courseData).State = EntityState.Modified;
                 }
-                IImageName = FilePath;
-            }
-            bool IsEmployeeExist = false;
-
-            var courseData = await _dBContext.Courses.FindAsync(webcourse.Id);
-
-
-            if (courseData != null)
-            {
-                IsEmployeeExist = true;
-                if (courseData.ImageURL != null && IImageName == "")
+                else
                 {
-                    IImageName = courseData.ImageURL;
+                    _dBContext.Courses.Add(courseData);
                 }
+                await _dBContext.SaveChangesAsync();
             }
-            else
+            catch (DbUpdateConcurrencyException)
             {
-                courseData = new Course();
+                throw;
             }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    //courseData = webcourse.course;
-                    courseData.Id = webcourse.Id;
-                    courseData.Name = webcourse.Name;
-                    courseData.ToolId = webcourse.ToolID;
-                    courseData.CourseCategoryId = webcourse.CourseCategoryId;
-                    courseData.ImageURL = IImageName;
-                    courseData.ArDescripttion = webcourse.course.ArDescripttion;
-                    courseData.ArName = webcourse.course.ArName;
-
-
-
-                    if (IsEmployeeExist)
-                    {
-                        _dBContext.Entry<Course>(courseData).State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        _dBContext.Courses.Add(courseData);
-                    }
-                    await _dBContext.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return RedirectToAction("Index", "WebCourse");
+            return RedirectToAction(nameof(Index));
         }
-        public async Task<ActionResult> Delete(int Id)
-        {
-            var course = await _dBContext.Courses.FindAsync(Id);
-            _dBContext.Entry(course).State = EntityState.Deleted;
-            await _dBContext.SaveChangesAsync();
-            //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
+        return RedirectToAction("Index", "WebCourse");
+    }
+    public async Task<ActionResult> Delete(int Id)
+    {
+        var course = await _dBContext.Courses.FindAsync(Id);
+        _dBContext.Entry(course).State = EntityState.Deleted;
+        await _dBContext.SaveChangesAsync();
+        //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
 
-            return RedirectToAction("Index");
-        }
-        public IActionResult GetSpec(int Id)
-        {
-            var sta = new SelectList(_dBContext.CourseCategories.Where(w => w.StageId == Id).ToList(), "Id", "Name");
-            return Json(sta);
-
-        }
-        public IActionResult BranchIndex()
-        {
-
-            var branchs = _dBContext.Branch.ToList();
-            return View(branchs);
-        }
-        public async Task<IActionResult> BranchAddOrEdit(int? Id)
-        {
-            ViewBag.PageName = Id == null ? "Create Branch" : "Edit Branch";
-            ViewBag.IsEdit = Id == null ? false : true;
-            if (Id == null)
-            {
-                return View();
-            }
-            else
-            {
-                var branch = await _dBContext.Branch.FindAsync(Id);
-
-                if (branch == null)
-                {
-                    return NotFound();
-                }
-                return View(branch);
-            }
-
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> BranchAddOrEdit(Branch branch)
-        {
-            bool IsEmployeeExist = false;
-
-            var branchData = await _dBContext.Branch.FindAsync(branch.Id);
-
-            if (branchData != null)
-            {
-                IsEmployeeExist = true;
-            }
-            else
-            {
-                branchData = new Branch();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    branchData.Name = branch.Name;
-                    branchData.PhoneNumbers = branch.PhoneNumbers;
-                    branchData.WhatsappNumber = branch.WhatsappNumber;
-                    branchData.Address = branch.Address;
-
-                    if (IsEmployeeExist)
-                    {
-                        _dBContext.Update(branchData);
-                    }
-                    else
-                    {
-                        _dBContext.Branch.Add(branchData);
-                    }
-                    await _dBContext.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-                return RedirectToAction(nameof(BranchIndex));
-            }
-            return RedirectToAction("BranchIndex", "Staff");
-        }
-        public async Task<ActionResult> BranchDelete(int Id)
-        {
-            var branch = await _dBContext.Branch.FindAsync(Id);
-            _dBContext.Entry(branch).State = EntityState.Deleted;
-            await _dBContext.SaveChangesAsync();
-            //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
-
-            return RedirectToAction("BranchIndex");
-        }
-
-
+        return RedirectToAction("Index");
+    }
+    public IActionResult GetSpec(int Id)
+    {
+        var sta = new SelectList(_dBContext.CourseCategories.Where(w => w.StageId == Id).ToList(), "Id", "Name");
+        return Json(sta);
 
     }
+    public IActionResult BranchIndex()
+    {
+
+        var branchs = _dBContext.Branch.ToList();
+        return View(branchs);
+    }
+    public async Task<IActionResult> BranchAddOrEdit(int? Id)
+    {
+        ViewBag.PageName = Id == null ? "Create Branch" : "Edit Branch";
+        ViewBag.IsEdit = Id == null ? false : true;
+        if (Id == null)
+        {
+            return View();
+        }
+        else
+        {
+            var branch = await _dBContext.Branch.FindAsync(Id);
+
+            if (branch == null)
+            {
+                return NotFound();
+            }
+            return View(branch);
+        }
+
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> BranchAddOrEdit(Branch branch)
+    {
+        bool IsEmployeeExist = false;
+
+        var branchData = await _dBContext.Branch.FindAsync(branch.Id);
+
+        if (branchData != null)
+        {
+            IsEmployeeExist = true;
+        }
+        else
+        {
+            branchData = new Branch();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                branchData.Name = branch.Name;
+                branchData.PhoneNumbers = branch.PhoneNumbers;
+                branchData.WhatsappNumber = branch.WhatsappNumber;
+                branchData.Address = branch.Address;
+
+                if (IsEmployeeExist)
+                {
+                    _dBContext.Update(branchData);
+                }
+                else
+                {
+                    _dBContext.Branch.Add(branchData);
+                }
+                await _dBContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(BranchIndex));
+        }
+        return RedirectToAction("BranchIndex", "Staff");
+    }
+    public async Task<ActionResult> BranchDelete(int Id)
+    {
+        var branch = await _dBContext.Branch.FindAsync(Id);
+        _dBContext.Entry(branch).State = EntityState.Deleted;
+        await _dBContext.SaveChangesAsync();
+        //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
+
+        return RedirectToAction("BranchIndex");
+    }
+
+
+
+}
 }
