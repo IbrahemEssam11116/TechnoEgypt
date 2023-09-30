@@ -7,6 +7,7 @@ using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
 using TechnoEgypt.Services;
+using TechnoEgypt.ViewModel;
 
 namespace TechnoEgypt.Controllers
 {
@@ -27,7 +28,7 @@ namespace TechnoEgypt.Controllers
         [HttpPatch]
         public async Task<IActionResult> users()
         {
-           await notificationSevice.SendNotification("Test", "test", 1);
+            await notificationSevice.SendNotification("Test", "test", 1);
             return Ok(_dBContext.Parents.ToArray());
         }
         [HttpPost("Login")]
@@ -58,8 +59,8 @@ namespace TechnoEgypt.Controllers
             };
             response.Message = "success";
             var parent = data.FirstOrDefault();
-            parent.Token= model.FCMToken;
-            
+            parent.Token = model.FCMToken;
+
             _dBContext.SaveChanges();
             return Ok(response);
         }
@@ -126,12 +127,37 @@ namespace TechnoEgypt.Controllers
         [HttpPost("GetUserCvDataByStationType")]
         public IActionResult GetUserCvDataByStationType(ChildCVoGetDto model)
         {
-            var response = new Response<List<ChildCVData>>
+            if (model.StationId != StationType.Awards)
             {
-                StatusCode = ResponseCode.success,
-            };
-            response.Data = _dBContext.childCVData.Where(w => w.stationId == model.StationId && w.ChildId == model.UserId).ToList();
-            return Ok(response);
+                var response = new Response<List<ChildCVData>>
+                {
+                    StatusCode = ResponseCode.success,
+                };
+                response.Data = _dBContext.childCVData.Where(w => w.stationId == model.StationId && w.ChildId == model.UserId).ToList();
+                return Ok(response);
+            }
+            else
+            {
+
+                var response = new Response<ChildCVDataAward>
+                {
+                    StatusCode = ResponseCode.success,
+                };
+                response.Data = new ChildCVDataAward(); 
+                response.Data.OtherProgrammsCourses = _dBContext.childCVData.Where(w => w.stationId == model.StationId && w.ChildId == model.UserId).ToList();
+                response.Data.TechnoCourses = _dBContext.Courses.Include(w=>w.ChildCourses).Where(w => w.ChildCourses.Any(w => w.ChildId == (int)model.UserId)).Select(w =>
+                new ChildCVData
+                {
+                    Date = w.ChildCourses.FirstOrDefault(w => w.ChildId == (int)model.UserId).CertificationDate,
+                    ChildId=(int)model.UserId,
+                    Name = w.Name,
+                    Note=w.Descripttion
+                }
+                ).ToList();
+                response.Data.OtherActivitesCourses= _dBContext.childCVData.Where(w => w.stationId == StationType.otherActivity && w.ChildId == model.UserId).ToList();
+                return Ok(response);
+            }
+
         }
         [HttpPost("UpdateChildSchoolData")]
         public IActionResult UpdateChildSchoolData([FromForm] ChildSchoolData model)
@@ -203,8 +229,8 @@ namespace TechnoEgypt.Controllers
                 var courses = item.CourseCategories.SelectMany(w => w.Courses).ToList();
                 //if (courses.Count > 0)
                 //{
-                    var userCourses = courses.Where(w => w.ChildCourses.Any(w => w.ChildId == model.UserId)).ToList();
-                    st.skills = new()
+                var userCourses = courses.Where(w => w.ChildCourses.Any(w => w.ChildId == model.UserId)).ToList();
+                st.skills = new()
                     {
                         new SkillDto(){
                             SkillId=SkillType.DataCollectionandAnalysis,
@@ -254,7 +280,7 @@ namespace TechnoEgypt.Controllers
                             Precentage=GetPresentage(courses.Count(w=>w.CognitiveAbilities),userCourses.Count(w=>w.CognitiveAbilities)),
                             CompletedCourse=userCourses.Count(w=>w.CognitiveAbilities),
                             AllCourse=courses.Count(w=>w.CognitiveAbilities),
-                            
+
                         },
                          new SkillDto(){
                             SkillId=SkillType.ProblemSolving,
@@ -278,7 +304,7 @@ namespace TechnoEgypt.Controllers
                             AllCourse=courses.Count(w=>w.ScientificResearch),
                         }
                     };
-                    data.Add(st);
+                data.Add(st);
                 //}
             }
 
@@ -292,7 +318,7 @@ namespace TechnoEgypt.Controllers
 
     }
 
-   public enum SkillType
+    public enum SkillType
     {
         DataCollectionandAnalysis = 0,
         CriticalThinking,

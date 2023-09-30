@@ -13,7 +13,8 @@ namespace TechnoEgypt.Models
         Internship=6,
         HighSchool=7,
         InternationalTest=8,
-        RecommendationLetters=9
+        RecommendationLetters=9,
+        otherActivity=10
         
     }
     public class ChildCVData
