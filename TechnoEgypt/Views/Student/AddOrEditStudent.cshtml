@@ -96,7 +96,7 @@
                         @item.Course.Name
                     </td>
                      <td>
-                        @item.Course.Name
+                        @item.CertificationDate.ToShortDateString()
                     </td>
                      <td>
                       <a asp-action="createCertificate" asp-controller="Staff" class="btn btn-outline-primary" asp-route-userc="@item.Id">Download</a>

@@ -29,6 +29,9 @@ namespace TechnoEgypt.Services
             var Cdate = usercoursedata.CertificationDate;
             string oldFile = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
             string watermarkedFile = env.WebRootPath + "\\Files\\new.pdf";
+            string pathfontuser = env.WebRootPath + "\\Font\\Poppins-ExtraBold.ttf";
+            string pathfontcourse = env.WebRootPath + "\\Font\\Poppins-ExtraBold.ttf";
+
             // Creating watermark on a separate layer
             // Creating iTextSharp.text.pdf.PdfReader object to read the Existing PDF Document
             PdfReader reader1 = new PdfReader(oldFile);
@@ -54,16 +57,18 @@ namespace TechnoEgypt.Services
                 // Tell the cb that the next commands should be "bound" to this new layer
                 cb.BeginLayer(layer);
 
-                BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                cb.SetColorFill(BaseColor.BLUE);
-                cb.SetFontAndSize(bf, 30);
-
+                BaseFont bfuser = BaseFont.CreateFont(@pathfontuser, "Identity-H", BaseFont.EMBEDDED);
+                cb.SetFontAndSize(bfuser, 20);
+                cb.SetRGBColorFill(6,145,207);
                 cb.BeginText();
 
-                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, UserName, rect.Width - 700, rect.Height - 360, 0);
-                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, CourseName, rect.Width - 700, rect.Height - 460, 0);
-                cb.SetFontAndSize(bf, 10);
-                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 800, rect.Height - 580, 0);
+                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, UserName, rect.Width - 620, rect.Height - 360, 0);
+                BaseFont bfcourse = BaseFont.CreateFont(@pathfontcourse, "Identity-H", BaseFont.EMBEDDED);
+                cb.SetFontAndSize(bfcourse, 20);
+                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, CourseName, rect.Width - 620, rect.Height - 465, 0);
+                cb.SetFontAndSize(bfuser, 10);
+                cb.SetRGBColorFill(35,31,32);
+                cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 740, rect.Height - 570, 0);
                 cb.EndText();
 
                 // Close the layer
