@@ -76,7 +76,7 @@ namespace TechnoEgypt.Services
                 cb.SetFontAndSize(bfuser, 10);
                 cb.SetRGBColorFill(35,31,32);
                 cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 740, rect.Height - 570, 0);
-                cb.AddImage(qr,100,0,0,100,380,100);
+                cb.AddImage(qr,100,0,0,100,500,15);
                 cb.EndText();
 
                 // Close the layer
