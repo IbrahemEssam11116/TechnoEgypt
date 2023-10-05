@@ -256,13 +256,23 @@ namespace TechnoEgypt.Controllers
 
             var data = _certificate.CreateCertificate(userc);
             if(data.Item1 == null)
+                return RedirectToAction(nameof(Index),nameof(HomeController));
+            return File(data.Item1, "application/pdf", data.Item2);
+
+
+        }
+        public IActionResult CreateCV(int userId)
+        {
+
+            var data = _certificate.CreateCV(userId);
+            if (data.Item1 == null)
                 return Ok();
             return File(data.Item1, "application/pdf", data.Item2);
 
 
         }
 
-    [HttpPost]
+        [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddOrEdit(WebCourseIndex webcourse)
     {
