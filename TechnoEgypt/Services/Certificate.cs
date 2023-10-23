@@ -113,27 +113,62 @@ namespace TechnoEgypt.Services
         public (byte[], string) CreateCV(int userId)
         {
             userId = 1;
-            var userdata = _dBContext.children.Where(w => w.Id == userId).Include(w => w.parent).Include(w => w.ChildCourses).ThenInclude(w => w.Course).FirstOrDefault();
-            if (userdata == null)
-            {
-                return (null, null);
-            }
-            //int staionid = 2;
-            string UserName = userdata.Name + " " + userdata.parent.FatherTitle;
-            var IQTestList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.IqTest)).OrderBy(w=>w.Date).LastOrDefault();
-            var VolunteerList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.Volunteer)).ToList();
-            var HighSchoolList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.HighSchool)).OrderBy(w=>w.Date).LastOrDefault();
-            var LanguageList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.LanguageTests)).ToList();
+           // var userdata = _dBContext.children.Where(w => w.Id == userId).Include(w => w.parent).Include(w => w.ChildCourses).ThenInclude(w => w.Course).FirstOrDefault();
+            //if (userdata == null)
+            //{
+            //    return (null, null);
+            //}
+
+            //string UserName = userdata.Name + " " + userdata.parent.FatherTitle;
+            //var IQTestList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.IqTest)).OrderBy(w=>w.Date).LastOrDefault();
+            //var VolunteerList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.Volunteer)).ToList();
+            //var HighSchoolList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.HighSchool)).OrderBy(w=>w.Date).LastOrDefault();
+            //var LanguageList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.LanguageTests)).ToList();
 
             //string CourseName = usercoursedata.Course.Name;
             //var Cdate = usercoursedata.CertificationDate;
             string oldFile = env.WebRootPath + "\\Files\\Studentcv.pdf";
             string watermarkedFile = env.WebRootPath + "\\Files\\new.pdf";
-            iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(userdata.ImageURL);
-            StudentImage.ScaleAbsolute(15 , 15);
-           
+            // iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(userdata.ImageURL);
+            //StudentImage.ScaleAbsolute(15 , 15);
+
             // Creating watermark on a separate layer
             // Creating iTextSharp.text.pdf.PdfReader object to read the Existing PDF Document
+
+            // Static Infromations
+
+            string firstName = "Emam";
+            string FatherTitle = "Mohammed Ibrahim Mohammed";
+            string SchoolName = "Borg El Arab Primary School";
+            string schoolsystem = "International";
+            string schoolreport = "Excellent";
+            string reportdate = "01/01/2022";
+            string reportnotes = "noteshere";
+            string IQTest = "Excellent";
+            string IQdate = "01/01/2022";
+            string IQnotes = "noteshere";
+            string lang1 = "arabic";
+            string lang1date = "01/01/2022";
+            string lang1notes = "noteshere";
+            string lang2 = "english";
+            string lang2date = "01/01/2022";
+            string lang2notes = "noteshere";
+            string lang3 = "Germany";
+            string lang3date = "01/01/2022";
+            string lang3notes = "noteshere";
+
+            string UserName = firstName + " " + FatherTitle;
+
+
+
+
+
+
+
+
+
+
+
             PdfReader reader1 = new PdfReader(oldFile);
             using (MemoryStream ms = new MemoryStream())
             {
@@ -158,19 +193,53 @@ namespace TechnoEgypt.Services
                     cb.BeginLayer(layer);
 
                     BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                    BaseFont bfb = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+
                     cb.SetColorFill(BaseColor.BLACK);
-                    cb.SetFontAndSize(bf, 25);
+                    cb.SetFontAndSize(bf, 20);
 
                     cb.BeginText();
-
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.Name, rect.Width - 360 , rect.Height - 240, 0);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.parent.FatherTitle, rect.Width - 360, rect.Height - 270, 0);
+                    
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, firstName, rect.Width - 360 , rect.Height - 230, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, FatherTitle, rect.Width - 360, rect.Height - 260, 0);
 
                     cb.SetFontAndSize(bf, 10);
-           
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.SchoolName, rect.Width - 270, rect.Height - 310, 0);
-                    //cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 800, rect.Height - 580, 0);
-                    cb.AddImage(StudentImage, 165f, 0, 0, 165f, 45, 530);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, SchoolName, rect.Width - 270, rect.Height - 310, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, schoolsystem, rect.Width - 270, rect.Height - 332, 0);
+
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, schoolreport, rect.Width - 354, rect.Height - 366, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + reportdate, rect.Width - 230, rect.Height - 366, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: "+ reportnotes, rect.Width - 100, rect.Height - 366, 0);
+
+
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, IQTest, rect.Width - 354, rect.Height - 399, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + IQdate, rect.Width - 230, rect.Height - 399, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + IQnotes, rect.Width - 100, rect.Height - 399, 0);
+
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, lang1, rect.Width - 354, rect.Height - 434, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + lang1date, rect.Width - 230, rect.Height - 434, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + lang1notes, rect.Width - 100, rect.Height - 434, 0);
+
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, lang2, rect.Width - 354, rect.Height - 448, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + lang2date, rect.Width - 230, rect.Height - 448, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + lang2notes, rect.Width - 100, rect.Height - 448, 0);
+
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, lang3, rect.Width - 354, rect.Height - 462, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + lang3date, rect.Width - 230, rect.Height - 462, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + lang3notes, rect.Width - 100, rect.Height - 462, 0);
+
+                    cb.SetFontAndSize(bfb, 10);
+                    
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "EXPERIENCE", rect.Width - 354, rect.Height - 482, 0);
+
+
+
+                    cb.SetLineWidth(1.5f);
+                    cb.MoveTo(rect.Width - 354, rect.Height - 492);
+                    cb.LineTo(rect.Width -35, rect.Height -  492);
+                    cb.SetRGBColorStroke(148, 182, 210);
+                    cb.Stroke();
+                    //cb.AddImage(StudentImage, 165f, 0, 0, 165f, 45, 530);
 
                     cb.EndText();
 
