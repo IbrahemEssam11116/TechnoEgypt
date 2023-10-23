@@ -73,7 +73,7 @@ namespace TechnoEgypt.Services
                 BaseFont bfcourse = BaseFont.CreateFont(@pathfontcourse, "Identity-H", BaseFont.EMBEDDED);
                 cb.SetFontAndSize(bfcourse, 20);
                 cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, CourseName, rect.Width - 620, rect.Height - 465, 0);
-                cb.SetFontAndSize(bfuser, 10);
+                cb.SetFontAndSize(bfuser, 20);
                 cb.SetRGBColorFill(35,31,32);
                 cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 740, rect.Height - 570, 0);
                 cb.AddImage(qr,100,0,0,100,500,15);
@@ -112,16 +112,26 @@ namespace TechnoEgypt.Services
 
         public (byte[], string) CreateCV(int userId)
         {
-            var usercoursedata = _dBContext.childCourses.Where(w => w.Id == userId).Include(w => w.Course).Include(w => w.Child).ThenInclude(w => w.parent).FirstOrDefault();
-            if (usercoursedata == null)
+            userId = 1;
+            var userdata = _dBContext.children.Where(w => w.Id == userId).Include(w => w.parent).Include(w => w.ChildCourses).ThenInclude(w => w.Course).FirstOrDefault();
+            if (userdata == null)
             {
                 return (null, null);
             }
-            string UserName = usercoursedata.Child.Name + " " + usercoursedata.Child.parent.FatherTitle;
-            string CourseName = usercoursedata.Course.Name;
-            var Cdate = usercoursedata.CertificationDate;
-            string oldFile = env.WebRootPath + "\\Files\\certificate-2023-1.pdf";
+            //int staionid = 2;
+            string UserName = userdata.Name + " " + userdata.parent.FatherTitle;
+            var IQTestList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.IqTest)).OrderBy(w=>w.Date).LastOrDefault();
+            var VolunteerList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.Volunteer)).ToList();
+            var HighSchoolList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.HighSchool)).OrderBy(w=>w.Date).LastOrDefault();
+            var LanguageList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.LanguageTests)).ToList();
+
+            //string CourseName = usercoursedata.Course.Name;
+            //var Cdate = usercoursedata.CertificationDate;
+            string oldFile = env.WebRootPath + "\\Files\\Studentcv.pdf";
             string watermarkedFile = env.WebRootPath + "\\Files\\new.pdf";
+            iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(userdata.ImageURL);
+            StudentImage.ScaleAbsolute(15 , 15);
+           
             // Creating watermark on a separate layer
             // Creating iTextSharp.text.pdf.PdfReader object to read the Existing PDF Document
             PdfReader reader1 = new PdfReader(oldFile);
@@ -148,22 +158,27 @@ namespace TechnoEgypt.Services
                     cb.BeginLayer(layer);
 
                     BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                    cb.SetColorFill(BaseColor.BLUE);
-                    cb.SetFontAndSize(bf, 30);
+                    cb.SetColorFill(BaseColor.BLACK);
+                    cb.SetFontAndSize(bf, 25);
 
                     cb.BeginText();
 
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, UserName, rect.Width - 700, rect.Height - 360, 0);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, CourseName, rect.Width - 700, rect.Height - 460, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.Name, rect.Width - 360 , rect.Height - 240, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.parent.FatherTitle, rect.Width - 360, rect.Height - 270, 0);
+
                     cb.SetFontAndSize(bf, 10);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 800, rect.Height - 580, 0);
+           
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.SchoolName, rect.Width - 270, rect.Height - 310, 0);
+                    //cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Cdate.ToShortDateString(), rect.Width - 800, rect.Height - 580, 0);
+                    cb.AddImage(StudentImage, 165f, 0, 0, 165f, 45, 530);
+
                     cb.EndText();
 
                     // Close the layer
                     cb.EndLayer();
 
                 }
-                return (ms.ToArray(), $"{UserName}_{CourseName}.pdf");
+                return (ms.ToArray(), $"{UserName}_CV.pdf");
             }
 
         }
