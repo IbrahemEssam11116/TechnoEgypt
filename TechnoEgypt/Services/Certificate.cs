@@ -122,8 +122,7 @@ namespace TechnoEgypt.Services
 
             string oldFile = env.WebRootPath + "\\Files\\Studentcv.pdf";
             string watermarkedFile = env.WebRootPath + "\\Files\\new.pdf";
-            iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(userdata.ImageURL);
-            StudentImage.ScaleAbsolute(15, 15);
+           
 
             // Creating watermark on a separate layer
             // Creating iTextSharp.text.pdf.PdfReader object to read the Existing PDF Document
@@ -262,8 +261,13 @@ namespace TechnoEgypt.Services
                     cb.SetFontAndSize(bfb, 8);
 
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "VOLUNTEER WORK", rect.Width - 354, rect.Height - x, 0);
+                    if (userdata.ImageURL != null)
+                    {
+                        iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(userdata.ImageURL);
+                        StudentImage.ScaleAbsolute(15, 15);
+                        cb.AddImage(StudentImage, 165f, 0, 0, 165f, 45, 530);
 
-                    cb.AddImage(StudentImage, 165f, 0, 0, 165f, 45, 530);
+                    }
                     cb.SetFontAndSize(bf, 10);
                     x = x + 15;
 
