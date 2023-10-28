@@ -261,6 +261,7 @@ namespace TechnoEgypt.Services
                     cb.SetFontAndSize(bfb, 8);
 
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "VOLUNTEER WORK", rect.Width - 354, rect.Height - x, 0);
+                    // Ibrahim Solve this if file not found
                     if (userdata.ImageURL != null)
                     {
                         iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(userdata.ImageURL);
