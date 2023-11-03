@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
-using TechnoEgypt.Migrations;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
 namespace TechnoEgypt.Controllers

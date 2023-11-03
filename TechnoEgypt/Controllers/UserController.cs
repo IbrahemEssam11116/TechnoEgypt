@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using System;
 using System.IO;
 using TechnoEgypt.Areas.Identity.Data;
@@ -64,6 +65,25 @@ namespace TechnoEgypt.Controllers
             _dBContext.SaveChanges();
             return Ok(response);
         }
+
+
+
+        [HttpPost("UpdateChildImage")]
+        public IActionResult UpdateChildImage([FromForm] UpdateChildImageDTO model)
+        {
+            var FilePath = "Files\\" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Millisecond.ToString() + model.File.FileName;
+            var path = env.WebRootPath + "\\" + FilePath;
+            using (FileStream fs = System.IO.File.Create(path))
+            {
+                model.File.CopyTo(fs);
+            }
+            var child = _dBContext.children.Find(model.UserId);
+            //_dBContext.childSchoolReports.Add(station);
+            child.ImageURL = FilePath;
+            _dBContext.SaveChanges();
+            return Ok();
+        }
+
         [HttpPost("GetUserChildById")]
         public IActionResult GetUserChildById(BaseDto model)
         {

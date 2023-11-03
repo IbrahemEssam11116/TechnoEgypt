@@ -266,6 +266,15 @@ namespace TechnoEgypt.Services
                     {
                         iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(userdata.ImageURL);
                         StudentImage.ScaleAbsolute(15, 15);
+                        #region circle
+                        StudentImage.ScaleToFit(30, 30);
+                        float centerX = 30;
+                        float centerY = 30;
+                        float radius = 15;
+                        cb.SaveState();
+                        cb.Circle(centerX, centerY, radius);
+                        cb.RestoreState();
+                        #endregion
                         cb.AddImage(StudentImage, 165f, 0, 0, 165f, 45, 530);
 
                     }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
-using TechnoEgypt.Migrations;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
 
