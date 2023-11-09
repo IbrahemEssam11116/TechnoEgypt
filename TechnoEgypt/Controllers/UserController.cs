@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+using Org.BouncyCastle.Crypto.Tls;
 using System;
 using System.IO;
 using TechnoEgypt.Areas.Identity.Data;
@@ -19,12 +20,14 @@ namespace TechnoEgypt.Controllers
         private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
         private readonly NotificationSevice notificationSevice;
+        private readonly Services.Certificate _certificate;
 
-        public UserController(UserDbContext dBContext, IWebHostEnvironment env, NotificationSevice notificationSevice)
+        public UserController(UserDbContext dBContext, IWebHostEnvironment env, NotificationSevice notificationSevice, Services.Certificate certificate)
         {
             _dBContext = dBContext;
             this.env = env;
             this.notificationSevice = notificationSevice;
+            _certificate = certificate;
         }
         [HttpPatch]
         public async Task<IActionResult> users()
@@ -329,6 +332,16 @@ namespace TechnoEgypt.Controllers
             }
 
             return Ok(data);
+        }
+
+        [HttpPost("DownloadCV")]
+        public IActionResult DownloadCertificate(BaseDto model)
+        {
+            var data = _dBContext.childCourses.FirstOrDefault(w => w.ChildId == model.UserId && w.CourseId == model.Id);
+            if (data == null)
+                return NotFound();
+            var file = _certificate.CreateCV(data.Id);
+            return File(file.Item1, "application/pdf", file.Item2);
         }
         private int GetPresentage(double all, double part)
         {
