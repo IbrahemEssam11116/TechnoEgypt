@@ -265,15 +265,22 @@ namespace TechnoEgypt.Services
                         iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri( env.WebRootPath +"\\"+ userdata.ImageURL));
                         StudentImage.ScaleAbsolute(15, 15);
                         #region circle
-                        StudentImage.ScaleToFit(30, 30);
-                        float centerX = 30;
-                        float centerY = 30;
-                        float radius = 15;
-                        cb.SaveState();
-                        cb.Circle(centerX, centerY, radius);
-                        cb.RestoreState();
+                        StudentImage.ScaleAbsolute(165f, 165f);
+                        float radius = 82.5f;
+                        float centerX = 105;
+                        float centerY = 530;
+                        cb.SetRGBColorFill(0, 0, 255);
+                        cb.SetRGBColorStroke(0, 0, 0);
+                        cb.SetLineWidth(2); // Set line width to 2
+
+                        cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                        cb.Clip(); // Clip the content within the circle
+                        cb.NewPath();
+
+                        // Add the image inside the circle
+                        StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
                         #endregion
-                        cb.AddImage(StudentImage, 165f, 0, 0, 165f, 45, 530);
+                        cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
 
                     }
                     cb.SetFontAndSize(bf, 10);
