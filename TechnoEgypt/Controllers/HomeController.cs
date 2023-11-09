@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using System.Diagnostics;
-using System.Text.Encodings.Web;
-using System.Text;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.Models;
 using TechnoEgypt.ViewModel;
@@ -68,7 +65,7 @@ namespace TechnoEgypt.Controllers
                     //{
                     //    var results = await _userManager.AddToRoleAsync(user, item);
                     //}
-                    return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index", "Home");
 
                 }
                 foreach (var error in result.Errors)

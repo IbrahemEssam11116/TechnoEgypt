@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using Org.BouncyCastle.Crypto.Tls;
-using System;
-using System.IO;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
@@ -166,18 +161,18 @@ namespace TechnoEgypt.Controllers
                 {
                     StatusCode = ResponseCode.success,
                 };
-                response.Data = new ChildCVDataAward(); 
+                response.Data = new ChildCVDataAward();
                 response.Data.OtherProgrammsCourses = _dBContext.childCVData.Where(w => w.stationId == model.StationId && w.ChildId == model.UserId).ToList();
-                response.Data.TechnoCourses = _dBContext.Courses.Include(w=>w.ChildCourses).Where(w => w.ChildCourses.Any(w => w.ChildId == (int)model.UserId)).Select(w =>
+                response.Data.TechnoCourses = _dBContext.Courses.Include(w => w.ChildCourses).Where(w => w.ChildCourses.Any(w => w.ChildId == (int)model.UserId)).Select(w =>
                 new ChildCVData
                 {
                     Date = w.ChildCourses.FirstOrDefault(w => w.ChildId == (int)model.UserId).CertificationDate,
-                    ChildId=(int)model.UserId,
+                    ChildId = (int)model.UserId,
                     Name = w.Name,
-                    Note=w.Descripttion
+                    Note = w.Descripttion
                 }
                 ).ToList();
-                response.Data.OtherActivitesCourses= _dBContext.childCVData.Where(w => w.stationId == StationType.otherActivity && w.ChildId == model.UserId).ToList();
+                response.Data.OtherActivitesCourses = _dBContext.childCVData.Where(w => w.stationId == StationType.otherActivity && w.ChildId == model.UserId).ToList();
                 return Ok(response);
             }
 
@@ -337,11 +332,19 @@ namespace TechnoEgypt.Controllers
         [HttpPost("DownloadCV")]
         public IActionResult DownloadCertificate(BaseDto model)
         {
-            var data = _dBContext.childCourses.FirstOrDefault(w => w.ChildId == model.UserId && w.CourseId == model.Id);
+            var data = _dBContext.children.FirstOrDefault(w => w.Id == model.UserId);
             if (data == null)
                 return NotFound();
-            var file = _certificate.CreateCV(data.Id);
-            return File(file.Item1, "application/pdf", file.Item2);
+            try
+            {
+                var file = _certificate.CreateCV(data.Id);
+                return File(file.Item1, "application/pdf", file.Item2);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+
         }
         private int GetPresentage(double all, double part)
         {

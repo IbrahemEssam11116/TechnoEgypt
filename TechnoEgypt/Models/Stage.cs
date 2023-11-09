@@ -10,6 +10,6 @@ namespace TechnoEgypt.Models
         public string ArName { get; set; }
         public int AgeFrom { get; set; }
         public int AgeTo { get; set; }
-        public ICollection<CourseCategory>CourseCategories { get; set; }
+        public ICollection<CourseCategory> CourseCategories { get; set; }
     }
 }

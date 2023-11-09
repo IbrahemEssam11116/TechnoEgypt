@@ -18,7 +18,7 @@ namespace TechnoEgypt.Models
         [ForeignKey("ParentId")]
         public Parent parent { get; set; }
         public ICollection<ChildCVData> ChildCVs { get; set; }
-        public ICollection<ChildCourse> ChildCourses{ get; set; }
+        public ICollection<ChildCourse> ChildCourses { get; set; }
         public ICollection<ChildCertificate> ChildCertificates { get; set; }
 
 

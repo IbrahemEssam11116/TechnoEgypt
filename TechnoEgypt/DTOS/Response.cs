@@ -3,7 +3,7 @@
     public enum ResponseCode
     {
         success = 200,
-        notFound=404
+        notFound = 404
     }
     public class Response<T>
     {

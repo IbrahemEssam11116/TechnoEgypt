@@ -12,20 +12,20 @@ namespace TechnoEgypt.Models
         public string ArName { get; set; }
         public string ArDescripttion { get; set; }
         public string ImageURL { get; set; }
-        public DateTime? ValidFrom{ get; set; }
-        public DateTime? ValidTo{ get; set; }
+        public DateTime? ValidFrom { get; set; }
+        public DateTime? ValidTo { get; set; }
         public bool DataCollectionandAnalysis { get; set; }
         public bool CriticalThinking { get; set; }
         public bool Planning { get; set; }
         public bool MathematicalReasoning { get; set; }
         public bool Innovation { get; set; }
-        public bool LogicalThinking{ get; set; }
+        public bool LogicalThinking { get; set; }
         public bool CognitiveAbilities { get; set; }
         public bool ProblemSolving { get; set; }
-        public bool SocialLifeSkills{ get; set; }
+        public bool SocialLifeSkills { get; set; }
         public bool ScientificResearch { get; set; }
-		public bool Concentration { get; set; }
-		public int CourseCategoryId { get; set; }
+        public bool Concentration { get; set; }
+        public int CourseCategoryId { get; set; }
         [ForeignKey("CourseCategoryId")]
         public CourseCategory CourseCategory { get; set; }
         public int ToolId { get; set; }

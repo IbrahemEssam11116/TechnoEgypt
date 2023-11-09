@@ -35,8 +35,8 @@ namespace TechnoEgypt.Controllers
             response.Data = new CourseDto()
             {
                 Id = course.Id,
-                Desc =model.languageId==0? course.Descripttion:course.ArDescripttion,
-                Title =model.languageId==0? course.Name:course.ArName,
+                Desc = model.languageId == 0 ? course.Descripttion : course.ArDescripttion,
+                Title = model.languageId == 0 ? course.Name : course.ArName,
                 Image_URL = course.ImageURL,
                 IsAvailable = !course.ChildCourses.Any(w => w.ChildId == model.UserId),
                 CognitiveAbilities = course.CognitiveAbilities,
@@ -55,7 +55,7 @@ namespace TechnoEgypt.Controllers
         [HttpPost("DownloadCertificate")]
         public IActionResult DownloadCertificate(BaseDto model)
         {
-           var data= _dBContext.childCourses.FirstOrDefault(w => w.ChildId == model.UserId && w.CourseId == model.Id);
+            var data = _dBContext.childCourses.FirstOrDefault(w => w.ChildId == model.UserId && w.CourseId == model.Id);
             if (data == null)
                 return NotFound();
             var file = _certificate.CreateCertificate(data.Id);
@@ -66,11 +66,11 @@ namespace TechnoEgypt.Controllers
         {
             var response = new Response<List<TrackCoursresDto>>();
             List<Course> courlist = new List<Course>();
-            var courses = _dBContext.Courses.Where(w => (model.StageId==null||model.StageId==0|| w.CourseCategory.StageId == model.StageId));
+            var courses = _dBContext.Courses.Where(w => (model.StageId == null || model.StageId == 0 || w.CourseCategory.StageId == model.StageId));
             switch (model.SkillType)
             {
                 case SkillType.DataCollectionandAnalysis:
-                    courlist = courses.Where(w => w.DataCollectionandAnalysis).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList() ;
+                    courlist = courses.Where(w => w.DataCollectionandAnalysis).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 case SkillType.CriticalThinking:
                     courlist = courses.Where(w => w.DataCollectionandAnalysis).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
@@ -100,14 +100,14 @@ namespace TechnoEgypt.Controllers
                     courlist = courses.Where(w => w.ScientificResearch).Include(w => w.courseTool).Include(w => w.ChildCourses).ToList();
                     break;
                 default:
-                    return Ok( response);
+                    return Ok(response);
 
             }
             response.StatusCode = ResponseCode.success;
             response.Message = "success";
             response.Data = courlist.Select(w => new TrackCoursresDto()
             {
-                Course_Title = model.languageId == 0 ? w.Name:w.ArName,
+                Course_Title = model.languageId == 0 ? w.Name : w.ArName,
                 Id = w.Id,
                 Tool = model.languageId == 0 ? w.courseTool.Name : w.courseTool.ArName,
                 Track_Id = w.CourseCategoryId,
@@ -123,14 +123,14 @@ namespace TechnoEgypt.Controllers
         public IActionResult GetTrakeDataById(BaseDto model)
         {
             var response = new Response<List<TrackCoursresDto>>();
-            var courses = _dBContext.Courses.Where(w => w.CourseCategoryId == model.Id).Include(w => w.courseTool).Include(w=>w.ChildCourses);
+            var courses = _dBContext.Courses.Where(w => w.CourseCategoryId == model.Id).Include(w => w.courseTool).Include(w => w.ChildCourses);
             response.StatusCode = ResponseCode.success;
             response.Message = "success";
             response.Data = courses.Select(w => new TrackCoursresDto()
             {
                 Course_Title = model.languageId == 0 ? w.Name : w.ArName,
                 Id = w.Id,
-                Tool =model.languageId==0? w.courseTool.Name:w.courseTool.ArName,
+                Tool = model.languageId == 0 ? w.courseTool.Name : w.courseTool.ArName,
                 Track_Id = w.CourseCategoryId,
                 ValidFrom = w.ValidFrom,
                 ValidTo = w.ValidTo,
@@ -178,39 +178,39 @@ namespace TechnoEgypt.Controllers
             var data = _dBContext.Stages.Include(w => w.CourseCategories).ThenInclude(w => w.Courses).ThenInclude(w => w.ChildCourses);
             response.Data = data.Select(w => new RoadmapDto()
             {
-                Name =model.languageId==0? w.Name:w.ArName,
+                Name = model.languageId == 0 ? w.Name : w.ArName,
                 AgeFrom = w.AgeFrom,
                 AgeTo = w.AgeTo,
-                CourseTaken= GetCoursesTaken(w,model.UserId),
-                TrackTotal= GetTrackTotal(w,model.UserId),
+                CourseTaken = GetCoursesTaken(w, model.UserId),
+                TrackTotal = GetTrackTotal(w, model.UserId),
 
-            Courses = w.CourseCategories.Select(c => new RoadMapCoursesDTO()
+                Courses = w.CourseCategories.Select(c => new RoadMapCoursesDTO()
                 {
                     group_id = w.Id,
                     Id = c.Id,
-                    Title =model.languageId==0? c.Name:c.ArName,
+                    Title = model.languageId == 0 ? c.Name : c.ArName,
                     CourseTaken = GetCoursesTaken(c, model.UserId),
-                TrackTotal = GetTrackTotal(c, model.UserId),
-            }).ToList()
+                    TrackTotal = GetTrackTotal(c, model.UserId),
+                }).ToList()
             }).ToList();
             return Ok(response);
         }
         internal static int GetCoursesTaken(Stage w, int? userId)
         {
-            return  w.CourseCategories.SelectMany(w => w.Courses).SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
+            return w.CourseCategories.SelectMany(w => w.Courses).SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
         }
         internal static int GetTrackTotal(Stage w, int? userId)
         {
-            return  w.CourseCategories.SelectMany(w => w.Courses).Count();
+            return w.CourseCategories.SelectMany(w => w.Courses).Count();
         }
         internal static int GetCoursesTaken(CourseCategory w, int? userId)
         {
-            return  w.Courses.SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
+            return w.Courses.SelectMany(w => w.ChildCourses).Where(w => w.ChildId == userId).DistinctBy(w => w.CourseId).Count();
         }
         internal static int GetTrackTotal(CourseCategory w, int? userId)
         {
-            return  w.Courses.Count();
+            return w.Courses.Count();
         }
-       
+
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using TechnoEgypt.Models;
+﻿using TechnoEgypt.Models;
 
 namespace TechnoEgypt.ViewModel
 {
@@ -15,7 +12,7 @@ namespace TechnoEgypt.ViewModel
         public string Phone { get; set; }
         public int ParentId { get; set; }
         public Parents parent { get; set; }
-        public  child childrens { get; set; }
+        public child childrens { get; set; }
         public IFormFile Image { get; set; }
         public ICollection<ChildCVData> ChildCVs { get; set; }
         public ICollection<ChildCourse> ChildCourses { get; set; }

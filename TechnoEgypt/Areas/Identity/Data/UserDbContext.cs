@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.Models;
 
 namespace TechnoEgypt.Areas.Identity.Data;

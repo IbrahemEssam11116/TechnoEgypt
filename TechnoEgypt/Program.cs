@@ -1,6 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using TechnoEgypt.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.Services;
 
@@ -20,12 +19,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserDbContext>(option => option.UseSqlServer("name=ConnectionStrings:DefaultConnectionString"));
 
 builder.Services.AddDefaultIdentity<AppUser>(
-    options => { options.SignIn.RequireConfirmedAccount = false;
+    options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
         options.User.RequireUniqueEmail = false;
         options.Password.RequiredLength = 3;
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;  
+        options.Password.RequireLowercase = false;
         options.Password.RequireUppercase = false;
 
     }
@@ -42,7 +43,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAuthentication();;
+app.UseAuthentication(); ;
 
 app.UseAuthorization();
 
