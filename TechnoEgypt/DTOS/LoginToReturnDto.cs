@@ -7,7 +7,7 @@
     }
     public class LoginToReturnDto
     {
-        public int Id{ get; set; }
+        public int Id { get; set; }
         public string school { get; set; }
         public int Group_Id { get; set; }
         public string Group_Name { get; set; }

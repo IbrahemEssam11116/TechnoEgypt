@@ -14,8 +14,8 @@ namespace TechnoEgypt.Models
         [ForeignKey("CourseId")]
         public Course Course { get; set; }
         [ForeignKey("ChildId")]
-        public child Child{ get; set; }
-        public ChildCourseStatus Status{ get; set; }
+        public child Child { get; set; }
+        public ChildCourseStatus Status { get; set; }
         public ICollection<ChildCertificate> ChildCertificates { get; set; }
 
     }

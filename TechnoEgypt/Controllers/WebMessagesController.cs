@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechnoEgypt.Areas.Identity.Data;
-using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
 using TechnoEgypt.Services;
 using TechnoEgypt.ViewModel;
@@ -14,7 +13,7 @@ namespace TechnoEgypt.Controllers
     {
         private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
-		private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly NotificationSevice _notificationSevice;
 
         public WebMessagesController(UserDbContext dBContext, UserManager<AppUser> userManager, IWebHostEnvironment env, NotificationSevice notificationSevice)
@@ -28,9 +27,16 @@ namespace TechnoEgypt.Controllers
         {
 
             var Messages = _dBContext.ChildMessages
-                .Include(Messages => Messages.Parent).Include(w=>w.CreatedUser)
-                .Select(w => new WebMessagesIndex {Date= w.Date==null?"":w.Date.Value.ToString("MM/dd/yyyy")
-                , Id = w.Id,Title=w.Title, Message = w.Message,SenderName=w.CreatedUser!=null?w.CreatedUser.UserName:""})
+                .Include(Messages => Messages.Parent).Include(w => w.CreatedUser)
+                .Select(w => new WebMessagesIndex
+                {
+                    Date = w.Date == null ? "" : w.Date.Value.ToString("MM/dd/yyyy")
+                ,
+                    Id = w.Id,
+                    Title = w.Title,
+                    Message = w.Message,
+                    SenderName = w.CreatedUser != null ? w.CreatedUser.UserName : ""
+                })
                 .ToList();
 
             return View(Messages);
@@ -47,20 +53,20 @@ namespace TechnoEgypt.Controllers
         public async Task<IActionResult> CreateMessage(WebMessagesIndex model)
         {
             var ParentList = _dBContext.Parents.ToList();
-			var userId = this.User.Identity.GetUserId();
+            var userId = this.User.Identity.GetUserId();
 
-			foreach (var item in ParentList)
+            foreach (var item in ParentList)
             {
                 ParentMessage MessageInfo = new ParentMessage();
                 MessageInfo.ParentId = item.Id;
                 MessageInfo.Message = model.Message;
-			    MessageInfo.Title = model.Title;
-				MessageInfo.CreatedUserId = userId;
-				MessageInfo.Date = DateTime.Now;
-				_dBContext.ChildMessages.Add(MessageInfo);
+                MessageInfo.Title = model.Title;
+                MessageInfo.CreatedUserId = userId;
+                MessageInfo.Date = DateTime.Now;
+                _dBContext.ChildMessages.Add(MessageInfo);
                 await _notificationSevice.SendNotification(model.Title, model.Message, item.Id);
-			}
-			_dBContext.SaveChanges();
+            }
+            _dBContext.SaveChanges();
             return RedirectToAction("Index", "WebMessages");
         }
         //public async Task<IActionResult> AddOrEdit(int? Id)

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using TechnoEgypt.Models;
+﻿using System.ComponentModel;
 
 namespace TechnoEgypt.ViewModel
 {
@@ -12,7 +9,7 @@ namespace TechnoEgypt.ViewModel
         public string Message { get; set; }
         [DisplayName("Sender Name")]
         public int SenderID { get; set; }
-        public string SenderName{ get; set; }
+        public string SenderName { get; set; }
         public string Date { get; set; }
 
     }

@@ -14,10 +14,10 @@ namespace TechnoEgypt.Services
         }
 
 
-        public async Task SendNotification(string title,string message, int parentId)
+        public async Task SendNotification(string title, string message, int parentId)
         {
             var deviceToken = _context.Parents.Find(parentId)?.Token;
-            if(deviceToken == null)
+            if (deviceToken == null)
             {
                 return;
             }

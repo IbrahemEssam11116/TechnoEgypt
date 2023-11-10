@@ -2,19 +2,19 @@
 
 namespace TechnoEgypt.Models
 {
-    public class AppDBContext:DbContext
+    public class AppDBContext : DbContext
     {
-        public AppDBContext(DbContextOptions options):base(options)
+        public AppDBContext(DbContextOptions options) : base(options)
         {
 
         }
         public DbSet<child> children { get; set; }
-        public DbSet<ChildCourse> childCourses{ get; set; }
+        public DbSet<ChildCourse> childCourses { get; set; }
         public DbSet<ChildCVData> childCVData { get; set; }
-        public DbSet<ChildSchoolReport> childSchoolReports{ get; set; }
-        public DbSet<ChildPersonalStatement> childPersonalStatements{ get; set; }
+        public DbSet<ChildSchoolReport> childSchoolReports { get; set; }
+        public DbSet<ChildPersonalStatement> childPersonalStatements { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<CourseCategory> CourseCategories{ get; set; }
+        public DbSet<CourseCategory> CourseCategories { get; set; }
         public DbSet<CourseTool> CourseToolsMyProperty { get; set; }
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Stage> Stages { get; set; }

@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using TechnoEgypt.Models;
 
 namespace TechnoEgypt.ViewModel
 {
@@ -15,14 +12,14 @@ namespace TechnoEgypt.ViewModel
         public string UserName { get; set; }
         public int StudentCount { get; set; }
         public string FatherPhoneNumber { get; set; }
-		public string MotherPhoneNumber { get; set; }
-		public string FatherTitle { get; set; }
-		public string MotherTitle { get; set; }
+        public string MotherPhoneNumber { get; set; }
+        public string FatherTitle { get; set; }
+        public string MotherTitle { get; set; }
 
-		//[DisplayName("Tool Name")]
-  //      public int ToolID { get; set; }
-  //      public string ToolName { get; set; }
-  //      public IFormFile Image { get; set; }
+        //[DisplayName("Tool Name")]
+        //      public int ToolID { get; set; }
+        //      public string ToolName { get; set; }
+        //      public IFormFile Image { get; set; }
         //public List<child> children { get; set; }
         public SelectList children { get; set; }
 

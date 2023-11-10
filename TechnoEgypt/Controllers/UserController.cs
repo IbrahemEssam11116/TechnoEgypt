@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using System;
-using System.IO;
 using TechnoEgypt.Areas.Identity.Data;
 using TechnoEgypt.DTOS;
 using TechnoEgypt.Models;
@@ -19,12 +15,14 @@ namespace TechnoEgypt.Controllers
         private readonly UserDbContext _dBContext;
         private readonly IWebHostEnvironment env;
         private readonly NotificationSevice notificationSevice;
+        private readonly Services.Certificate _certificate;
 
-        public UserController(UserDbContext dBContext, IWebHostEnvironment env, NotificationSevice notificationSevice)
+        public UserController(UserDbContext dBContext, IWebHostEnvironment env, NotificationSevice notificationSevice, Services.Certificate certificate)
         {
             _dBContext = dBContext;
             this.env = env;
             this.notificationSevice = notificationSevice;
+            _certificate = certificate;
         }
         [HttpPatch]
         public async Task<IActionResult> users()
@@ -163,18 +161,18 @@ namespace TechnoEgypt.Controllers
                 {
                     StatusCode = ResponseCode.success,
                 };
-                response.Data = new ChildCVDataAward(); 
+                response.Data = new ChildCVDataAward();
                 response.Data.OtherProgrammsCourses = _dBContext.childCVData.Where(w => w.stationId == model.StationId && w.ChildId == model.UserId).ToList();
-                response.Data.TechnoCourses = _dBContext.Courses.Include(w=>w.ChildCourses).Where(w => w.ChildCourses.Any(w => w.ChildId == (int)model.UserId)).Select(w =>
+                response.Data.TechnoCourses = _dBContext.Courses.Include(w => w.ChildCourses).Where(w => w.ChildCourses.Any(w => w.ChildId == (int)model.UserId)).Select(w =>
                 new ChildCVData
                 {
                     Date = w.ChildCourses.FirstOrDefault(w => w.ChildId == (int)model.UserId).CertificationDate,
-                    ChildId=(int)model.UserId,
+                    ChildId = (int)model.UserId,
                     Name = w.Name,
-                    Note=w.Descripttion
+                    Note = w.Descripttion
                 }
                 ).ToList();
-                response.Data.OtherActivitesCourses= _dBContext.childCVData.Where(w => w.stationId == StationType.otherActivity && w.ChildId == model.UserId).ToList();
+                response.Data.OtherActivitesCourses = _dBContext.childCVData.Where(w => w.stationId == StationType.otherActivity && w.ChildId == model.UserId).ToList();
                 return Ok(response);
             }
 
@@ -329,6 +327,24 @@ namespace TechnoEgypt.Controllers
             }
 
             return Ok(data);
+        }
+
+        [HttpPost("DownloadCV")]
+        public IActionResult DownloadCertificate(BaseDto model)
+        {
+            var data = _dBContext.children.FirstOrDefault(w => w.Id == model.UserId);
+            if (data == null)
+                return NotFound();
+            try
+            {
+                var file = _certificate.CreateCV(data.Id);
+                return File(file.Item1, "application/pdf", file.Item2);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+
         }
         private int GetPresentage(double all, double part)
         {

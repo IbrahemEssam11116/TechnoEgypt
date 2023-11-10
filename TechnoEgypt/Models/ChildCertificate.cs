@@ -9,7 +9,7 @@ namespace TechnoEgypt.Models
         public int Id { get; set; }
         public int ChildId { get; set; }
         [ForeignKey("ChildId")]
-        public child Child{ get; set; }
+        public child Child { get; set; }
         public string FileURL { get; set; }
         public int? ChildCourseId { get; set; }
         [ForeignKey("ChildCourseId")]

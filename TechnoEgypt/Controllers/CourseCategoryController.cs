@@ -19,31 +19,31 @@ namespace TechnoEgypt.Controllers
         {
 
             var coursecategory = _dBContext.CourseCategories
-                .Include(CourseCategories => CourseCategories.Stage).Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name, ArName=w.ArName, TrackName = w.Stage.Name }).ToList();
-            
+                .Include(CourseCategories => CourseCategories.Stage).Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name, ArName = w.ArName, TrackName = w.Stage.Name }).ToList();
+
             return View(coursecategory);
         }
         public async Task<IActionResult> AddOrEdit(int? Id)
         {
-           
+
             ViewBag.PageName = Id == null ? "Create Track" : "Edit Track";
             ViewBag.IsEdit = Id == null ? false : true;
             if (Id == null)
             {
                 CourseCategoryIndex coursecategory = new CourseCategoryIndex();
-				coursecategory.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name", coursecategory.StageId);
-				return View(coursecategory);
+                coursecategory.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name", coursecategory.StageId);
+                return View(coursecategory);
             }
             else
             {
-                var coursecategory = await _dBContext.CourseCategories.Where(w=>w.Id==Id)
+                var coursecategory = await _dBContext.CourseCategories.Where(w => w.Id == Id)
                     .Include(CourseCategories => CourseCategories.Stage).
-                    Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name,ArName =w.ArName,StageId=w.StageId })
+                    Select(w => new CourseCategoryIndex { Id = w.Id, Name = w.Name, ArName = w.ArName, StageId = w.StageId })
                     .FirstOrDefaultAsync();
                 coursecategory.Stages = _dBContext.Stages.ToList();
-				coursecategory.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name",coursecategory.StageId);
+                coursecategory.StageList = new SelectList(_dBContext.Stages.ToList(), "Id", "Name", coursecategory.StageId);
 
-				if (coursecategory == null)
+                if (coursecategory == null)
                 {
                     return NotFound();
                 }
@@ -57,13 +57,13 @@ namespace TechnoEgypt.Controllers
         {
 
             // coursecategory.Stages = _dBContext.Stages.ToList();
-            
+
 
             bool IsEmployeeExist = false;
 
             var coursecategoryData = await _dBContext.CourseCategories.FindAsync(coursecategory.Id);
-                
-            
+
+
             if (coursecategoryData != null)
             {
                 IsEmployeeExist = true;
@@ -81,8 +81,8 @@ namespace TechnoEgypt.Controllers
                     coursecategoryData.ArName = coursecategory.ArName;
 
                     coursecategoryData.StageId = coursecategory.StageId;
-					// stageData.AgeTo = stage.AgeTo;
-					if (IsEmployeeExist)
+                    // stageData.AgeTo = stage.AgeTo;
+                    if (IsEmployeeExist)
                     {
                         _dBContext.Update(coursecategoryData);
                     }
@@ -100,14 +100,14 @@ namespace TechnoEgypt.Controllers
             }
             return RedirectToAction("Index", "CourseCategory");
         }
-		public async Task<ActionResult> Delete(int Id)
-		{
-			var track = await _dBContext.CourseCategories.FindAsync(Id);
-			_dBContext.Entry(track).State = EntityState.Deleted;
-			await _dBContext.SaveChangesAsync();
-			//AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
+        public async Task<ActionResult> Delete(int Id)
+        {
+            var track = await _dBContext.CourseCategories.FindAsync(Id);
+            _dBContext.Entry(track).State = EntityState.Deleted;
+            await _dBContext.SaveChangesAsync();
+            //AddSweetNotification("Done", "Done, Deleted successfully", NotificationHelper.NotificationType.success);
 
-			return RedirectToAction("Index");
-		}
-	}
+            return RedirectToAction("Index");
+        }
+    }
 }

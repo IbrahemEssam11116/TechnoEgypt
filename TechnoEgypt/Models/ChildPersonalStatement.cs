@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TechnoEgypt.Models
 {
-    
+
     public class ChildPersonalStatement
     {
         [Key]
