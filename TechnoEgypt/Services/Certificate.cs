@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using QRCoder;
 using System.Drawing;
-using static System.Net.Mime.MediaTypeNames;
-using Newtonsoft.Json;
+using TechnoEgypt.Areas.Identity.Data;
+using TechnoEgypt.Models;
 
 namespace TechnoEgypt.Services
 {
@@ -110,7 +110,6 @@ namespace TechnoEgypt.Services
 
         public (byte[], string) CreateCV(int userId)
         {
-            int PageNumber = 1;
             userId = 1;
             var userdata = _dBContext.children.Where(w => w.Id == userId).Include(w => w.parent).Include(w => w.ChildCourses).ThenInclude(w => w.Course).FirstOrDefault();
             if (userdata == null)
@@ -133,12 +132,7 @@ namespace TechnoEgypt.Services
             var VolunteerList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.Volunteer)).ToList();
             var HighSchoolList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.HighSchool)).OrderBy(w => w.Date).LastOrDefault();
             var LanguageList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.LanguageTests)).ToList();
-            var InternshipsList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.Internship)).ToList();
-            var RecommendationLettersList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.RecommendationLetters)).ToList();
-            var OtherActivityList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.otherActivity)).ToList();
-
-            var ChildCourseList = userdata.ChildCourses.ToList();
-               
+            var InternshipsList = userdata.ChildCourses.ToList();
             string SchoolName = userdata.SchoolName;
             string schoolsystem = "International";
             string schoolreport = "Excellent";
@@ -206,7 +200,7 @@ namespace TechnoEgypt.Services
                     iTextSharp.text.Rectangle rect = reader1.GetPageSize(1);
 
                     // Get the ContentByte object
-                    PdfContentByte cb = stamper.GetOverContent(PageNumber);
+                    PdfContentByte cb = stamper.GetOverContent(1);
 
                     // Tell the cb that the next commands should be "bound" to this new layer
                     cb.BeginLayer(layer);
@@ -268,16 +262,23 @@ namespace TechnoEgypt.Services
                     // Ibrahim Solve this if file not found
                     if (userdata.ImageURL != null)
                     {
-                        iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri( env.WebRootPath +"\\"+ userdata.ImageURL));
+                        iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
                         StudentImage.ScaleAbsolute(15, 15);
                         #region circle
-                        StudentImage.ScaleToFit(30, 30);
-                        float centerX = 30;
-                        float centerY = 30;
-                        float radius = 15;
-                        cb.SaveState();
-                        cb.Circle(centerX, centerY, radius);
-                        cb.RestoreState();
+                        StudentImage.ScaleAbsolute(165f, 165f);
+                        float radius = 82.5f;
+                        float centerX = 105;
+                        float centerY = 530;
+                        cb.SetRGBColorFill(0, 0, 255);
+                        cb.SetRGBColorStroke(0, 0, 0);
+                        cb.SetLineWidth(2); // Set line width to 2
+
+                        cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                        cb.Clip(); // Clip the content within the circle
+                        cb.NewPath();
+
+                        // Add the image inside the circle
+                        StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
                         #endregion
                         cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
 
@@ -302,78 +303,9 @@ namespace TechnoEgypt.Services
                     foreach (var item in InternshipsList)
                     {
 
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
-                        x = x + 10;
-                    }
-                    x = x + 20;
-                    cb.SetFontAndSize(bfb, 10);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RECOMMENDATIONS & REFERENCES", rect.Width - 354, rect.Height - x, 0);
-                    
-                    x = x + 10;
-                    cb.MoveTo(rect.Width - 354, rect.Height - x);
-                    cb.LineTo(rect.Width - 35, rect.Height - x);
-                    cb.SetRGBColorStroke(148, 182, 210);
-                    cb.Stroke();
-                    x = x + 20;
-                    cb.SetFontAndSize(bfb, 8);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "REFRENCE", rect.Width - 354, rect.Height - x, 0);
-                    x = x + 20;
-                    cb.SetFontAndSize(bf, 10);
-                    foreach (var item in RecommendationLettersList)
-                    {
-
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
-                        x = x + 10;
-                    }
-                    x = x + 20;
-                    cb.SetFontAndSize(bfb, 10);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "TECHNO ACTIVITIES", rect.Width - 354, rect.Height - x, 0);
-
-                    x = x + 10;
-                    cb.MoveTo(rect.Width - 354, rect.Height - x);
-                    cb.LineTo(rect.Width - 35, rect.Height - x);
-                    cb.SetRGBColorStroke(148, 182, 210);
-                    cb.Stroke();
-                    x = x + 20;
-                    cb.SetFontAndSize(bf, 10);
-
-                    foreach (var item in ChildCourseList)
-                    {
-
                         cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Course.Name, rect.Width - 354, rect.Height - x, 0);
                         cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.CertificationDate.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + "note", rect.Width - 100, rect.Height - x, 0);
-                        x = x + 10;
-                    }
-                    x = x + 14;
-                    cb.SetFontAndSize(bfb, 8);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "OTHER ACTIVITIES", rect.Width - 354, rect.Height - x, 0);
-                    if (x > 780)
-                    { 
-
-                    cb.EndText();
-                    cb.EndLayer();
-                    PageNumber++;
-                    cb = stamper.GetOverContent(PageNumber);
-                    cb.BeginLayer(layer);
-                    cb.SetColorFill(BaseColor.BLACK);
-                        //change every condition
-                    cb.SetFontAndSize(bf, 20);
-
-                    cb.BeginText();
-                    }
-                   
-
-                    foreach (var item in OtherActivityList)
-                    {
-
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Status, rect.Width - 100, rect.Height - x, 0);
                         x = x + 10;
                     }
                     cb.EndText();
@@ -385,21 +317,6 @@ namespace TechnoEgypt.Services
                 return (ms.ToArray(), $"{UserName}_CV.pdf");
             }
 
-        }
-        private IActionResult PageIndecator(PdfContentByte cb,int x, int PageNumber)
-        {
-
-            cb.EndText();
-            cb.EndLayer();
-            PageNumber++;
-            cb = stamper.GetOverContent(PageNumber);
-            cb.BeginLayer(layer);
-            cb.SetColorFill(BaseColor.BLACK);
-            //change every condition
-            cb.SetFontAndSize(bf, 20);
-
-            cb.BeginText();
-            return View(branchs);
         }
     }
 }
