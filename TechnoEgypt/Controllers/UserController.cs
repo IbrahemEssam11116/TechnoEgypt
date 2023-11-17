@@ -37,7 +37,7 @@ namespace TechnoEgypt.Controllers
             response.StatusCode = ResponseCode.success;
             var data = _dBContext.Parents.Where(w => w.UserName == model.UserName && model.PhoneNumber == w.FatherPhoneNumber
                                                 && w.Children.Any(c => c.IsActive))
-                                                .Include(w => w.Children).ThenInclude(w => w.ChildCertificates);
+                                                .Include(w => w.Branch).Include(w => w.Children).ThenInclude(w => w.ChildCertificates);
             if (data.FirstOrDefault() == null)
             {
                 response.StatusCode = ResponseCode.notFound;
@@ -54,7 +54,18 @@ namespace TechnoEgypt.Controllers
                 Group_Name = model.languageId == 0 ? stage?.Name : stage.ArName,
                 Certificates = child.ChildCertificates.Select(w => new Certificat() { Id = w.Id, Image_Url = w.FileURL }).ToList(),
                 school = child.SchoolName,
-                childern = data.FirstOrDefault().Children.Where(w => w.IsActive).Select(w => new ChildData() { Id = w.Id, Name = w.Name }).ToList()
+                PhoneNumber = model.PhoneNumber,
+                BranchId = data.FirstOrDefault().BranchId.Value,
+                BranchName = data.FirstOrDefault().Branch?.Name,
+                childern = data.FirstOrDefault().Children.Where(w => w.IsActive).Select(w => new ChildData()
+                {
+                    Id = w.Id,
+                    Name = w.Name,
+                    DateOfBirth = w.DateOfBirth,
+                    ImageURL = w.ImageURL,
+                    Phone = w.Phone,
+                    SchoolName = w.SchoolName
+                }).ToList()
             };
             response.Message = "success";
             var parent = data.FirstOrDefault();
