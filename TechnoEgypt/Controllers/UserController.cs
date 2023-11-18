@@ -38,7 +38,8 @@ namespace TechnoEgypt.Controllers
             var data = _dBContext.Parents.Where(w => w.UserName == model.UserName && model.PhoneNumber == w.FatherPhoneNumber
                                                 && w.Children.Any(c => c.IsActive))
                                                 .Include(w => w.Branch).Include(w => w.Children).ThenInclude(w => w.ChildCertificates);
-            if (data.FirstOrDefault() == null)
+            var parent = data.FirstOrDefault();
+            if (parent == null)
             {
                 response.StatusCode = ResponseCode.notFound;
                 response.Message = "User Not Found";
@@ -47,6 +48,7 @@ namespace TechnoEgypt.Controllers
             var child = data.FirstOrDefault().Children.FirstOrDefault(w => w.IsActive);
             var age = (int)((DateTime.Now - child.DateOfBirth).TotalDays / 365);
             var stage = _dBContext.Stages.FirstOrDefault(w => w.AgeFrom <= age && w.AgeTo >= age);
+            
             response.Data = new LoginToReturnDto()
             {
                 Id = child.Id,
@@ -55,9 +57,9 @@ namespace TechnoEgypt.Controllers
                 Certificates = child.ChildCertificates.Select(w => new Certificat() { Id = w.Id, Image_Url = w.FileURL }).ToList(),
                 school = child.SchoolName,
                 PhoneNumber = model.PhoneNumber,
-                BranchId = data.FirstOrDefault().BranchId.Value,
-                BranchName = data.FirstOrDefault().Branch?.Name,
-                childern = data.FirstOrDefault().Children.Where(w => w.IsActive).Select(w => new ChildData()
+                BranchId = parent.BranchId,
+                BranchName = parent.BranchId==null?null: parent.Branch?.Name,
+                childern = parent.Children.Where(w => w.IsActive).Select(w => new ChildData()
                 {
                     Id = w.Id,
                     Name = w.Name,
@@ -68,7 +70,6 @@ namespace TechnoEgypt.Controllers
                 }).ToList()
             };
             response.Message = "success";
-            var parent = data.FirstOrDefault();
             parent.Token = model.FCMToken;
 
             _dBContext.SaveChanges();

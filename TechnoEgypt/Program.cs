@@ -12,6 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddTransient<NotificationSevice>();
 builder.Services.AddTransient<Certificate>();
+builder.Services.AddScoped<SeedData>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -36,6 +37,12 @@ builder.Services.AddDefaultIdentity<AppUser>(
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+using (var scope = app.Services.CreateScope())
+{
+    var seedData = scope.ServiceProvider.GetRequiredService<SeedData>();
+    seedData.InitializeAsync().Wait();
+}
+
 
 app.UseSwagger();
 app.UseSwaggerUI();
