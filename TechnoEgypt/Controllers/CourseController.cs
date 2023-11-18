@@ -59,7 +59,18 @@ namespace TechnoEgypt.Controllers
             if (data == null)
                 return NotFound();
             var file = _certificate.CreateCertificate(data.Id);
-            return File(file.Item1, "application/pdf", file.Item2);
+            string filestring = Convert.ToBase64String(file.Item1);
+            Response<FileDto> res = new Response<FileDto>()
+            {
+                StatusCode = ResponseCode.success,
+                Data = new FileDto()
+                {
+                    File = filestring,
+                    MimeType = "application/pdf",
+                    Name = file.Item2
+                }
+            };
+            return Ok(res);
         }
         [HttpPost("GetCoursesBySkills")]
         public IActionResult GetCoursesBySkills([FromBody] CourseSkill model)
