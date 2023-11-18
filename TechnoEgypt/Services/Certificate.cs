@@ -1,5 +1,6 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using QRCoder;
@@ -110,7 +111,9 @@ namespace TechnoEgypt.Services
 
         public (byte[], string) CreateCV(int userId)
         {
-            userId = 1;
+            int PageNumber = 1;
+            int FontSize = 20;
+            //userId = 1;
             var userdata = _dBContext.children.Where(w => w.Id == userId).Include(w => w.parent).Include(w => w.ChildCourses).ThenInclude(w => w.Course).FirstOrDefault();
             if (userdata == null)
             {
@@ -132,7 +135,12 @@ namespace TechnoEgypt.Services
             var VolunteerList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.Volunteer)).ToList();
             var HighSchoolList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.HighSchool)).OrderBy(w => w.Date).LastOrDefault();
             var LanguageList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.LanguageTests)).ToList();
-            var InternshipsList = userdata.ChildCourses.ToList();
+            var InternshipsList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.Internship)).ToList();
+            var RecommendationLettersList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.RecommendationLetters)).ToList();
+            var OtherActivityList = _dBContext.childCVData.Where(w => (w.ChildId == userId) && (w.stationId == StationType.otherActivity)).ToList();
+
+            var ChildCourseList = userdata.ChildCourses.ToList();
+
             string SchoolName = userdata.SchoolName;
             string schoolsystem = "International";
             string schoolreport = "Excellent";
@@ -201,7 +209,7 @@ namespace TechnoEgypt.Services
 
                     // Get the ContentByte object
                     PdfContentByte cb = stamper.GetOverContent(1);
-
+                    
                     // Tell the cb that the next commands should be "bound" to this new layer
                     cb.BeginLayer(layer);
 
@@ -209,14 +217,15 @@ namespace TechnoEgypt.Services
                     BaseFont bfb = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 
                     cb.SetColorFill(BaseColor.BLACK);
-                    cb.SetFontAndSize(bf, 20);
+                    cb.SetFontAndSize(bf, FontSize);
 
+                   
+                   
                     cb.BeginText();
-
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.Name, rect.Width - 360, rect.Height - 230, 0);
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.parent.FatherTitle, rect.Width - 360, rect.Height - 260, 0);
-
-                    cb.SetFontAndSize(bf, 10);
+                    FontSize = 10;
+                    cb.SetFontAndSize(bf, FontSize);
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.SchoolName, rect.Width - 270, rect.Height - 310, 0);
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, schoolsystem, rect.Width - 270, rect.Height - 332, 0);
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, userdata.Phone, rect.Width - 570, rect.Height - 346, 0);
@@ -240,11 +249,47 @@ namespace TechnoEgypt.Services
                         cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
                         cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
                         cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
+                        if (x > 750)
+                        {
+                            if (userdata.ImageURL != null && PageNumber == 1)
+                            {
+                                iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
+                                StudentImage.ScaleAbsolute(15, 15);
+                                #region circle
+                                StudentImage.ScaleAbsolute(165f, 165f);
+                                float radius = 82.5f;
+                                float centerX = 127;
+                                float centerY = 611;
+                                cb.SetRGBColorFill(0, 0, 255);
+                                cb.SetRGBColorStroke(0, 0, 0);
+                                cb.SetLineWidth(2); // Set line width to 2
 
+                                cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                                cb.Clip(); // Clip the content within the circle
+                                cb.NewPath();
+
+                                // Add the image inside the circle
+                                StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
+                                #endregion
+                                cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
+
+                            }
+                            cb.EndText();
+                            cb.EndLayer();
+                            PageNumber++;
+                            cb = stamper.GetOverContent(PageNumber);
+                            cb.BeginLayer(layer);
+                            cb.SetColorFill(BaseColor.BLACK);
+                            //change every condition
+                            cb.SetFontAndSize(bf, FontSize);
+
+                            cb.BeginText();
+                            x = 100;
+                        }
                     }
 
 
-                    cb.SetFontAndSize(bfb, 10);
+                    cb.SetFontAndSize(bfb, FontSize);
                     x = x + 20;
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "EXPERIENCE", rect.Width - 354, rect.Height - x, 0);
                     x = x + 10;
@@ -256,19 +301,292 @@ namespace TechnoEgypt.Services
                     cb.SetRGBColorStroke(148, 182, 210);
                     cb.Stroke();
                     x = x + 20;
-                    cb.SetFontAndSize(bfb, 8);
+                    FontSize = 8;
+                    cb.SetFontAndSize(bfb, FontSize);
 
                     cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "VOLUNTEER WORK", rect.Width - 354, rect.Height - x, 0);
                     // Ibrahim Solve this if file not found
-                    if (userdata.ImageURL != null)
+                    FontSize = 10;
+                    cb.SetFontAndSize(bf, FontSize);
+                    x = x + 15;
+
+                    foreach (var item in VolunteerList)
+                    {
+
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
+                        x = x + 10;
+                        if (x > 750)
+                        {
+                            if (userdata.ImageURL != null && PageNumber == 1)
+                            {
+                                iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
+                                StudentImage.ScaleAbsolute(15, 15);
+                                #region circle
+                                StudentImage.ScaleAbsolute(165f, 165f);
+                                float radius = 82.5f;
+                                float centerX = 127;
+                                float centerY = 611;
+                                cb.SetRGBColorFill(0, 0, 255);
+                                cb.SetRGBColorStroke(0, 0, 0);
+                                cb.SetLineWidth(2); // Set line width to 2
+
+                                cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                                cb.Clip(); // Clip the content within the circle
+                                cb.NewPath();
+
+                                // Add the image inside the circle
+                                StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
+                                #endregion
+                                cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
+
+                            }
+                            cb.EndText();
+                            cb.EndLayer();
+                            PageNumber++;
+                            cb = stamper.GetOverContent(PageNumber);
+                            cb.BeginLayer(layer);
+                            cb.SetColorFill(BaseColor.BLACK);
+                            //change every condition
+                            cb.SetFontAndSize(bf, FontSize);
+
+                            cb.BeginText();
+                            x = 100;
+                        }
+                    }
+                    x = x + 14;
+                    FontSize = 8;
+                    cb.SetFontAndSize(bfb, FontSize);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "INTERNSHIPS", rect.Width - 354, rect.Height - x, 0);
+                    FontSize = 10;
+                    cb.SetFontAndSize(bf, FontSize);
+                    x = x + 15;
+
+                    foreach (var item in InternshipsList)
+                    {
+
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
+                        x = x + 10;
+                        if (x > 750)
+                        {
+                            if (userdata.ImageURL != null && PageNumber == 1)
+                            {
+                                iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
+                                StudentImage.ScaleAbsolute(15, 15);
+                                #region circle
+                                StudentImage.ScaleAbsolute(165f, 165f);
+                                float radius = 82.5f;
+                                float centerX = 127;
+                                float centerY = 611;
+                                cb.SetRGBColorFill(0, 0, 255);
+                                cb.SetRGBColorStroke(0, 0, 0);
+                                cb.SetLineWidth(2); // Set line width to 2
+
+                                cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                                cb.Clip(); // Clip the content within the circle
+                                cb.NewPath();
+
+                                // Add the image inside the circle
+                                StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
+                                #endregion
+                                cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
+
+                            }
+                            cb.EndText();
+                            cb.EndLayer();
+                            PageNumber++;
+                            cb = stamper.GetOverContent(PageNumber);
+                            cb.BeginLayer(layer);
+                            cb.SetColorFill(BaseColor.BLACK);
+                            //change every condition
+                            cb.SetFontAndSize(bf, FontSize);
+
+                            cb.BeginText();
+                            x = 100;
+                        }
+                    }
+                    x = x + 20;
+                    cb.SetFontAndSize(bfb, FontSize);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RECOMMENDATIONS & REFERENCES", rect.Width - 354, rect.Height - x, 0);
+
+                    x = x + 10;
+                    cb.MoveTo(rect.Width - 354, rect.Height - x);
+                    cb.LineTo(rect.Width - 35, rect.Height - x);
+                    cb.SetRGBColorStroke(148, 182, 210);
+                    cb.Stroke();
+                    x = x + 20;
+                    FontSize = 8;
+                    cb.SetFontAndSize(bfb, FontSize);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "REFRENCE", rect.Width - 354, rect.Height - x, 0);
+                    x = x + 20;
+                    FontSize = 10;
+                    cb.SetFontAndSize(bf, FontSize);
+                    foreach (var item in RecommendationLettersList)
+                    {
+
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
+                        x = x + 10;
+                        if (x > 750)
+                        {
+                            if (userdata.ImageURL != null && PageNumber == 1)
+                            {
+                                iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
+                                StudentImage.ScaleAbsolute(15, 15);
+                                #region circle
+                                StudentImage.ScaleAbsolute(165f, 165f);
+                                float radius = 82.5f;
+                                float centerX = 127;
+                                float centerY = 611;
+                                cb.SetRGBColorFill(0, 0, 255);
+                                cb.SetRGBColorStroke(0, 0, 0);
+                                cb.SetLineWidth(2); // Set line width to 2
+
+                                cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                                cb.Clip(); // Clip the content within the circle
+                                cb.NewPath();
+
+                                // Add the image inside the circle
+                                StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
+                                #endregion
+                                cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
+
+                            }
+                            cb.EndText();
+                            cb.EndLayer();
+                            PageNumber++;
+                            cb = stamper.GetOverContent(PageNumber);
+                            cb.BeginLayer(layer);
+                            cb.SetColorFill(BaseColor.BLACK);
+                            //change every condition
+                            cb.SetFontAndSize(bf, FontSize);
+
+                            cb.BeginText();
+                            x = 100;
+                        }
+                    }
+                    x = x + 20;
+                    cb.SetFontAndSize(bfb, FontSize);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "TECHNO ACTIVITIES", rect.Width - 354, rect.Height - x, 0);
+
+                    x = x + 10;
+                    cb.MoveTo(rect.Width - 354, rect.Height - x);
+                    cb.LineTo(rect.Width - 35, rect.Height - x);
+                    cb.SetRGBColorStroke(148, 182, 210);
+                    cb.Stroke();
+                    x = x + 20; //edit later to 20;
+                    cb.SetFontAndSize(bf, FontSize);
+
+                    foreach (var item in ChildCourseList)
+                    {
+
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Course.Name, rect.Width - 354, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.CertificationDate.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + "note", rect.Width - 100, rect.Height - x, 0);
+                        x = x + 10;
+                        if (x > 750)
+                        {
+                            if (userdata.ImageURL != null && PageNumber ==1)
+                            {
+                                iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
+                                StudentImage.ScaleAbsolute(15, 15);
+                                #region circle
+                                StudentImage.ScaleAbsolute(165f, 165f);
+                                float radius = 82.5f;
+                                float centerX = 127;
+                                float centerY = 611;
+                                cb.SetRGBColorFill(0, 0, 255);
+                                cb.SetRGBColorStroke(0, 0, 0);
+                                cb.SetLineWidth(2); // Set line width to 2
+
+                                cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                                cb.Clip(); // Clip the content within the circle
+                                cb.NewPath();
+
+                                // Add the image inside the circle
+                                StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
+                                #endregion
+                                cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
+
+                            }
+                            cb.EndText();
+                            cb.EndLayer();
+                            PageNumber++;
+                            cb = stamper.GetOverContent(PageNumber);
+                            cb.BeginLayer(layer);
+                            cb.SetColorFill(BaseColor.BLACK);
+                            //change every condition
+                            cb.SetFontAndSize(bf, FontSize);
+
+                            cb.BeginText();
+                            x = 100;
+                        }
+                    }
+                    x = x + 14;
+                    FontSize = 8;
+                    cb.SetFontAndSize(bfb, FontSize);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "OTHER ACTIVITIES", rect.Width - 354, rect.Height - x, 0);
+                    
+
+
+                    foreach (var item in OtherActivityList)
+                    {
+
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
+                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
+                        x = x + 10;
+                        if (x > 750)
+                        {
+                            if (userdata.ImageURL != null && PageNumber == 1)
+                            {
+                                iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
+                                StudentImage.ScaleAbsolute(15, 15);
+                                #region circle
+                                StudentImage.ScaleAbsolute(165f, 165f);
+                                float radius = 82.5f;
+                                float centerX = 127;
+                                float centerY = 611;
+                                cb.SetRGBColorFill(0, 0, 255);
+                                cb.SetRGBColorStroke(0, 0, 0);
+                                cb.SetLineWidth(2); // Set line width to 2
+
+                                cb.Ellipse(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+                                cb.Clip(); // Clip the content within the circle
+                                cb.NewPath();
+
+                                // Add the image inside the circle
+                                StudentImage.SetAbsolutePosition(centerX - radius, centerY - radius);
+                                #endregion
+                                cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
+
+                            }
+                            cb.EndText();
+                            cb.EndLayer();
+                            PageNumber++;
+                            cb = stamper.GetOverContent(PageNumber);
+                            cb.BeginLayer(layer);
+                            cb.SetColorFill(BaseColor.BLACK);
+                            //change every condition
+                            cb.SetFontAndSize(bf, FontSize);
+
+                            cb.BeginText();
+                            x = 100;
+                        }
+                    }
+                    if (userdata.ImageURL != null && PageNumber == 1)
                     {
                         iTextSharp.text.Image StudentImage = iTextSharp.text.Image.GetInstance(new Uri(env.WebRootPath + "\\" + userdata.ImageURL));
                         StudentImage.ScaleAbsolute(15, 15);
                         #region circle
                         StudentImage.ScaleAbsolute(165f, 165f);
                         float radius = 82.5f;
-                        float centerX = 105;
-                        float centerY = 530;
+                        float centerX = 127;
+                        float centerY = 611;
                         cb.SetRGBColorFill(0, 0, 255);
                         cb.SetRGBColorStroke(0, 0, 0);
                         cb.SetLineWidth(2); // Set line width to 2
@@ -283,36 +601,11 @@ namespace TechnoEgypt.Services
                         cb.AddImage(StudentImage/*, 165f, 0, 0, 165f, 45, 530*/);
 
                     }
-                    cb.SetFontAndSize(bf, 10);
-                    x = x + 15;
-
-                    foreach (var item in VolunteerList)
-                    {
-
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Name, rect.Width - 354, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.Date.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Note, rect.Width - 100, rect.Height - x, 0);
-                        x = x + 10;
-                    }
-                    x = x + 14;
-                    cb.SetFontAndSize(bfb, 8);
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "INTERNSHIPS", rect.Width - 354, rect.Height - x, 0);
-                    cb.SetFontAndSize(bf, 10);
-                    x = x + 15;
-
-                    foreach (var item in InternshipsList)
-                    {
-
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, item.Course.Name, rect.Width - 354, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Date: " + item.CertificationDate.ToString("dd/MM/yyyy"), rect.Width - 230, rect.Height - x, 0);
-                        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Note: " + item.Status, rect.Width - 100, rect.Height - x, 0);
-                        x = x + 10;
-                    }
                     cb.EndText();
 
                     // Close the layer
                     cb.EndLayer();
-
+                    
                 }
                 return (ms.ToArray(), $"{UserName}_CV.pdf");
             }

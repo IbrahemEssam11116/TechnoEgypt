@@ -22,7 +22,7 @@
                 <th>FatherName</th>
                 <th>Father No.</th>
                 <th>Mother No.</th>
-                @*<th>Kids</th>*@
+                <th>CV</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -42,10 +42,10 @@
                     <td>
                         @item.MotherPhoneNumber
                     </td>
-                    @*<td class="text-left">
-                        <a asp-action="StudentIndex" class="btn btn-outline-primary" asp-route-Id="@item.Id">View</a>
+                    <td class="text-left">
+                        <a asp-action="CreateCV" asp-controller="Staff" asp-route-userId="@item.StudentId" as class="btn btn-danger">Download cv</a>
                     </td>
-                   *@
+                   
 
                     <td class="text-left">
                         @if (item.Name != null) { 
