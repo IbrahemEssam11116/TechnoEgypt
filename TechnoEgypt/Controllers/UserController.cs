@@ -349,7 +349,20 @@ namespace TechnoEgypt.Controllers
             try
             {
                 var file = _certificate.CreateCV(data.Id);
-                return File(file.Item1, "application/pdf", file.Item2);
+                
+                string filestring = Convert.ToBase64String(file.Item1);
+                Response<FileDto> res = new Response<FileDto>()
+                {
+                    StatusCode = ResponseCode.success,
+                    Data = new FileDto()
+                    {
+                        File = filestring,
+                        MimeType = "application/pdf",
+                        Name = file.Item2
+                    }
+                };
+                return Ok(res);
+                //return File(file.Item1, "application/pdf", file.Item2);
             }
             catch (Exception ex)
             {

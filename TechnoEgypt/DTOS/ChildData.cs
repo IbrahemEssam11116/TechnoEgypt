@@ -8,6 +8,5 @@
         public string SchoolName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; }
-        public int ParentId { get; set; }
     }
 }
