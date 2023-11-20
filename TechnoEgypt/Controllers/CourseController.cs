@@ -186,7 +186,7 @@ namespace TechnoEgypt.Controllers
             var response = new Response<List<RoadmapDto>>();
             response.StatusCode = ResponseCode.success;
             response.Message = "success";
-            var data = _dBContext.Stages.Include(w => w.CourseCategories).ThenInclude(w => w.Courses).ThenInclude(w => w.ChildCourses);
+            var data = _dBContext.Stages.Include(w => w.CourseCategories).ThenInclude(w => w.Courses).ThenInclude(w => w.ChildCourses).ToList();
             response.Data = data.Select(w => new RoadmapDto()
             {
                 Name = model.languageId == 0 ? w.Name : w.ArName,

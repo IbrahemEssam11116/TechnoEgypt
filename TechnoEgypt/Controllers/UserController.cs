@@ -91,7 +91,12 @@ namespace TechnoEgypt.Controllers
             //_dBContext.childSchoolReports.Add(station);
             child.ImageURL = FilePath;
             _dBContext.SaveChanges();
-            return Ok();
+            Response<string> res = new Response<string>()
+            {
+                Data = FilePath,
+                StatusCode = ResponseCode.success
+            };
+            return Ok(res);
         }
 
         [HttpPost("GetUserChildById")]
