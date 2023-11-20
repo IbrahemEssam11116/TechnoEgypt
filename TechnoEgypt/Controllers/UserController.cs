@@ -37,7 +37,9 @@ namespace TechnoEgypt.Controllers
             response.StatusCode = ResponseCode.success;
             var data = _dBContext.Parents.Where(w => w.UserName == model.UserName && model.PhoneNumber == w.FatherPhoneNumber
                                                 && w.Children.Any(c => c.IsActive))
-                                                .Include(w => w.Branch).Include(w => w.Children).ThenInclude(w => w.ChildCertificates);
+                                                .Include(w => w.Branch)
+                                                .Include(w => w.Children).ThenInclude(w => w.ChildCertificates)
+                                                .Include(w => w.Children).ThenInclude(w => w.ChildCVs);
             var parent = data.FirstOrDefault();
             if (parent == null)
             {
@@ -66,7 +68,9 @@ namespace TechnoEgypt.Controllers
                     DateOfBirth = w.DateOfBirth,
                     ImageURL = w.ImageURL,
                     Phone = w.Phone,
-                    SchoolName = w.SchoolName
+                    SchoolName = w.SchoolName,
+                    BirhDateUrl= w.ChildCVs.FirstOrDefault(w=>w.stationId==StationType.BirhDate)?.FileURL,
+                    PassportUrl= w.ChildCVs.FirstOrDefault(w => w.stationId == StationType.PassPort)?.FileURL,
                 }).ToList()
             };
             response.Message = "success";

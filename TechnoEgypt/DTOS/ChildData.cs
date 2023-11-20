@@ -8,5 +8,7 @@
         public string SchoolName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; }
+        public string BirhDateUrl { get; set; }
+        public string PassportUrl { get; set; }
     }
 }
