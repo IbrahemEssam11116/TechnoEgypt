@@ -4,13 +4,17 @@
 *@
 @{
 }
-
+@using Microsoft.AspNetCore.Identity;
+@using TechnoEgypt.Areas.Identity.Data;
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 <h2>Kids List of @ViewBag.PageName</h2>
 
-
+ @if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADD_STUDENT"))
+                            {
 <p style="text-align:right;margin-right:20px;">
     <a class="btn btn-outline-primary" asp-action="AddOrEditStudent" asp-route-ParentID="@ViewBag.ParentID">Create New</a>
-</p>
+</p>}
 <div class="table-responsive">
     <table class="table">
         <thead>

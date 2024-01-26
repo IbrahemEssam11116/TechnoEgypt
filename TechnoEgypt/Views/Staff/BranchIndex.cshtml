@@ -4,15 +4,22 @@
 *@
 @{
 }
+@using Microsoft.AspNetCore.Identity;
+@using TechnoEgypt.Areas.Identity.Data;
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 <div class="row">
     <div class="col-5">
         <h2>Branchs List</h2>
     </div>
+    @if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADD_BRANCH"))
+    {
     <div class="col-7">
         <p style="text-align:left;margin-right:20px;margin-top:5px">
             <a class="btn btn-outline-primary" asp-action="BranchAddOrEdit">Create New</a>
         </p>
     </div>
+    }
 </div>
 <div class="table-responsive">
     <table class="table" id="table">

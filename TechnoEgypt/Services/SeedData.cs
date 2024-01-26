@@ -19,7 +19,8 @@ namespace TechnoEgypt.Services
 
         private  async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {
-            string[] roleNames = { "ADMIN", "STAGE", "BRANCH", "COURSE", "TRACK","APPLICATION", "MESSAGE" , "STAFF" };
+            string[] roleNames = { "ADMIN", "STAGE", "BRANCH", "COURSE", "ADD_COURSE", "ADD_COURSE_TOOL", "TRACK","APPLICATION", "MESSAGE" , "STAFF","ADD_STAFF", "ADD_BRANCH"
+            ,"ADD_STAGE","ADD_STUDENT","ADD_PARENT"};
 
             IdentityResult roleResult;
 
