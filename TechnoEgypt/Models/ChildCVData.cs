@@ -15,8 +15,9 @@ namespace TechnoEgypt.Models
         InternationalTest = 8,
         RecommendationLetters = 9,
         otherActivity = 10,
-        BirhDate = 11,
-        PassPort = 12
+        otherPrograms=11,
+        BirhDate = 12,
+        PassPort = 13
 
     }
     public class ChildCVData

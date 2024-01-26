@@ -40,6 +40,8 @@ namespace TechnoEgypt.Controllers
         {
             var model = new RegesterVM();
 
+
+         
             return View(model);
         }
         [HttpPost]

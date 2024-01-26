@@ -108,42 +108,59 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN"))
-                            {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                            
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "STAGE"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Stage" asp-action="Index">Stages</a>
+                                </li>
+                            }
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "BRANCH"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Staff" asp-action="BranchIndex">Branchs</a>
+                                </li>
+                            }
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "SOFTWARE"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="CourseTool" asp-action="Index">Softwares</a>
+                                </li>
+                            }
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "TRACK"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="CourseCategory" asp-action="Index">Tracks</a>
+                                </li>
+                            }
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "COURSE"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="WebCourse" asp-action="Index">Courses</a>
+                                </li>
+                            }
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "APPLICATION"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Index">Applications</a>
+                                </li>
+                            }
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "MESSAGE"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="WebMessages" asp-action="Index">Messages</a>
+                                </li>
+                            }
+                            if (await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "ADMIN") || await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "STAFF"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Staff" asp-action="Index">Staff</a>
+
                             </li>
                             }
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Stage" asp-action="Index">Stages</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Staff" asp-action="BranchIndex">Branchs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CourseTool" asp-action="Index">Softwares</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CourseCategory" asp-action="Index">Tracks</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="WebCourse" asp-action="Index">Courses</a>
-                            </li>
-
-                            @*@if (await UserManager.IsInRoleAsync( UserManager.GetUserAsync(User).Result, "Addd"))
-                        {*@
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Index">Applications</a>
-                            </li>
-                            @*}*@
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="WebMessages" asp-action="Index">Messages</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Staff" asp-action="Index">Staff</a>
-
-                            </li>
                         }
                     </ul>
                 </div>

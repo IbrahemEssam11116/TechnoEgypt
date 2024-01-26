@@ -161,7 +161,13 @@ namespace TechnoEgypt.Controllers
             _dBContext.childCVData.Add(station);
 
             _dBContext.SaveChanges();
-            return Ok();
+            var res
+                = new Response<string>()
+                {
+                    StatusCode = ResponseCode.success,
+                    Data = FilePath
+                };
+            return Ok(res);
         }
         [HttpPost("GetUserCvDataByStationType")]
         public IActionResult GetUserCvDataByStationType(ChildCVoGetDto model)
@@ -183,7 +189,7 @@ namespace TechnoEgypt.Controllers
                     StatusCode = ResponseCode.success,
                 };
                 response.Data = new ChildCVDataAward();
-                response.Data.OtherProgrammsCourses = _dBContext.childCVData.Where(w => w.stationId == model.StationId && w.ChildId == model.UserId).ToList();
+                response.Data.OtherProgrammsCourses = _dBContext.childCVData.Where(w => w.stationId == StationType.otherPrograms && w.ChildId == model.UserId).ToList();
                 response.Data.TechnoCourses = _dBContext.Courses.Include(w => w.ChildCourses).Where(w => w.ChildCourses.Any(w => w.ChildId == (int)model.UserId)).Select(w =>
                 new ChildCVData
                 {
