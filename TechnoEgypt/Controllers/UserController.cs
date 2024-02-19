@@ -50,7 +50,7 @@ namespace TechnoEgypt.Controllers
             var child = data.FirstOrDefault().Children.FirstOrDefault(w => w.IsActive);
             var age = (int)((DateTime.Now - child.DateOfBirth).TotalDays / 365);
             var stage = _dBContext.Stages.FirstOrDefault(w => w.AgeFrom <= age && w.AgeTo >= age);
-            
+
             response.Data = new LoginToReturnDto()
             {
                 Id = child.Id,
@@ -60,7 +60,7 @@ namespace TechnoEgypt.Controllers
                 school = child.SchoolName,
                 PhoneNumber = model.PhoneNumber,
                 BranchId = parent.BranchId,
-                BranchName = parent.BranchId==null?null: parent.Branch?.Name,
+                BranchName = parent.BranchId == null ? null : parent.Branch?.Name,
                 childern = parent.Children.Where(w => w.IsActive).Select(w => new ChildData()
                 {
                     Id = w.Id,
@@ -69,8 +69,8 @@ namespace TechnoEgypt.Controllers
                     ImageURL = w.ImageURL,
                     Phone = w.Phone,
                     SchoolName = w.SchoolName,
-                    BirhDateUrl= w.ChildCVs.FirstOrDefault(w=>w.stationId==StationType.BirhDate)?.FileURL,
-                    PassportUrl= w.ChildCVs.FirstOrDefault(w => w.stationId == StationType.PassPort)?.FileURL,
+                    BirhDateUrl = w.ChildCVs.FirstOrDefault(w => w.stationId == StationType.BirthDate)?.FileURL,
+                    PassportUrl = w.ChildCVs.FirstOrDefault(w => w.stationId == StationType.PassPort)?.FileURL,
                 }).ToList()
             };
             response.Message = "success";
@@ -117,7 +117,19 @@ namespace TechnoEgypt.Controllers
                 Group_Name = model.languageId == 0 ? stage?.Name : stage.ArName,
                 Certificates = child.ChildCertificates.Select(w => new Certificat() { Id = w.Id, Image_Url = w.FileURL }).ToList(),
                 school = child.SchoolName,
-                childern = _dBContext.children.Where(w => w.ParentId == child.ParentId && w.IsActive).Select(w => new ChildData() { Id = w.Id, Name = w.Name }).ToList()
+                childern = _dBContext.children.Where(w => w.ParentId == child.ParentId && w.IsActive)
+                .Include(w => w.ChildCertificates)
+                .Include(w => w.ChildCVs).Select(w => new ChildData()
+                {
+                    Id = w.Id,
+                    Name = w.Name,
+                    ImageURL = w.ImageURL,
+                    Phone = w.Phone,
+                    SchoolName=w.SchoolName,
+                    BirhDateUrl = w.ChildCVs.FirstOrDefault(a => a.stationId == StationType.BirthDate) == null ? null : w.ChildCVs.FirstOrDefault(a => a.stationId == StationType.BirthDate).FileURL,
+                    PassportUrl = w.ChildCVs.FirstOrDefault(w => w.stationId == StationType.PassPort) == null ? null : w.ChildCVs.FirstOrDefault(w => w.stationId == StationType.PassPort).FileURL,
+
+                }).ToList()
 
             };
             response.Message = "success";
@@ -365,7 +377,7 @@ namespace TechnoEgypt.Controllers
             try
             {
                 var file = _certificate.CreateCV(data.Id);
-                
+
                 string filestring = Convert.ToBase64String(file.Item1);
                 Response<FileDto> res = new Response<FileDto>()
                 {
